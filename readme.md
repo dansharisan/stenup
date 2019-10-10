@@ -7,11 +7,14 @@ Boilerplate for API-based web app project, with basic admin panel and api docume
 - Bootstrap 4
 - Swagger with OpenAPI 3.0
 
-## Used Packages
+## Used PHP Packages
 - bensampo/laravel-enum: more features on enum data type
 - tymondesigns/jwt-auth: JWT Authentication from frontend (ui) to backend (api)
 - spatie/laravel-permission: one user can have multiple roles, and one role can have multiple permissions
 - darkaonline/l5-swagger: enable swagger, we can create API documentation as well as API execution page
+
+## Used Node Packages
+- vue-snotify: Show toast notifications
 
 ## Notes
 - Roles and permissions will be added when running RolesAndPermissionsSeeder.
@@ -32,3 +35,8 @@ Boilerplate for API-based web app project, with basic admin panel and api docume
 - Run "php artisan storage:link" to create symbolic link to storage
 - Adjust app timezone in app.php (currenly Asia/Tokyo)
 - Run "php artisan serve" to start the server then go to localhost:8000 and enjoy
+
+## URLs
+- User site: /
+- Admin site: /admin
+- API documentation: /api
