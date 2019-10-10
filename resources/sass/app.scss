@@ -1,4 +1,8 @@
-@import '~bootstrap/dist/css/bootstrap.css';
+@import '~bootstrap/scss/bootstrap';
 @import '~bootstrap-vue/dist/bootstrap-vue.css';
+// Override Boostrap variables
+@import 'bootstrap-variables';
 // Import SNotify styles
 @import "~vue-snotify/styles/material";
+// Import core styles
+@import 'core/core';
