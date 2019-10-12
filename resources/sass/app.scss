@@ -6,3 +6,7 @@
 @import "~vue-snotify/styles/material";
 // Import core styles
 @import 'core/core';
+
+// Simple line icons
+$simple-line-font-path: '~simple-line-icons/fonts/';
+@import '~simple-line-icons/css/simple-line-icons.css';

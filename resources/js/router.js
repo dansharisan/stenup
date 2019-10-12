@@ -46,7 +46,7 @@ export default new Router({
         {
             path     : '/admin',
             redirect : '/admin/dashboard',
-            name     : 'Panel',
+            name     : 'Admin',
             component: AdminContainer,
             // beforeEnter: requireAdmin,
             children : [

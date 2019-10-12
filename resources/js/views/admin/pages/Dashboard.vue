@@ -2,28 +2,10 @@
     <div class="animated fadeIn">
         <b-row>
             <b-col sm="6" lg="3">
-                <b-card no-body class="bg-success">
-                    <template v-if="userStats.loadStatus == 1">
-                        <b-card-body class="pb-0 text-center">
-                            <div class="text-center text-light stats-loading">
-                                <b-spinner class="align-middle"></b-spinner>
-                            </div>
-                        </b-card-body>
-                        <div style="height: 70px;">&nbsp;</div>
-                    </template>
-                    <template v-else-if="userStats.loadStatus == 2">
-                        <b-card-body class="pb-0">
-                            <h4 class="mb-0">{{ userStats.totalUser }}</h4>
-                            <p>Total registered users</p>
-                        </b-card-body>
-                        <!-- <card-bar-chart :data="userStats.last7DayStats" label="New user(s)" backgroundColor="rgba(255,255,255,.3)" chartId="card-chart-01" class="chart-wrapper px-3" style="height:70px;" height="70"/> -->
-                    </template>
-                    <template v-else-if="userStats.loadStatus == 3">
-                        <b-card-body class="pb-0 text-center" style="margin-top: 25px">
-                            <p>Data load error</p>
-                        </b-card-body>
-                        <div style="height: 70px;">&nbsp;</div>
-                    </template>
+                <b-card class="bg-success">
+                    <div class="text-center text-light stats-loading">
+                        <b-spinner></b-spinner>
+                    </div>
                 </b-card>
             </b-col>
         </b-row>
@@ -68,7 +50,7 @@ export default {
 
 <style>
 .stats-loading {
-    margin-top: 30px;
-    margin-bottom: 0px;
+    padding-top: 19px;
+    min-height: 70px;
 }
 </style>

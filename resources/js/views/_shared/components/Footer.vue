@@ -1,8 +1,8 @@
 <template>
   <footer class="app-footer">
     <span>
-      <a href="https://github.com/dansharisan/anitracks">
-        AniTracks
+      <a href="https://github.com/dansharisan/StenUp">
+        StenUp
       </a> &copy; 2019 Sten Le
     </span>
     <span class="ml-auto">
