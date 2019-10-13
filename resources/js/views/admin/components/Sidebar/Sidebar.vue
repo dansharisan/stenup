@@ -2,7 +2,6 @@
   <div class="sidebar">
     <sidebar-header />
     <sidebar-form />
-    <sidebar-minimizer />
     <nav class="sidebar-nav">
       <div slot="header" />
       <ul class="nav">
@@ -101,6 +100,7 @@
       <slot />
     </nav>
     <sidebar-footer />
+    <sidebar-minimizer />
   </div>
 </template>
 <script>

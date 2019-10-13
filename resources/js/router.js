@@ -21,6 +21,8 @@ import Index from './views/user/pages/Index'
 
 // Admin Tools
 import Dashboard from './views/admin/pages/Dashboard'
+import Users from './views/admin/pages/Users'
+import RolesPermissions from './views/admin/pages/RolesPermissions'
 
 Vue.use(Router)
 
@@ -46,7 +48,7 @@ export default new Router({
         {
             path     : '/admin',
             redirect : '/admin/dashboard',
-            name     : 'Admin',
+            name     : 'Panel',
             component: AdminContainer,
             // beforeEnter: requireAdmin,
             children : [
@@ -55,11 +57,16 @@ export default new Router({
                     name     : 'Dashboard',
                     component: Dashboard,
                 },
-                // {
-                //     path     : 'users',
-                //     name     : 'Users',
-                //     component: Users,
-                // },
+                {
+                    path     : 'users',
+                    name     : 'Users',
+                    component: Users,
+                },
+                {
+                    path     : 'roles-permissions',
+                    name     : 'Roles & Permissions',
+                    component: RolesPermissions,
+                },
             ],
         },
         // From below are general pages
