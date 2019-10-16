@@ -1,7 +1,7 @@
 <?php
 
 use App\Enums\PermissionType;
-use App\Enums\RoleType;
+use App\Enums\DefaultRoleType;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -24,15 +24,24 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => PermissionType::CREATE_USERS]);
         Permission::create(['name' => PermissionType::UPDATE_USERS]);
         Permission::create(['name' => PermissionType::DELETE_USERS]);
+        Permission::create(['name' => PermissionType::VIEW_PANEL]);
 
         /* Roles */
-        $userRole = Role::create(['name' => RoleType::Member]);
-        $modRole = Role::create(['name' => RoleType::Moderator]);
+        $userRole = Role::create(['name' => DefaultRoleType::Member]);
+        $modRole = Role::create(['name' => DefaultRoleType::Moderator]);
+        $adminRole = Role::create(['name' => DefaultRoleType::Administrator]);
+
+        /* Permissions */
+        // Moderators have some limited permissions
         $modRole->givePermissionTo([
             PermissionType::VIEW_USERS,
-            PermissionType::CREATE_USERS,
-            PermissionType::UPDATE_USERS
+            PermissionType::VIEW_PANEL,
         ]);
-        $adminRole = Role::create(['name' => RoleType::Administrator]);
+        $permissionRefl = new ReflectionClass(PermissionType::class);
+        $allDefaultPermissions = array_values((array)$permissionRefl->getConstants());
+        // Admin has all the default permissions by default
+        $adminRole->givePermissionTo([
+            $allDefaultPermissions
+        ]);
     }
 }

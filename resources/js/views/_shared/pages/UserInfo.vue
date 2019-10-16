@@ -61,7 +61,6 @@
 
 <script>
 import AuthAPI from '../../../api/auth.js'
-import { AuthUtils } from '../../../mixins/auth-utils.js';
 
 export default {
     name: 'UserInfo',

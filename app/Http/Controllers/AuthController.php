@@ -5,7 +5,7 @@ use Validator;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Enums\Error;
-use App\Enums\RoleType;
+use App\Enums\DefaultRoleType;
 use App\Enums\UserStatus;
 use Illuminate\Http\Request;
 use App\Models\PasswordReset;
@@ -95,7 +95,7 @@ class AuthController extends Controller
         $user->save();
 
         // Default role:
-        $user->assignRole(RoleType::Member);
+        $user->assignRole(DefaultRoleType::Member);
 
         // Send email with activation link
         $user->notify(new RegisterActivate($user));

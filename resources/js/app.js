@@ -3,7 +3,11 @@ require('./bootstrap');
 import Vue from 'vue'
 import App from './views/App.vue'
 import router from './router.js'
-// import store from './store'
+import store from './store/index.js'
+
+// Vuelidate
+import Vuelidate from 'vuelidate'
+Vue.use(Vuelidate)
 
 // Bootstrap vue
 import BootstrapVue from 'bootstrap-vue'
@@ -29,7 +33,7 @@ Vue.use(Snotify, snotifyOptions)
 export default new Vue({
     el        : '#app',
     router    : router,
-    // store     : store,
+    store     : store,
     components: { App },
     template  : '<App/>',
 })

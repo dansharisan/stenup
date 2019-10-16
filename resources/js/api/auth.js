@@ -14,6 +14,14 @@ export default {
     },
 
     /*
+    GET /api/auth/getUser
+    To get user information
+    */
+    getUser: function() {
+        return axios.get(APP_CONFIG.API_URL + '/auth/getUser');
+    },
+
+    /*
     GET /api/auth/password/token/create
     Generate password reset token and send that token to user through mail
     */

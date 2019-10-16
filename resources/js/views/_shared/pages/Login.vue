@@ -3,7 +3,7 @@
         <div class="container">
             <b-row class="justify-content-center">
                 <b-col md="4" class="mr-2 ml-2 pr-0 pl-0">
-                    <loading :active="request.status == 1"></loading>
+                    <b-loading v-if="request.status == 1"></b-loading>
                     <b-card-group>
                         <b-card no-body class="p-4 mb-0">
                             <b-card-body>

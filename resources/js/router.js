@@ -24,7 +24,46 @@ import Dashboard from './views/admin/pages/Dashboard'
 import Users from './views/admin/pages/Users'
 import RolesPermissions from './views/admin/pages/RolesPermissions'
 
+import store from './store/index.js';
 Vue.use(Router)
+
+function requireNonAuth (to, from, next) {
+    if (store.get('auth/user') && store.get('auth/user').id) {
+        next('/userinfo')
+    } else {
+        if (store.get('auth/userLoadStatus') == 3) {
+            next()
+        } else {
+            store.dispatch('auth/getUser')
+            store.watch(store.getters['auth/getUserLoadStatus'], n => {
+                if (store.get('auth/userLoadStatus') == 2) {
+                    next('/userinfo')
+                } else if (store.get('auth/userLoadStatus') == 3) {
+                    next()
+                }
+            })
+        }
+    }
+}
+
+function requireAuth (to, from, next) {
+    if (store.get('auth/user') && store.get('auth/user').id) {
+        next()
+    } else {
+        if (store.get('auth/userLoadStatus') == 3) {
+            next('/home')
+        } else {
+            store.dispatch('auth/getUser')
+            store.watch(store.getters['auth/getUserLoadStatus'], n => {
+                if (store.get('auth/userLoadStatus') == 2) {
+                    next()
+                } else if (store.get('auth/userLoadStatus') == 3) {
+                    next('/login')
+                }
+            })
+        }
+    }
+}
 
 export default new Router({
     mode           : 'history',
@@ -50,7 +89,7 @@ export default new Router({
             redirect : '/admin/dashboard',
             name     : 'Panel',
             component: AdminContainer,
-            // beforeEnter: requireAdmin,
+            beforeEnter: requireAuth,
             children : [
                 {
                     path     : 'dashboard',
@@ -89,7 +128,7 @@ export default new Router({
             path     : '/login',
             name     : 'Login',
             component: Login,
-            // beforeEnter: requireNonAuth
+            beforeEnter: requireNonAuth
         },
         {
             path     : '/register',

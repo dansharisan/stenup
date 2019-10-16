@@ -31,7 +31,7 @@ export default {
     },
     computed: {
         user(){
-            // return this.$store.get('user/user');
+            return this.$store.get('user/user');
         },
     },
     methods: {

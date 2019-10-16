@@ -17,10 +17,11 @@ Boilerplate for API-based web app project, with basic admin panel and api docume
 - vue-snotify: Show toast notifications
 
 ## Notes
-- Roles and permissions will be added when running RolesAndPermissionsSeeder.
-- There are 3 roles: Administrator, Moderator, and Member and 4 default permissions: view users, create users, update users and delete users.
+- Default roles and permissions will be added when running RolesAndPermissionsSeeder.
+- There are 3 default roles: Administrator, Moderator, and Member and 4 default permissions: view users, create users, update users, delete users and view panel.
+- You can add new roles and adjust permissions in admin panel.
+- Use PermissionType when you want to create/edit permissions.
 - AccountSeeder can be used to create admin account. Password is hashed using bcrypt with 10 rounds. You can hash it here: https://bcrypt-generator.com/
-- Use RoleType enum when you want to create/adjust roles, and PermissionType for permissions.
 
 ## Installation
 - Run "composer install"
