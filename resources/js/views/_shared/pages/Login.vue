@@ -3,11 +3,11 @@
         <div class="container">
             <b-row class="justify-content-center">
                 <b-col md="4" class="mr-2 ml-2 pr-0 pl-0">
-                    <b-loading v-if="request.status == 1"></b-loading>
+                    <loading :active="request.status == 1"></loading>
                     <b-card-group>
-                        <b-card no-body class="p-4 mb-0">
+                        <b-card no-body class="mb-0">
+                            <b-card-header><h2 class="m-0">Login</h2></b-card-header>
                             <b-card-body>
-                                <h2>Login</h2>
                                 <p class="text-muted">
                                     Sign In to your account
                                 </p>
@@ -106,7 +106,7 @@ export default {
             var credential = {}
             credential.email = email
             credential.password = password
-            vm.$store.dispatch('user/login', credential)
+            vm.$store.dispatch('auth/login', credential)
             .then(res => {
                 // Mark request status as loaded succesully
                 vm.request.status = 2

@@ -5,9 +5,9 @@
                 <b-col md="4" class="mr-2 ml-2 pr-0 pl-0">
                     <loading :active="request.status == 1"></loading>
                     <b-card-group>
-                        <b-card no-body class="p-4 mb-0">
+                        <b-card no-body class="mb-0">
+                            <b-card-header><h2 class="m-0">Register</h2></b-card-header>
                             <b-card-body>
-                                <h2>Register</h2>
                                 <p class="text-muted">
                                     Create your account
                                 </p>
@@ -34,7 +34,7 @@
                                     </div>
                                 </b-input-group>
 
-                                <b-input-group class="mb-4">
+                                <b-input-group class="mb-3">
                                     <b-input-group-prepend is-text class="item-header-text">
                                         <span>Re-pass</span>
                                     </b-input-group-prepend>

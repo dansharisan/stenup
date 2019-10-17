@@ -13,7 +13,7 @@
     <title>{{ config('app.name', 'StenUp') }}</title>
 
     <!-- <link rel="manifest" href="{{ asset('manifest.json') }}"> -->
-    <link rel="shortcut icon" href="{{ asset('favicon.png') }}">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
 
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset(mix('css/app.css')) }}">

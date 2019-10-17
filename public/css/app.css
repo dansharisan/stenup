@@ -23830,3 +23830,27 @@ hr.transparent {
   border-right-color: #536c79;
 }
 
+.btn-action {
+  width: 6em !important;
+}
+
+.input-group > .item-header-text.input-group-prepend {
+  flex: 0 0 25%;
+  min-width: 25%;
+  max-width: 25%;
+}
+
+.input-group .input-group-text {
+  width: 100%;
+  font-size: 0.5rem;
+}
+
+.btn.btn-secondary {
+  color: white;
+}
+
+td,
+th {
+  vertical-align: middle !important;
+}
+
