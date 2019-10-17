@@ -10,6 +10,7 @@ use App\Enums\UserStatus;
 use Illuminate\Http\Request;
 use App\Models\PasswordReset;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use App\Notifications\RegisterActivate;
 use App\Notifications\PasswordResetRequest;
 use App\Notifications\PasswordResetSuccess;
@@ -223,7 +224,7 @@ class AuthController extends Controller
     {
         auth('api')->logout();
 
-        return response()->json(null, Response::HTTP_NO_CONTENT);
+        return response()->json(null, Response::HTTP_NO_CONTENT)->withCookie(Cookie::forget('token'));
     }
 
     /**

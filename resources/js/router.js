@@ -29,7 +29,7 @@ Vue.use(Router)
 
 function requireNonAuth (to, from, next) {
     if (store.get('auth/user') && store.get('auth/user').id) {
-        next('/userinfo')
+        next('/home')
     } else {
         if (store.get('auth/userLoadStatus') == 3) {
             next()
@@ -37,7 +37,7 @@ function requireNonAuth (to, from, next) {
             store.dispatch('auth/getUser')
             store.watch(store.getters['auth/getUserLoadStatus'], n => {
                 if (store.get('auth/userLoadStatus') == 2) {
-                    next('/userinfo')
+                    next('/home')
                 } else if (store.get('auth/userLoadStatus') == 3) {
                     next()
                 }
@@ -51,14 +51,14 @@ function requireAuth (to, from, next) {
         next()
     } else {
         if (store.get('auth/userLoadStatus') == 3) {
-            next('/home')
+            next('/login')
         } else {
             store.dispatch('auth/getUser')
             store.watch(store.getters['auth/getUserLoadStatus'], n => {
                 if (store.get('auth/userLoadStatus') == 2) {
                     next()
                 } else if (store.get('auth/userLoadStatus') == 3) {
-                    next('/login')
+                   next('/login')
                 }
             })
         }
@@ -156,7 +156,7 @@ export default new Router({
             path     : '/userinfo',
             name     : 'UserInfo',
             component: UserInfo,
-            // beforeEnter: requireAuth
+            beforeEnter: requireAuth
         },
         {
             path     : '*',

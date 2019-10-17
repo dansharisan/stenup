@@ -3,7 +3,7 @@ import { APP_CONFIG } from '../../config.js'
 import AuthAPI from '../../api/auth.js'
 
 const state = {
-    user: null,
+    user: {},
     userLoadStatus: 0
 }
 
@@ -32,8 +32,19 @@ const actions = {
     },
 
     logout ({ commit }) {
-        commit('userLoadStatus', 0)
-        commit('user', null)
+        return new Promise((resolve, reject) => {
+            AuthAPI.logout()
+            .then((response) => {
+                commit('userLoadStatus', 0)
+                commit('user', {})
+                // Return successful response
+                resolve(response)
+            })
+            .catch((error) => {
+                // Return error
+                reject(error)
+            })
+        })
     },
 
     login ({ commit }, credential) {
