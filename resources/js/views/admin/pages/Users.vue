@@ -1,6 +1,7 @@
 <template>
     <div class="animated fadeIn">
-
+        Users placeholder
+        <!-- <bootstrap-table :columns="columns" :data="data" :options="options"></bootstrap-table> -->
     </div>
 </template>
 

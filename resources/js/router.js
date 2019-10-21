@@ -70,6 +70,7 @@ export default new Router({
     linkActiveClass: 'open active',
     scrollBehavior : () => ({ y: 0 }),
     routes         : [
+        // User site routes
         {
             path     : '/',
             redirect : '/index',
@@ -83,7 +84,7 @@ export default new Router({
                 },
             ],
         },
-        // From below are admin routes
+        // From below are admin panel routes
         {
             path     : '/admin',
             redirect : '/admin/dashboard',

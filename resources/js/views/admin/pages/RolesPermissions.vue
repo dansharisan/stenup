@@ -1,17 +1,21 @@
 <template>
     <div class="animated fadeIn">
-        Roles & Permissions placeholder
+
     </div>
 </template>
 
 <script>
 
 export default {
-    name      : 'User',
+    name      : 'Roles & Permissions',
     components: {
     },
     data: function () {
         return {
+            getRPMatrixRequest: {
+                loadStatus: 0,
+                data: {}
+            },
         }
     },
     methods: {
