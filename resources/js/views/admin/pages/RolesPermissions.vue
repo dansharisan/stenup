@@ -7,7 +7,6 @@
 <script>
 
 export default {
-    name      : 'Roles & Permissions',
     components: {
     },
     data: function () {

@@ -10,5 +10,10 @@ final class PermissionType extends Enum
     const CREATE_USERS = 'create-users';
     const UPDATE_USERS = 'update-users';
     const DELETE_USERS = 'delete-users';
-    const VIEW_PANEL = 'view-panel';
+    const VIEW_DASHBOARD = 'view-dashboard';
+    const VIEW_ROLES_PERMISSIONS = 'view-roles-permissions';
+    const CREATE_ROLES = 'create-roles';
+    const UPDATE_ROLES = 'update-roles';
+    const DELETE_ROLES = 'delete-roles';
+    const UPDATE_PERMISSIONS = 'update-permissions';
 }

@@ -19,12 +19,19 @@ class RolesAndPermissionsSeeder extends Seeder
         app()['cache']->forget('spatie.permission.cache');
 
         /* Permissions */
+        // Dashboard
+        Permission::create(['name' => PermissionType::VIEW_DASHBOARD]);
         // Users
         Permission::create(['name' => PermissionType::VIEW_USERS]);
         Permission::create(['name' => PermissionType::CREATE_USERS]);
         Permission::create(['name' => PermissionType::UPDATE_USERS]);
         Permission::create(['name' => PermissionType::DELETE_USERS]);
-        Permission::create(['name' => PermissionType::VIEW_PANEL]);
+        // Roles & Permission
+        Permission::create(['name' => PermissionType::VIEW_ROLES_PERMISSIONS]);
+        Permission::create(['name' => PermissionType::CREATE_ROLES]);
+        Permission::create(['name' => PermissionType::UPDATE_ROLES]);
+        Permission::create(['name' => PermissionType::DELETE_ROLES]);
+        Permission::create(['name' => PermissionType::UPDATE_PERMISSIONS]);
 
         /* Roles */
         $userRole = Role::create(['name' => DefaultRoleType::Member]);
@@ -35,7 +42,7 @@ class RolesAndPermissionsSeeder extends Seeder
         // Moderators have some limited permissions
         $modRole->givePermissionTo([
             PermissionType::VIEW_USERS,
-            PermissionType::VIEW_PANEL,
+            PermissionType::VIEW_DASHBOARD,
         ]);
         $permissionRefl = new ReflectionClass(PermissionType::class);
         $allDefaultPermissions = array_values((array)$permissionRefl->getConstants());

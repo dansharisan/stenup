@@ -247,6 +247,7 @@ class AuthController extends Controller
     public function getUser(Request $request)
     {
         $user = $request->user();
+        $user['permissions'] = $user->getAllPermissions();
         $user['roles'] = $user->getRoleNames();
 
         return response()->json(['user' => $user], Response::HTTP_OK);

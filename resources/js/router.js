@@ -25,7 +25,59 @@ import Users from './views/admin/pages/Users'
 import RolesPermissions from './views/admin/pages/RolesPermissions'
 
 import store from './store/index.js';
+import AuthPlugin from './plugins/auth.js'
+import { COMPONENT_NAME, PERMISSION_NAME } from './const.js';
 Vue.use(Router)
+Vue.use(AuthPlugin)
+
+function requireAccessPermission(to, from, next) {
+    // Check if current has the permission to access the component
+    function checkAccessPermission(permission) {
+        if (Vue.hasPermission(store.get('auth/user'), permission)) {
+            next()
+        } else {
+            next('/403')
+        };
+    }
+
+    function checkRouteAccessLogic() {
+        switch (to.name) {
+            case COMPONENT_NAME.DASHBOARD:
+                checkAccessPermission(PERMISSION_NAME.VIEW_DASHBOARD)
+                break;
+            case COMPONENT_NAME.USERS:
+                checkAccessPermission(PERMISSION_NAME.VIEW_USERS)
+                break;
+            case COMPONENT_NAME.ROLES_PERMISSIONS:
+                checkAccessPermission(PERMISSION_NAME.VIEW_ROLES_PERMISSIONS)
+                break;
+            default:
+                next('/home')
+        }
+    }
+
+    // In case user info is already in the store
+    if (store.get('auth/user') && store.get('auth/user').id) {
+        checkRouteAccessLogic()
+    } else {
+        // If unauthenticated, redirect to login page
+        if (store.get('auth/userLoadStatus') == 3) {
+            next('/login')
+        } else {
+            // Before request to auth, make sure it's not being requested
+            if (store.get('auth/userLoadStatus') != 1) {
+                store.dispatch('auth/getUser')
+            }
+            store.watch(store.getters['auth/getUserLoadStatus'], n => {
+                if (store.get('auth/userLoadStatus') == 2) {
+                    checkRouteAccessLogic()
+                } else if (store.get('auth/userLoadStatus') == 3) {
+                    next('/login')
+                }
+            })
+        }
+    }
+}
 
 function requireNonAuth (to, from, next) {
     if (store.get('auth/user') && store.get('auth/user').id) {
@@ -34,7 +86,10 @@ function requireNonAuth (to, from, next) {
         if (store.get('auth/userLoadStatus') == 3) {
             next()
         } else {
-            store.dispatch('auth/getUser')
+            // Before request to auth, make sure it's not being requested
+            if (store.get('auth/userLoadStatus') != 1) {
+                store.dispatch('auth/getUser')
+            }
             store.watch(store.getters['auth/getUserLoadStatus'], n => {
                 if (store.get('auth/userLoadStatus') == 2) {
                     next('/home')
@@ -53,7 +108,10 @@ function requireAuth (to, from, next) {
         if (store.get('auth/userLoadStatus') == 3) {
             next('/login')
         } else {
-            store.dispatch('auth/getUser')
+            // Before request to auth, make sure it's not being requested
+            if (store.get('auth/userLoadStatus') != 1) {
+                store.dispatch('auth/getUser')
+            }
             store.watch(store.getters['auth/getUserLoadStatus'], n => {
                 if (store.get('auth/userLoadStatus') == 2) {
                     next()
@@ -74,12 +132,12 @@ export default new Router({
         {
             path     : '/',
             redirect : '/index',
-            name     : 'Home',
+            name     : COMPONENT_NAME.HOME,
             component: UserContainer,
             children : [
                 {
                     path     : 'index',
-                    name     : 'Index',
+                    name     : COMPONENT_NAME.INDEX,
                     component: Index,
                 },
             ],
@@ -94,74 +152,77 @@ export default new Router({
             children : [
                 {
                     path     : 'dashboard',
-                    name     : 'Dashboard',
+                    name     : COMPONENT_NAME.DASHBOARD,
                     component: Dashboard,
+                    beforeEnter: requireAccessPermission
                 },
                 {
                     path     : 'users',
-                    name     : 'Users',
+                    name     : COMPONENT_NAME.USERS,
                     component: Users,
+                    beforeEnter: requireAccessPermission
                 },
                 {
                     path     : 'roles-permissions',
-                    name     : 'Roles & Permissions',
+                    name     : COMPONENT_NAME.ROLES_PERMISSIONS,
                     component: RolesPermissions,
+                    beforeEnter: requireAccessPermission
                 },
             ],
         },
         // From below are general pages
         {
             path     : '/404',
-            name     : 'Page404',
+            name     : COMPONENT_NAME.PAGE_404,
             component: Page404,
         },
         {
             path     : '/403',
-            name     : 'Page403',
+            name     : COMPONENT_NAME.PAGE_403,
             component: Page403,
         },
         {
             path     : '/500',
-            name     : 'Page500',
+            name     : COMPONENT_NAME.PAGE_500,
             component: Page500,
         },
         {
             path     : '/login',
-            name     : 'Login',
+            name     : COMPONENT_NAME.LOGIN,
             component: Login,
             beforeEnter: requireNonAuth
         },
         {
             path     : '/register',
-            name     : 'Register',
+            name     : COMPONENT_NAME.REGISTER,
             component: Register,
-            // beforeEnter: requireNonAuth
+            beforeEnter: requireNonAuth
         },
         {
             path     : '/forgot-password',
-            name     : 'ForgotPassword',
+            name     : COMPONENT_NAME.FORGOT_PASSWORD,
             component: ForgotPassword,
-            // beforeEnter: requireNonAuth
+            beforeEnter: requireNonAuth
         },
         {
             path     : '/reset-password/:token',
-            name     : 'ResetPassword',
+            name     : COMPONENT_NAME.RESET_PASSWORD,
             component: ResetPassword
         },
         {
             path     : '/activate-account/:token',
-            name     : 'ActivateAccount',
+            name     : COMPONENT_NAME.ACTIVATE_ACCOUNT,
             component: ActivateAccount
         },
         {
             path     : '/userinfo',
-            name     : 'UserInfo',
+            name     : COMPONENT_NAME.USER_INFO,
             component: UserInfo,
             beforeEnter: requireAuth
         },
         {
             path     : '*',
-            name     : '404',
+            name     : COMPONENT_NAME.P404,
             component: Page404,
         },
     ],

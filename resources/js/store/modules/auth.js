@@ -1,5 +1,5 @@
 import { defaultMutations } from 'vuex-easy-access'
-import { APP_CONFIG } from '../../config.js'
+import { APP_CONFIG } from '../../const.js'
 import AuthAPI from '../../api/auth.js'
 
 const state = {
