@@ -24,7 +24,7 @@
                                     <b-input-group-prepend is-text class="item-header-text">
                                         <span>Password</span>
                                     </b-input-group-prepend>
-                                    <b-input type="password" class="form-control" v-model="form.password" :state="$v.form.password | state" placeholder="********" v-on:keyup.enter="submit"/>
+                                    <b-input type="password" class="form-control" v-model="form.password" v-on:input="$v.form.password.$touch()" :state="$v.form.password.$dirty ? !$v.form.password.$error : null" placeholder="********" v-on:keyup.enter="submit"/>
                                     <div class="invalid-feedback d-block" v-if="$v.form.password.$invalid && validation && validation.password">
                                         {{ validation.password[0] }}
                                     </div>
@@ -33,7 +33,7 @@
                                     <b-input-group-prepend is-text class="item-header-text">
                                         <span>Confirm password</span>
                                     </b-input-group-prepend>
-                                    <b-input type="password" class="form-control" v-model="form.password_confirmation" :state="$v.form.password_confirmation | state" placeholder="********" v-on:keyup.enter="submit"/>
+                                    <b-input type="password" class="form-control" v-model="form.password_confirmation" v-on:input="$v.form.password_confirmation.$touch()" :state="$v.form.password_confirmation.$dirty ? !$v.form.password_confirmation.$error : null" placeholder="********" v-on:keyup.enter="submit"/>
                                     <div class="invalid-feedback d-block" v-if="$v.form.password_confirmation.$invalid &&  validation && validation.password_confirmation">
                                         {{ validation.password_confirmation[0] }}
                                     </div>

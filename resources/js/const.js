@@ -20,10 +20,10 @@ export const COMPONENT_NAME = {
     PAGE_500: "Error 500",
     LOGIN: "Login",
     REGISTER: "Register",
-    FORGOT_PASSWORD: "Forgot Password",
-    RESET_PASSWORD: "Reset Password",
-    ACTIVATE_ACCOUNT: "Activate Account",
-    USER_INFO: "User Info"
+    FORGOT_PASSWORD: "ForgotPassword",
+    RESET_PASSWORD: "ResetPassword",
+    ACTIVATE_ACCOUNT: "ActivateAccount",
+    USER_INFO: "UserInfo"
 }
 
 export const PERMISSION_NAME = {
