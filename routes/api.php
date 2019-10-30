@@ -17,6 +17,8 @@ Route::group([
         Route::get('logout', 'AuthController@logout');
         Route::get('getUser', 'AuthController@getUser');
         Route::patch('password/change', 'AuthController@changePassword');
+        Route::get('roles_w_permissions', 'AuthController@getRolesWithPermissions');
+        Route::get('roles_permissions', 'AuthController@getRolesAndPermissions');
     });
 
     // Limit number of requests per seconds, configured in app/Http/Kernel.php

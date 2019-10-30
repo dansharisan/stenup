@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use Validator;
 use Carbon\Carbon;
 use App\Models\User;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use App\Enums\Error;
 use App\Enums\DefaultRoleType;
 use App\Enums\UserStatus;
@@ -671,6 +673,51 @@ class AuthController extends Controller
         $user->notify(new PasswordChangeSuccess());
 
         return response()->json(['user' => $user], Response::HTTP_OK);
+    }
+
+    /**
+    * @OA\Get(
+    *         path="/api/auth/roles_permissions",
+    *         tags={"Authorization"},
+    *         summary="Get all roles and permissions",
+    *         description="Get all roles and permissions",
+    *         @OA\Response(
+    *             response=200,
+    *             description="Successful operation"
+    *         ),
+    *         @OA\Response(
+    *             response=500,
+    *             description="Server error"
+    *         ),
+    * )
+    */
+    public function getRolesAndPermissions() {
+        $roles = Role::get();
+        $permissions = Permission::get();
+
+        return response()->json(['roles' => $roles, 'permissions' => $permissions], Response::HTTP_OK);
+    }
+
+    /**
+    * @OA\Get(
+    *         path="/api/auth/roles_w_permissions",
+    *         tags={"Authorization"},
+    *         summary="Get all roles with associated permissions",
+    *         description="Get all roles with associated permissions",
+    *         @OA\Response(
+    *             response=200,
+    *             description="Successful operation"
+    *         ),
+    *         @OA\Response(
+    *             response=500,
+    *             description="Server error"
+    *         ),
+    * )
+    */
+    public function getRolesWithPermissions() {
+        $roles = Role::with('permissions')->get();
+
+        return response()->json(['roles' => $roles], Response::HTTP_OK);
     }
 
     protected function respondWithToken($token)
