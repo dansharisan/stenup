@@ -82,4 +82,20 @@ export default {
             password_confirmation: password_confirmation
         });
     },
+
+    /*
+    GET /api/auth/roles_permissions
+    Get all roles and permissions
+    */
+    getRolesAndPermissions: function() {
+        return axios.get( APP_CONFIG.API_URL + '/auth/roles_permissions' );
+    },
+
+    /*
+    GET /api/auth/roles_w_permissions
+    Get all roles with associated permissions
+    */
+    getRolesWithPermissions: function() {
+        return axios.get( APP_CONFIG.API_URL + '/auth/roles_w_permissions' );
+    },
 }
