@@ -14,7 +14,7 @@
             <strong>{{ user.email }}</strong>
         </b-dropdown-header>
         <b-dropdown-item @click="logout()">
-            <i class="fa fa-sign-out" /> Logout
+            <i class="fas fa-sign-out-alt" /> Logout
         </b-dropdown-item>
     </b-nav-item-dropdown>
 </template>
@@ -31,7 +31,7 @@ export default {
     },
     computed: {
         user(){
-            return this.$store.get('user/user');
+            return this.$store.get('auth/user');
         },
     },
     methods: {
@@ -40,7 +40,7 @@ export default {
             vm.logoutLoadStatus = 1
             AuthAPI.logout()
             .then(response => {
-                vm.$store.dispatch('user/logout')
+                vm.$store.dispatch('auth/logout')
                 vm.logoutLoadStatus = 2
                 vm.$router.push({ name: 'Home' })
             })
