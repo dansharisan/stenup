@@ -6,7 +6,7 @@ use BenSampo\Enum\Enum;
 
 final class DefaultRoleType extends Enum
 {
-    const Administrator = 'administrator';
-    const Moderator = 'moderator';
-    const Member = 'member';
+    const ADMINISTRATOR = 'administrator'; // Highest role should be the first role
+    const MODERATOR = 'moderator';
+    const MEMBER = 'member';
 }

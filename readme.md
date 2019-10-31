@@ -4,7 +4,7 @@ Boilerplate for API-based web app project, with basic admin panel and api docume
 ## Tech stack
 - Laravel 6.2.0 for the backend
 - VueJS 2.x for the frontend (admin site and user site)
-- Bootstrap 4
+- Bootstrap Vue 4
 - Swagger with OpenAPI 3.0
 
 ## Used PHP Packages
@@ -15,12 +15,17 @@ Boilerplate for API-based web app project, with basic admin panel and api docume
 
 ## Used Node Packages
 - vue-snotify: Show toast notifications
+- vue-loading-overlay: Show loading icon on full page or its container
+- simple-line-icons: Some icons for the admin panel
+- vue-chartjs: Build charts for dashboard
+- vuelidate: One of the most flexible validation packages for vue
+And of course unmissable common packages like vuex, vue-router...
 
 ## Notes
 - Default roles and permissions will be added when running RolesAndPermissionsSeeder.
-- There are 3 default roles: Administrator, Moderator, and Member and 4 default permissions: view users, create users, update users, delete users and view panel.
+- There are 3 default roles: ADMINISTRATOR, MODERATOR, and MEMBER
 - You can add new roles and adjust permissions in admin panel.
-- Use PermissionType when you want to create/edit permissions.
+- Use PermissionType when you want to create/edit permissions. Don't forget to build seeder to add then into database as well.
 - AccountSeeder can be used to create admin account. Password is hashed using bcrypt with 10 rounds. You can hash it here: https://bcrypt-generator.com/
 
 ## Installation

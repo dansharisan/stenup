@@ -19,7 +19,7 @@ class AccountSeeder extends Seeder
             'password' => '$2y$10$kONctkXHfXNakypS40w6S.k/WIitrpFDng3ObG8O9fmiH8yEC1uWu',
             'status' => UserStatus::Active
         ])->each(function ($user) {
-            $user->assignRole(DefaultRoleType::Administrator);
+            $user->assignRole(DefaultRoleType::ADMINISTRATOR);
         });
     }
 }

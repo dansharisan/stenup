@@ -34,9 +34,9 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => PermissionType::UPDATE_PERMISSIONS]);
 
         /* Roles */
-        $adminRole = Role::create(['name' => DefaultRoleType::Administrator]);
-        $modRole = Role::create(['name' => DefaultRoleType::Moderator]);
-        $userRole = Role::create(['name' => DefaultRoleType::Member]);
+        $adminRole = Role::create(['name' => DefaultRoleType::ADMINISTRATOR]); // Highest role should be the first role
+        $modRole = Role::create(['name' => DefaultRoleType::MODERATOR]);
+        $userRole = Role::create(['name' => DefaultRoleType::MEMBER]);
 
         /* Permissions */
         // Moderators have some limited permissions

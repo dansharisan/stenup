@@ -24,7 +24,12 @@
                         <p class="m-0 ml-1 mr-1 text-center" style="line-height: 3em">{{ role.name }}</p>
                     </div>
                     <div class="grid-item" v-for="(permission, permissionIndex) in getRolesAndPermissionsRequest.data.permissions">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id"></div>
+                        <div class="custom-control form-control-lg text-center">
+                            <input v-if="roleHasPermission(role.id, permission.id) && 1 == role.id" type="checkbox" checked disabled class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
+                            <input v-else-if="!roleHasPermission(role.id, permission.id) && 1 == role.id" type="checkbox" disabled class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
+                            <input v-else-if="roleHasPermission(role.id, permission.id)" type="checkbox" checked class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
+                            <input v-else type="checkbox" class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -34,9 +39,8 @@
 
 <script>
 import AuthAPI from '../../../api/auth.js'
+
 export default {
-    components: {
-    },
     data: function () {
         return {
             getRolesAndPermissionsRequest: {
@@ -50,6 +54,23 @@ export default {
         }
     },
     methods: {
+        roleHasPermission(roleId, permissionId) {
+            var hasRole = false
+
+            for (let role of this.getRolesWithPermissionsRequest.data.roles) {
+                if (role.id == roleId) {
+                    for (let permission of role.permissions) {
+                        if (permission.pivot.permission_id == permissionId) {
+                            hasRole = true
+                            break
+                        }
+                    }
+                    break
+                }
+            }
+
+            return hasRole
+        }
     },
     created () {
         var vm = this
