@@ -45,11 +45,11 @@ Vue.component('loading', {
         },
         height: {
             type   : Number,
-            default: 32,
+            default: 40,
         },
         width: {
             type   : Number,
-            default: 32,
+            default: 40,
         },
         zIndex: {
             type   : Number,

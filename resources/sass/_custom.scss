@@ -21,3 +21,11 @@
 td, th {
     vertical-align: middle !important;
 }
+
+.middle-center {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}

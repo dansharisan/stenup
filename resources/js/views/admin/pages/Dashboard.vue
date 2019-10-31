@@ -4,13 +4,11 @@
 
             <b-col sm="6" lg="3">
                 <b-card no-body class="bg-success">
-                    <template v-if="getUserStatsRequest.loadStatus == 1">
-                        <b-card-body class="p-0 text-center">
-                            <div class="text-center text-light stats-loading">
-                                <b-spinner></b-spinner>
-                            </div>
-                        </b-card-body>
-                    </template>
+                    <div class="middle-center" v-if="getUserStatsRequest.loadStatus == 1" style="height: 152px">
+                        <div>
+                            <loading :active="true"></loading>
+                        </div>
+                    </div>
                     <template v-else-if="getUserStatsRequest.loadStatus == 2">
                         <b-card-body class="pb-0">
                             <h4 class="mb-0">{{ getUserStatsRequest.totalUser }}</h4>

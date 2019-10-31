@@ -4,6 +4,11 @@
             <b-row class="justify-content-center">
                 <b-col md="4" class="mr-2 ml-2 pr-0 pl-0">
                     <loading :active="request.status == 1"></loading>
+                    <!-- <div class="middle-center" v-if="request.status == 1">
+                        <div>
+                            <b-spinner variant="primary"></b-spinner>
+                        </div>
+                    </div> -->
                     <b-card-group>
                         <b-card no-body class="mb-0">
                             <b-card-header><h2 class="m-0">Login</h2></b-card-header>

@@ -38,9 +38,8 @@ export default {
         logout () {
             var vm = this
             vm.logoutLoadStatus = 1
-            AuthAPI.logout()
+            vm.$store.dispatch('auth/logout')
             .then(response => {
-                vm.$store.dispatch('auth/logout')
                 vm.logoutLoadStatus = 2
                 vm.$router.push({ name: 'Home' })
             })
