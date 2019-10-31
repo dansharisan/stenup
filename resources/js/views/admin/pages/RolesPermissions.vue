@@ -7,400 +7,24 @@
                 </div>
             </div>
             <p v-else-if="getRolesAndPermissionsRequest.loadStatus == 3 || getRolesWithPermissionsRequest.loadStatus == 3" class="text-center mb-0">Data load error</p>
-            <div class="grid" v-else-if="getRolesAndPermissionsRequest.loadStatus == 2 && getRolesWithPermissionsRequest.loadStatus == 2">
+            <div class="grid" style="margin: auto" v-else-if="getRolesAndPermissionsRequest.loadStatus == 2 && getRolesWithPermissionsRequest.loadStatus == 2">
                 <div class="grid-col grid-col--fixed-left">
                     <div class="grid-item grid-item--role-name">
                         <p class="m-0 ml-1 mr-1 text-center" style="line-height: 2.5em; font-size: large"><sub>permission</sub>\<sup>role</sup></p>
                     </div>
-                    <div class="grid-item">
-                        <p class="m-0 ml-1 mr-1" style="line-height: 3em">permission-name</p>
-                    </div>
-                    <div class="grid-item">
-                        <p class="m-0 ml-1 mr-1" style="line-height: 3em">permission-name</p>
-                    </div>
-                    <div class="grid-item">
-                        <p class="m-0 ml-1 mr-1" style="line-height: 3em">permission-name</p>
-                    </div>
-                    <div class="grid-item">
-                        <p class="m-0 ml-1 mr-1" style="line-height: 3em">permission-name</p>
-                    </div>
-                    <div class="grid-item">
-                        <p class="m-0 ml-1 mr-1" style="line-height: 3em">permission-name</p>
-                    </div>
-                    <div class="grid-item">
-                        <p class="m-0 ml-1 mr-1" style="line-height: 3em">permission-name</p>
-                    </div>
-                    <div class="grid-item">
-                        <p class="m-0 ml-1 mr-1" style="line-height: 3em">permission-name</p>
-                    </div>
-                    <div class="grid-item">
-                        <p class="m-0 ml-1 mr-1" style="line-height: 3em">permission-name</p>
-                    </div>
-                    <div class="grid-item">
-                        <p class="m-0 ml-1 mr-1" style="line-height: 3em">permission-name</p>
-                    </div>
-                    <div class="grid-item">
-                        <p class="m-0 ml-1 mr-1" style="line-height: 3em">permission-name</p>
-                    </div>
+                    <template v-for="(permission, permissionIndex) in getRolesAndPermissionsRequest.data.permissions">
+                        <div class="grid-item grid-item--permission-name">
+                            <p class="m-0 ml-1 mr-1" style="line-height: 3em">{{ permission.name }}</p>
+                        </div>
+                    </template>
                 </div>
 
-                <div class="grid-col">
+                <div class="grid-col" v-for="(role, roleIndex) in getRolesAndPermissionsRequest.data.roles">
                     <div class="grid-item grid-item--role-name">
-                        <p class="m-0 ml-1 mr-1 text-center" style="line-height: 3em">role-name</p>
+                        <p class="m-0 ml-1 mr-1 text-center" style="line-height: 3em">{{ role.name }}</p>
                     </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                </div>
-
-                <div class="grid-col">
-                    <div class="grid-item grid-item--role-name">
-                        <p class="m-0 ml-1 mr-1 text-center" style="line-height: 3em">role-name</p>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                </div>
-
-                <div class="grid-col">
-                    <div class="grid-item grid-item--role-name">
-                        <p class="m-0 ml-1 mr-1 text-center" style="line-height: 3em">role-name</p>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                </div>
-
-                <div class="grid-col">
-                    <div class="grid-item grid-item--role-name">
-                        <p class="m-0 ml-1 mr-1 text-center" style="line-height: 3em">role-name</p>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                </div>
-
-                <div class="grid-col">
-                    <div class="grid-item grid-item--role-name">
-                        <p class="m-0 ml-1 mr-1 text-center" style="line-height: 3em">role-name</p>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                </div>
-
-                <div class="grid-col">
-                    <div class="grid-item grid-item--role-name">
-                        <p class="m-0 ml-1 mr-1 text-center" style="line-height: 3em">role-name</p>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                </div>
-
-                <div class="grid-col">
-                    <div class="grid-item grid-item--role-name">
-                        <p class="m-0 ml-1 mr-1 text-center" style="line-height: 3em">role-name</p>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                </div>
-
-                <div class="grid-col">
-                    <div class="grid-item grid-item--role-name">
-                        <p class="m-0 ml-1 mr-1 text-center" style="line-height: 3em">role-name</p>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                </div>
-
-                <div class="grid-col">
-                    <div class="grid-item grid-item--role-name">
-                        <p class="m-0 ml-1 mr-1 text-center" style="line-height: 3em">role-name</p>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                </div>
-
-                <div class="grid-col">
-                    <div class="grid-item grid-item--role-name">
-                        <p class="m-0 ml-1 mr-1 text-center" style="line-height: 3em">role-name</p>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
-                    </div>
-                    <div class="grid-item">
-                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" id="r_id_p_id"></div>
+                    <div class="grid-item" v-for="(permission, permissionIndex) in getRolesAndPermissionsRequest.data.permissions">
+                        <div class="custom-control form-control-lg text-center"><input type="checkbox" class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id"></div>
                     </div>
                 </div>
             </div>
@@ -472,6 +96,16 @@ export default {
     min-width: 150px;
 }
 
+ .grid-item--permission-name {
+    font-weight: bolder;
+ }
+
+ .grid-item--permission-name p {
+     text-overflow: ellipsis;
+     white-space: nowrap;
+     overflow: hidden;
+}
+
 .grid-item--role-name {
     z-index: 1;
     height: 50px;
@@ -480,6 +114,7 @@ export default {
     position: -webkit-sticky;
     background: white;
     top: 0;
+    font-weight: bolder;
 }
 
 .grid-col--fixed-left {
@@ -501,10 +136,7 @@ export default {
 }
 
 .custom-checkbox {
-    /* -webkit-appearance:none; */
     width: 30px;
     height: 30px;
-    border-radius:5px;
-    border:2px solid #555;
 }
 </style>
