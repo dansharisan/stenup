@@ -1,5 +1,16 @@
 <template>
     <div class="animated fadeIn">
+        <div class="col-12 text-right pr-0 mb-4">
+            <b-button size="md" class="btn btn-action" variant="secondary">
+                <i class="fas fa-undo-alt text-white" aria-hidden="true"></i> <span class="text-white">Reset</span>
+            </b-button>
+            <b-button size="md" class="btn btn-action" variant="success">
+                <i class="fas fa-check text-white" aria-hidden="true"></i> <span class="text-white">Apply</span>
+            </b-button>
+            <b-button size="md" class="btn btn-action" variant="primary">
+                <i class="fas fa-plus text-white" aria-hidden="true"></i> <span class="text-white">Role</span>
+            </b-button>
+        </div>
         <div class="grid-container">
             <div class="middle-center" v-if="getRolesAndPermissionsRequest.loadStatus == 1 || getRolesWithPermissionsRequest.loadStatus == 1">
                 <div>
@@ -7,32 +18,33 @@
                 </div>
             </div>
             <p v-else-if="getRolesAndPermissionsRequest.loadStatus == 3 || getRolesWithPermissionsRequest.loadStatus == 3" class="text-center mb-0">Data load error</p>
-            <div class="grid" style="margin: auto" v-else-if="getRolesAndPermissionsRequest.loadStatus == 2 && getRolesWithPermissionsRequest.loadStatus == 2">
-                <div class="grid-col grid-col--fixed-left">
-                    <div class="grid-item grid-item--role-name">
-                        <p class="m-0 ml-1 mr-1 text-center" style="line-height: 2.5em; font-size: large"><sub>permission</sub>\<sup>role</sup></p>
-                    </div>
-                    <template v-for="(permission, permissionIndex) in getRolesAndPermissionsRequest.data.permissions">
-                        <div class="grid-item grid-item--permission-name">
-                            <p class="m-0 ml-1 mr-1" style="line-height: 3em">{{ permission.name }}</p>
+            <template v-else-if="getRolesAndPermissionsRequest.loadStatus == 2 && getRolesWithPermissionsRequest.loadStatus == 2">
+                <div class="grid" style="margin: auto">
+                    <div class="grid-col grid-col--fixed-left">
+                        <div class="grid-item grid-item--role-name">
+                            <p class="m-0 ml-1 mr-1 text-center" style="line-height: 2.5em; font-size: large"><sub>permission</sub>\<sup>role</sup></p>
                         </div>
-                    </template>
-                </div>
-
-                <div class="grid-col" v-for="(role, roleIndex) in getRolesAndPermissionsRequest.data.roles">
-                    <div class="grid-item grid-item--role-name">
-                        <p class="m-0 ml-1 mr-1 text-center" style="line-height: 3em">{{ role.name }}</p>
+                        <template v-for="(permission, permissionIndex) in getRolesAndPermissionsRequest.data.permissions">
+                            <div class="grid-item grid-item--permission-name">
+                                <abbr :title="permission.name"><p class="m-0 ml-1 mr-1" style="line-height: 3em">{{ permission.name }}</p></abbr>
+                            </div>
+                        </template>
                     </div>
-                    <div class="grid-item" v-for="(permission, permissionIndex) in getRolesAndPermissionsRequest.data.permissions">
-                        <div class="custom-control form-control-lg text-center">
-                            <input v-if="roleHasPermission(role.id, permission.id) && 1 == role.id" type="checkbox" checked disabled class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
-                            <input v-else-if="!roleHasPermission(role.id, permission.id) && 1 == role.id" type="checkbox" disabled class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
-                            <input v-else-if="roleHasPermission(role.id, permission.id)" type="checkbox" checked class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
-                            <input v-else type="checkbox" class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
+                    <div class="grid-col" v-for="(role, roleIndex) in getRolesAndPermissionsRequest.data.roles">
+                        <div class="grid-item grid-item--role-name">
+                            <p class="m-0 ml-1 mr-1 text-center" style="line-height: 3em">{{ role.name }}</p>
+                        </div>
+                        <div class="grid-item" v-for="(permission, permissionIndex) in getRolesAndPermissionsRequest.data.permissions">
+                            <div class="custom-control form-control-lg text-center">
+                                <input v-if="roleHasPermission(role.id, permission.id) && 1 == role.id" type="checkbox" checked disabled class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
+                                <input v-else-if="!roleHasPermission(role.id, permission.id) && 1 == role.id" type="checkbox" disabled class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
+                                <input v-else-if="roleHasPermission(role.id, permission.id)" type="checkbox" checked class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
+                                <input v-else type="checkbox" class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </template>
         </div>
     </div>
 </template>
@@ -104,8 +116,7 @@ export default {
 .grid-container {
     display: grid; /* This is a (hacky) way to make the .grid element size to fit its content */
     overflow: auto;
-    /* height: 100%; */
-    height: 518px;
+    max-height: calc(100vh - 167px - 6rem);
     width: 100%;
 }
 .grid {
@@ -113,8 +124,8 @@ export default {
     flex-wrap: nowrap;
 }
 .grid-col {
-    width: 150px;
-    min-width: 150px;
+    width: 160px;
+    min-width: 160px;
 }
 
  .grid-item--permission-name {

@@ -20190,6 +20190,7 @@ base-chart.chart {
 }
 
 .app-footer {
+  margin-top: 1.5rem;
   border-top: 1px solid #a4b7c1;
   -webkit-box-align: center;
           align-items: center;
