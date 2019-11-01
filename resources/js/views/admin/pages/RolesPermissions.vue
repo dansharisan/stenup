@@ -116,6 +116,7 @@ export default {
 .grid-container {
     display: grid; /* This is a (hacky) way to make the .grid element size to fit its content */
     overflow: auto;
+    min-height: 550px;
     max-height: calc(100vh - 167px - 6rem);
     width: 100%;
 }
