@@ -1,10 +1,21 @@
 <template>
     <div class="animated fadeIn">
+        <b-modal id="add-role-modal" modal-class="text-left" centered title="Add role" @ok="addRole" ref="add-role-modal">
+            <div class="invalid-feedback d-block" v-if="addRoleRequest.message">
+                {{ addRoleRequest.message }}
+            </div>
+            <b-form-group>
+                <label for="company">Role name</label>
+                <b-form-input type="text" placeholder="developer" v-model="addRoleRequest.form.role_name" v-on:input="$v.addRoleRequest.form.role_name.$touch()" :state="$v.addRoleRequest.form.role_name.$dirty ? !$v.addRoleRequest.form.role_name.$error : null" />
+            </b-form-group>
+        </b-modal>
+
         <div class="col-12 text-right pr-0 mb-4">
-            <b-button size="md" class="btn btn-action" variant="primary">
+            <b-button size="md" class="btn btn-action" variant="primary" v-b-modal.add-role-modal>
                 <i class="fas fa-plus text-white" aria-hidden="true"></i> <span class="text-white">Add Role</span>
             </b-button>
         </div>
+
         <div class="grid-container">
             <div class="middle-center" v-if="getRolesAndPermissionsRequest.loadStatus == 1 || getRolesWithPermissionsRequest.loadStatus == 1">
                 <div>
@@ -40,6 +51,7 @@
                 </div>
             </template>
         </div>
+
         <div class="col-12 text-right pr-0" style="margin-top: 1.5rem">
             <b-button size="md" class="btn btn-action" variant="secondary" @click="reload()">
                 <i class="fas fa-undo-alt text-white" aria-hidden="true"></i> <span class="text-white">Reload</span>
@@ -53,8 +65,18 @@
 
 <script>
 import AuthAPI from '../../../api/auth.js'
+import { required } from 'vuelidate/lib/validators'
 
 export default {
+    validations () {
+        return {
+            addRoleRequest: {
+                form: {
+                    role_name: { required }
+                },
+            }
+        }
+    },
     data: function () {
         return {
             getRolesAndPermissionsRequest: {
@@ -65,9 +87,20 @@ export default {
                 loadStatus: 0,
                 data: {}
             },
+            addRoleRequest: {
+                loadStatus: 0,
+                data: {},
+                form: {
+                    role_name: ''
+                },
+                message: ''
+            }
         }
     },
     methods: {
+        addRole() {
+            alert("TODO")
+        },
         roleHasPermission(roleId, permissionId) {
             var hasRole = false
 
