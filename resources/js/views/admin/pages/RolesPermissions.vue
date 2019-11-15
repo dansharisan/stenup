@@ -1,12 +1,6 @@
 <template>
     <div class="animated fadeIn">
         <div class="col-12 text-right pr-0 mb-4">
-            <b-button size="md" class="btn btn-action" variant="secondary">
-                <i class="fas fa-undo-alt text-white" aria-hidden="true"></i> <span class="text-white">Reset</span>
-            </b-button>
-            <b-button size="md" class="btn btn-action" variant="success">
-                <i class="fas fa-check text-white" aria-hidden="true"></i> <span class="text-white">Apply</span>
-            </b-button>
             <b-button size="md" class="btn btn-action" variant="primary">
                 <i class="fas fa-plus text-white" aria-hidden="true"></i> <span class="text-white">Role</span>
             </b-button>
@@ -45,6 +39,14 @@
                     </div>
                 </div>
             </template>
+        </div>
+        <div class="col-12 text-right pr-0" style="margin-top: 1.5rem">
+            <b-button size="md" class="btn btn-action" variant="secondary">
+                <i class="fas fa-undo-alt text-white" aria-hidden="true"></i> <span class="text-white">Reset</span>
+            </b-button>
+            <b-button size="md" class="btn btn-action" variant="success">
+                <i class="fas fa-check text-white" aria-hidden="true"></i> <span class="text-white">Apply</span>
+            </b-button>
         </div>
     </div>
 </template>
@@ -117,7 +119,7 @@ export default {
     display: grid; /* This is a (hacky) way to make the .grid element size to fit its content */
     overflow: auto;
     min-height: 550px;
-    max-height: calc(100vh - 167px - 6rem);
+    max-height: calc(100vh - 202px - 7.5rem);
     width: 100%;
 }
 .grid {

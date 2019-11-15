@@ -1,7 +1,6 @@
 <template>
     <div class="animated fadeIn">
         <b-row>
-
             <b-col sm="6" lg="3">
                 <b-card no-body class="bg-success">
                     <div class="middle-center" v-if="getUserStatsRequest.loadStatus == 1" style="height: 152px">
@@ -24,7 +23,6 @@
                     </template>
                 </b-card>
             </b-col>
-
         </b-row>
     </div>
 </template>
@@ -64,12 +62,3 @@ export default {
     },
 }
 </script>
-
-<style>
-.stats-loading {
-    height: 152px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-</style>
