@@ -2,7 +2,7 @@
     <div class="animated fadeIn">
         <div class="col-12 text-right pr-0 mb-4">
             <b-button size="md" class="btn btn-action" variant="primary">
-                <i class="fas fa-plus text-white" aria-hidden="true"></i> <span class="text-white">Role</span>
+                <i class="fas fa-plus text-white" aria-hidden="true"></i> <span class="text-white">Add Role</span>
             </b-button>
         </div>
         <div class="grid-container">
@@ -41,8 +41,8 @@
             </template>
         </div>
         <div class="col-12 text-right pr-0" style="margin-top: 1.5rem">
-            <b-button size="md" class="btn btn-action" variant="secondary">
-                <i class="fas fa-undo-alt text-white" aria-hidden="true"></i> <span class="text-white">Reset</span>
+            <b-button size="md" class="btn btn-action" variant="secondary" @click="reload()">
+                <i class="fas fa-undo-alt text-white" aria-hidden="true"></i> <span class="text-white">Reload</span>
             </b-button>
             <b-button size="md" class="btn btn-action" variant="success">
                 <i class="fas fa-check text-white" aria-hidden="true"></i> <span class="text-white">Apply</span>
@@ -84,32 +84,39 @@ export default {
             }
 
             return hasRole
+        },
+        reload() {
+            // Reload the matrix data
+            this.loadMatrixData()
+        },
+        loadMatrixData() {
+            var vm = this
+            // Get all roles and permissions
+            vm.getRolesAndPermissionsRequest.loadStatus = 1
+            AuthAPI.getRolesAndPermissions()
+            .then((response) => {
+                vm.getRolesAndPermissionsRequest.data = response.data
+                vm.getRolesAndPermissionsRequest.loadStatus = 2
+            })
+            .catch( function( e ) {
+                vm.getRolesAndPermissionsRequest.data = {}
+                vm.getRolesAndPermissionsRequest.loadStatus = 3
+            })
+            // Get all roles with associated permissions
+            vm.getRolesWithPermissionsRequest.loadStatus = 1
+            AuthAPI.getRolesWithPermissions()
+            .then((response) => {
+                vm.getRolesWithPermissionsRequest.data = response.data
+                vm.getRolesWithPermissionsRequest.loadStatus = 2
+            })
+            .catch( function( e ) {
+                vm.getRolesWithPermissionsRequest.data = {}
+                vm.getRolesWithPermissionsRequest.loadStatus = 3
+            })
         }
     },
     created () {
-        var vm = this
-        // Get all roles and permissions
-        vm.getRolesAndPermissionsRequest.loadStatus = 1
-        AuthAPI.getRolesAndPermissions()
-        .then((response) => {
-            vm.getRolesAndPermissionsRequest.data = response.data
-            vm.getRolesAndPermissionsRequest.loadStatus = 2
-        })
-        .catch( function( e ) {
-            vm.getRolesAndPermissionsRequest.data = {}
-            vm.getRolesAndPermissionsRequest.loadStatus = 3
-        })
-        // Get all roles with associated permissions
-        vm.getRolesWithPermissionsRequest.loadStatus = 1
-        AuthAPI.getRolesWithPermissions()
-        .then((response) => {
-            vm.getRolesWithPermissionsRequest.data = response.data
-            vm.getRolesWithPermissionsRequest.loadStatus = 2
-        })
-        .catch( function( e ) {
-            vm.getRolesWithPermissionsRequest.data = {}
-            vm.getRolesWithPermissionsRequest.loadStatus = 3
-        })
+        this.loadMatrixData()
     },
 }
 </script>

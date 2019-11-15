@@ -24447,10 +24447,6 @@ hr.transparent {
   border-right-color: #536c79;
 }
 
-.btn-action {
-  width: 6em !important;
-}
-
 .input-group > .item-header-text.input-group-prepend {
   -webkit-box-flex: 0;
           flex: 0 0 25%;
