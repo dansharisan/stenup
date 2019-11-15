@@ -19,7 +19,7 @@
                                         <span>Email</span>
                                     </b-input-group-prepend>
                                     <b-input v-model="form.email" v-on:input="$v.form.email.$touch()" :state="$v.form.email.$dirty ? !$v.form.email.$error : null" type="text" class="form-control" placeholder="youremail@something.com" v-on:keyup.enter="submit"/>
-                                    <div class="invalid-feedback d-block" v-if="$v.form.email.$invalid && validation && validation.email">
+                                    <div class="invalid-feedback d-block" v-if="validation && validation.email">
                                         {{ validation.email[0] }}
                                     </div>
                                 </b-input-group>

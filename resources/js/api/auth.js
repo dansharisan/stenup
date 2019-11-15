@@ -98,4 +98,15 @@ export default {
     getRolesWithPermissions: function() {
         return axios.get( APP_CONFIG.API_URL + '/auth/roles_w_permissions' );
     },
+
+    /*
+    POST /api/auth/create_role
+    Create a new role
+    */
+    createRole: function(role_name) {
+        return axios.post(APP_CONFIG.API_URL + '/auth/create_role',
+        {
+            role_name: role_name,
+        });
+    },
 }

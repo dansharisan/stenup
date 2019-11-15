@@ -4,7 +4,8 @@
             <abbr :title="user.email">
                 <button type="button" class="btn btn-light" v-if="logoutLoadStatus == 1">
                     <div class="text-center text-info">
-                        <b-spinner small></b-spinner>
+                        <!-- <b-spinner small></b-spinner> -->
+                        <loading :active="true"></loading>
                     </div>
                 </button>
                 <button type="button" class="btn btn-light" v-else><i class="fa fa-user" /> Account</button>

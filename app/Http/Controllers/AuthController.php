@@ -729,6 +729,68 @@ class AuthController extends Controller
         ];
     }
 
+    /**
+    * @OA\Post(
+    *         path="/api/auth/create_role",
+    *         tags={"Authorization"},
+    *         summary="Create role",
+    *         description="Create a new role",
+    *         operationId="create-role",
+    *         @OA\Response(
+    *             response=200,
+    *             description="Successful operation"
+    *         ),
+    *         @OA\Response(
+    *             response=422,
+    *             description="Validation error"
+    *         ),
+    *         @OA\Response(
+    *             response=500,
+    *             description="Server error"
+    *         ),
+    *         @OA\RequestBody(
+    *             required=true,
+    *             @OA\MediaType(
+    *                 mediaType="application/x-www-form-urlencoded",
+    *                 @OA\Schema(
+    *                     type="object",
+    *                      @OA\Property(
+    *                         property="role_name",
+    *                         description="Role name",
+    *                         type="string",
+    *                     ),
+    *                 )
+    *             )
+    *         )
+    * )
+    */
+    public function createRole(Request $request)
+    {
+        // Validate input data
+        $validator = Validator::make($request->all(), [
+            'role_name' => 'required|string|unique:roles,name',
+        ]);
+
+        if ($validator->fails()) {
+
+            return response()->json(
+            [
+                'error' =>
+                        [
+                            'code' => Error::GENR0002,
+                            'message' => Error::getDescription(Error::GENR0002)
+                        ],
+                'validation' => $validator->errors()
+            ],
+            Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        // Create the role
+        $role = Role::create(['name' => $request->input('role_name')]);
+
+        return response()->json(['role' => $role], Response::HTTP_OK);
+    }
+
     /*
     *   Generate a random string combined with digit and alphabetical characters
     **/

@@ -19,6 +19,7 @@ Route::group([
         Route::patch('password/change', 'AuthController@changePassword');
         Route::get('roles_w_permissions', 'AuthController@getRolesWithPermissions');
         Route::get('roles_permissions', 'AuthController@getRolesAndPermissions');
+        Route::post('create_role', 'AuthController@createRole');
     });
 
     // Limit number of requests per seconds, configured in app/Http/Kernel.php

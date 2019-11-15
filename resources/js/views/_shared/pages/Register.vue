@@ -19,7 +19,7 @@
                                         <span>Email</span>
                                     </b-input-group-prepend>
                                     <b-input v-model="form.email" v-on:input="$v.form.email.$touch()" :state="$v.form.email.$dirty ? !$v.form.email.$error : null" type="text" class="form-control" placeholder="youremail@something.com" v-on:keyup.enter="submit"/>
-                                    <div class="invalid-feedback d-block" v-if="$v.form.email.$invalid && validation && validation.email">
+                                    <div class="invalid-feedback d-block" v-if="validation && validation.email">
                                         {{ validation.email[0] }}
                                     </div>
                                 </b-input-group>
@@ -29,7 +29,7 @@
                                         <span>Password</span>
                                     </b-input-group-prepend>
                                     <b-input v-model="form.password" v-on:input="$v.form.password.$touch()" :state="$v.form.password.$dirty ? !$v.form.password.$error : null" type="password" class="form-control" placeholder="********" v-on:keyup.enter="submit"/>
-                                    <div class="invalid-feedback d-block" v-if="$v.form.password.$invalid && validation && validation.password">
+                                    <div class="invalid-feedback d-block" v-if="validation && validation.password">
                                         {{ validation.password[0] }}
                                     </div>
                                 </b-input-group>
@@ -39,7 +39,7 @@
                                         <span>Re-pass</span>
                                     </b-input-group-prepend>
                                     <b-input v-model="form.password_confirmation" v-on:input="$v.form.password_confirmation.$touch()" :state="$v.form.password_confirmation.$dirty ? !$v.form.password_confirmation.$error : null" type="password" class="form-control" placeholder="********" v-on:keyup.enter="submit"/>
-                                    <div class="invalid-feedback d-block" v-if="$v.form.password_confirmation.$invalid && validation && validation.password_confirmation">
+                                    <div class="invalid-feedback d-block" v-if="validation && validation.password_confirmation">
                                         {{ validation.password_confirmation[0] }}
                                     </div>
                                 </b-input-group>

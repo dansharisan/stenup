@@ -1,18 +1,26 @@
 <template>
     <div class="animated fadeIn">
-        <b-modal id="add-role-modal" modal-class="text-left" centered title="Add role" @ok="addRole" ref="add-role-modal">
-            <div class="invalid-feedback d-block" v-if="addRoleRequest.message">
-                {{ addRoleRequest.message }}
-            </div>
-            <b-form-group>
-                <label for="company">Role name</label>
-                <b-form-input type="text" placeholder="developer" v-model="addRoleRequest.form.role_name" v-on:input="$v.addRoleRequest.form.role_name.$touch()" :state="$v.addRoleRequest.form.role_name.$dirty ? !$v.addRoleRequest.form.role_name.$error : null" />
-            </b-form-group>
+        <b-modal id="create-role-modal" modal-class="text-left" centered title="Create new role" @ok="createRole" ref="create-role-modal">
+            <loading :active="createRoleRequest.loadStatus == 1"></loading>
+            <template>
+                <div class="invalid-feedback d-block" v-if="createRoleRequest.message">
+                    {{ createRoleRequest.message }}
+                </div>
+                <b-form-group>
+                    <label for="company">Role name</label>
+                    <b-form-input type="text" placeholder="developer" v-model="createRoleRequest.form.role_name" v-on:input="$v.createRoleRequest.form.role_name.$touch()" :state="$v.createRoleRequest.form.role_name.$dirty ? !$v.createRoleRequest.form.role_name.$error : null" />
+                </b-form-group>
+                <div class="row">
+                    <div class="col-12 invalid-feedback text-left d-block" v-if="createRoleRequest.data.validation && createRoleRequest.data.validation.role_name">
+                        {{ createRoleRequest.data.validation.role_name[0] }}
+                    </div>
+                </div>
+            </template>
         </b-modal>
 
         <div class="col-12 text-right pr-0 mb-4">
-            <b-button size="md" class="btn btn-action" variant="primary" v-b-modal.add-role-modal>
-                <i class="fas fa-plus text-white" aria-hidden="true"></i> <span class="text-white">Add Role</span>
+            <b-button size="md" class="btn btn-action" variant="primary" v-b-modal.create-role-modal>
+                <i class="fas fa-plus text-white" aria-hidden="true"></i> <span class="text-white">Create Role</span>
             </b-button>
         </div>
 
@@ -70,7 +78,7 @@ import { required } from 'vuelidate/lib/validators'
 export default {
     validations () {
         return {
-            addRoleRequest: {
+            createRoleRequest: {
                 form: {
                     role_name: { required }
                 },
@@ -87,7 +95,7 @@ export default {
                 loadStatus: 0,
                 data: {}
             },
-            addRoleRequest: {
+            createRoleRequest: {
                 loadStatus: 0,
                 data: {},
                 form: {
@@ -98,8 +106,34 @@ export default {
         }
     },
     methods: {
-        addRole() {
-            alert("TODO")
+        createRole(bvModalEvt) {
+            // Prevent modal from closing
+            bvModalEvt.preventDefault()
+
+            var vm = this
+            vm.createRoleRequest.loadStatus = 1
+            AuthAPI.createRole(vm.createRoleRequest.form.role_name)
+            .then((response) => {
+                // Reload the matrix
+                vm.loadMatrixData()
+
+                vm.createRoleRequest.data = response.data
+                vm.createRoleRequest.loadStatus = 2
+                // Close the modal
+                vm.$refs['create-role-modal'].hide()
+                // Fire notification
+                vm.$snotify.success("Created successfully")
+            })
+            .catch( function(error) {
+                vm.createRoleRequest.loadStatus = 3
+                if (error && error.response) {
+                    vm.createRoleRequest.data = error.response.data
+                    let msg = error.response.data.error ? error.response.data.error.message : error.response.data.message;
+                    vm.$snotify.error("Failed to create this role: " + msg)
+                } else {
+                    vm.$snotify.error("Network error")
+                }
+            })
         },
         roleHasPermission(roleId, permissionId) {
             var hasRole = false

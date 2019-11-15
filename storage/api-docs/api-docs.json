@@ -384,6 +384,43 @@
                 }
             }
         },
+        "/api/auth/add_role": {
+            "post": {
+                "tags": [
+                    "Authorization"
+                ],
+                "summary": "Add role",
+                "description": "Add a new role",
+                "operationId": "add-role",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "role_name": {
+                                        "description": "Role name",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
         "/api/users": {
             "get": {
                 "tags": [
