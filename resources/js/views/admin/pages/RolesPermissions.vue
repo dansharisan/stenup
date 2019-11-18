@@ -64,7 +64,7 @@
             <b-button size="md" class="btn btn-action" variant="secondary" @click="reload()">
                 <i class="fas fa-undo-alt text-white" aria-hidden="true"></i> <span class="text-white">Reload</span>
             </b-button>
-            <b-button size="md" class="btn btn-action" variant="success">
+            <b-button size="md" class="btn btn-action" variant="success" @click="applyPermissions()">
                 <i class="fas fa-check text-white" aria-hidden="true"></i> <span class="text-white">Apply</span>
             </b-button>
         </div>
@@ -106,6 +106,23 @@ export default {
         }
     },
     methods: {
+        applyPermissions() {
+            this.$swal({
+                title: 'You sure to apply this role-permission matrix?',
+                text: "This action can't be undone. However you can use administrator account to re-set permissions for all roles.",
+                type: 'warning',
+                animation: false,
+                showCancelButton: true,
+                reverseButtons: true,
+                confirmButtonColor: '#4dbd74',
+                cancelButtonColor: '#a4b7c1',
+                confirmButtonText: 'Apply'
+            }).then((result) => {
+                if (result.value) {
+                    alert('TODO: apply role-permission matrix')
+                }
+            })
+        },
         createRole(bvModalEvt) {
             // Prevent modal from closing
             bvModalEvt.preventDefault()

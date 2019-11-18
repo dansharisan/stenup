@@ -19,6 +19,7 @@ Boilerplate for API-based web app project, with basic admin panel and api docume
 - simple-line-icons: Some icons for the admin panel
 - vue-chartjs: Build charts for dashboard
 - vuelidate: One of the most flexible validation packages for vue
+- vue-sweetalert2: Alert box for vue
 And of course unmissable common packages like vuex, vue-router...
 
 ## Notes
