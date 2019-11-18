@@ -8,7 +8,7 @@
                 </div>
                 <b-form-group>
                     <label for="company">Role name</label>
-                    <b-form-input type="text" placeholder="developer" v-model="createRoleRequest.form.role_name" v-on:input="$v.createRoleRequest.form.role_name.$touch()" :state="$v.createRoleRequest.form.role_name.$dirty ? !$v.createRoleRequest.form.role_name.$error : null" />
+                    <b-form-input type="text" placeholder="developer" v-model="createRoleRequest.form.role_name" v-on:input="$v.createRoleRequest.form.role_name.$touch()" :state="$v.createRoleRequest.form.role_name.$dirty ? !$v.createRoleRequest.form.role_name.$error : null" v-on:keyup.enter="createRole" />
                 </b-form-group>
                 <div class="row">
                     <div class="col-12 invalid-feedback text-left d-block" v-if="createRoleRequest.data.validation && createRoleRequest.data.validation.role_name">
