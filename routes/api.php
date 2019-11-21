@@ -20,6 +20,7 @@ Route::group([
         Route::get('roles_w_permissions', 'AuthController@getRolesWithPermissions');
         Route::get('roles_permissions', 'AuthController@getRolesAndPermissions');
         Route::post('create_role', 'AuthController@createRole');
+        Route::put('update_roles_permissions_matrix', 'AuthController@updateRolesPermissionsMatrix');
     });
 
     // Limit number of requests per seconds, configured in app/Http/Kernel.php

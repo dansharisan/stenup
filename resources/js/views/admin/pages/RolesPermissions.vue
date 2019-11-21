@@ -107,6 +107,7 @@ export default {
     },
     methods: {
         applyPermissions() {
+            var vm = this
             this.$swal({
                 title: 'You sure to apply this role-permission matrix?',
                 text: "This action can't be undone. However you can use administrator account to re-set permissions for all roles.",
@@ -119,7 +120,40 @@ export default {
                 confirmButtonText: 'Apply'
             }).then((result) => {
                 if (result.value) {
-                    alert('TODO: apply role-permission matrix')
+                    // vm.getRolesAndPermissionsRequest.data.permissions
+                    // vm.getRolesAndPermissionsRequest.data.roles
+                    var matrix = new Object()
+                    // Prepare roles permissions matrix to send
+                    for (var roleObj of vm.getRolesAndPermissionsRequest.data.roles) {
+                        // Initialize the role object we need to send
+                        matrix[roleObj.name] = []
+
+                        // Extract the id of permission on each checkbox id using regex
+                        var thisRolePerms = $('input[id^=r_' + roleObj.id + ']:checked')
+                        for (var checkedPermEl of thisRolePerms) {
+                            // Here the permission id
+                            var regex = /r_\d+_p_(\d+)/gm
+                            var permId = regex.exec(checkedPermEl.id)[1]
+                            // Find permission name
+                            for (var permObj of vm.getRolesAndPermissionsRequest.data.permissions) {
+                                if (permObj.id == permId) {
+                                    matrix[roleObj.name].push(permObj.name)
+                                }
+                            }
+                        }
+                    }
+
+                    // Send the matrix to server
+                    vm.getRolesWithPermissionsRequest.loadStatus = 1
+                    AuthAPI.updateRolesPermissionsMatrix(matrix)
+                    .then((response) => {
+                        vm.getRolesWithPermissionsRequest.data = response.data
+                        vm.getRolesWithPermissionsRequest.loadStatus = 2
+                    })
+                    .catch( function( e ) {
+                        vm.getRolesWithPermissionsRequest.data = {}
+                        vm.getRolesWithPermissionsRequest.loadStatus = 3
+                    })
                 }
             })
         },
@@ -176,6 +210,12 @@ export default {
         loadMatrixData() {
             var vm = this
             // Get all roles and permissions
+            vm.loadRolesAndPermissions()
+            // Get all roles with associated permissions
+            vm.loadRolesWithPermissions()
+        },
+        loadRolesAndPermissions() {
+            var vm = this
             vm.getRolesAndPermissionsRequest.loadStatus = 1
             AuthAPI.getRolesAndPermissions()
             .then((response) => {
@@ -186,7 +226,9 @@ export default {
                 vm.getRolesAndPermissionsRequest.data = {}
                 vm.getRolesAndPermissionsRequest.loadStatus = 3
             })
-            // Get all roles with associated permissions
+        },
+        loadRolesWithPermissions() {
+            var vm = this
             vm.getRolesWithPermissionsRequest.loadStatus = 1
             AuthAPI.getRolesWithPermissions()
             .then((response) => {

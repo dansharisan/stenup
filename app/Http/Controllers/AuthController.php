@@ -18,6 +18,7 @@ use App\Notifications\PasswordResetRequest;
 use App\Notifications\PasswordResetSuccess;
 use App\Notifications\PasswordChangeSuccess;
 use Symfony\Component\HttpFoundation\Response as Response;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -789,6 +790,90 @@ class AuthController extends Controller
         $role = Role::create(['name' => $request->input('role_name')]);
 
         return response()->json(['role' => $role], Response::HTTP_OK);
+    }
+
+    /**
+    * @OA\Put(
+    *         path="/api/auth/update_roles_permissions_matrix",
+    *         tags={"Authorization"},
+    *         summary="Update roles permissions matrix",
+    *         description="Update roles permissions matrix",
+    *         operationId="update-roles-permissions-matrix",
+    *         @OA\Response(
+    *             response=200,
+    *             description="Successful operation"
+    *         ),
+    *         @OA\Response(
+    *             response=422,
+    *             description="Validation error"
+    *         ),
+    *         @OA\Response(
+    *             response=500,
+    *             description="Server error"
+    *         ),
+    *         @OA\RequestBody(
+    *             required=true,
+    *             @OA\MediaType(
+    *                 mediaType="application/x-www-form-urlencoded",
+    *                 @OA\Schema(
+    *                     type="object",
+    *                      @OA\Property(
+    *                         property="matrix",
+    *                         description="JSON of matrix object {'<role-1>':['<permission-name-1>','<permissions-name-2>'], '<role-2>':['<permission-name-1']}. Please replace single quotes with double quotes.",
+    *                         type="string",
+    *                     ),
+    *                 )
+    *             )
+    *         )
+    * )
+    */
+    public function updateRolesPermissionsMatrix(Request $request)
+    {
+        // Validate input data
+        $validator = Validator::make($request->all(), [
+            'matrix' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+
+            return response()->json(
+            [
+                'error' =>
+                        [
+                            'code' => Error::GENR0002,
+                            'message' => Error::getDescription(Error::GENR0002)
+                        ],
+                'validation' => $validator->errors()
+            ],
+            Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        // Decode the json received from client
+        $matrix = json_decode($request->input('matrix'));
+
+        // Update permissions
+        $roles = Role::get();
+        $permissions = Permission::get();
+        DB::beginTransaction();
+        try {
+            foreach ($matrix as $roleName => $associatedPermissions) {
+                foreach ($roles as $role) {
+                    // Find the role
+                    if ($role->name == $roleName) {
+                        // Apply permissions changed on that role
+                        $role->syncPermissions($associatedPermissions);
+                        break;
+                    }
+                }
+            }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+        }
+
+        // Return roles with permissions after the update
+        return $this->getRolesWithPermissions();
     }
 
     /*

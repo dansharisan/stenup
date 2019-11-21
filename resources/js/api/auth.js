@@ -109,4 +109,15 @@ export default {
             role_name: role_name,
         });
     },
+
+    /*
+    PUT /api/auth/create_role
+    Update roles and permissions
+    */
+    updateRolesPermissionsMatrix: function(matrix) {
+        return axios.put(APP_CONFIG.API_URL + '/auth/update_roles_permissions_matrix',
+        {
+            matrix: JSON.stringify(matrix),
+        });
+    }
 }

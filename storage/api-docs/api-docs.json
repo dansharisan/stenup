@@ -384,14 +384,14 @@
                 }
             }
         },
-        "/api/auth/add_role": {
+        "/api/auth/create_role": {
             "post": {
                 "tags": [
                     "Authorization"
                 ],
-                "summary": "Add role",
-                "description": "Add a new role",
-                "operationId": "add-role",
+                "summary": "Create role",
+                "description": "Create a new role",
+                "operationId": "create-role",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -400,6 +400,43 @@
                                 "properties": {
                                     "role_name": {
                                         "description": "Role name",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/auth/update_roles_permissions_matrix": {
+            "put": {
+                "tags": [
+                    "Authorization"
+                ],
+                "summary": "Update roles permissions matrix",
+                "description": "Update roles permissions matrix",
+                "operationId": "update-roles-permissions-matrix",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "matrix": {
+                                        "description": "JSON of matrix object {'<role-1>':['<permission-name-1>','<permissions-name-2>'], '<role-2>':['<permission-name-1']}. Please replace single quotes with double quotes.",
                                         "type": "string"
                                     }
                                 },
