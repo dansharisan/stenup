@@ -149,10 +149,15 @@ export default {
                     .then((response) => {
                         vm.getRolesWithPermissionsRequest.data = response.data
                         vm.getRolesWithPermissionsRequest.loadStatus = 2
+                        // Fire notification
+                        vm.$snotify.success("Applied successfully")
                     })
                     .catch( function( e ) {
-                        vm.getRolesWithPermissionsRequest.data = {}
-                        vm.getRolesWithPermissionsRequest.loadStatus = 3
+                        // vm.getRolesWithPermissionsRequest.data = {}
+                        // vm.getRolesWithPermissionsRequest.loadStatus = 3
+                        vm.loadRolesWithPermissions()
+                        // Fire notification
+                        vm.$snotify.error("Failed to applied roles-permissions matrix")
                     })
                 }
             })
