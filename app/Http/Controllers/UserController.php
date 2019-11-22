@@ -7,13 +7,16 @@ use App\Models\User;
 use App\Enums\Error;
 use App\Enums\DefaultRoleType;
 use App\Enums\UserStatus;
+use App\Enums\PermissionType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Symfony\Component\HttpFoundation\Response as Response;
+use App\Http\Traits\ResponseTrait;
 
 class UserController extends Controller
 {
+    use ResponseTrait;
     /**
     * @OA\Get(
     *         path="/api/users",
@@ -51,6 +54,13 @@ class UserController extends Controller
     */
     public function index(Request $request)
     {
+        // Authorization check
+        $user = $request->user();
+        if (!$user->hasPermissionTo(PermissionType::VIEW_USERS)) {
+
+            return $this->returnUnauthorizedResponse();
+        }
+
         $users = User::orderBy('created_at', 'desc')->paginate($request->query('per_page'));
 
         for ($i=0; $i<count($users); $i++) {
@@ -91,8 +101,15 @@ class UserController extends Controller
     *         ),
     * )
     */
-    public function ban($id)
+    public function ban(Request $request, $id)
     {
+        // Authorization check
+        $user = $request->user();
+        if (!$user->hasPermissionTo(PermissionType::UPDATE_USERS)) {
+
+            return $this->returnUnauthorizedResponse();
+        }
+
         // Check for data validity
         $user = User::find($id);
         if (!$id || empty($user)) {
@@ -138,8 +155,15 @@ class UserController extends Controller
     *         ),
     * )
     */
-    public function unban($id)
+    public function unban(Request $request, $id)
     {
+        // Authorization check
+        $user = $request->user();
+        if (!$user->hasPermissionTo(PermissionType::UPDATE_USERS)) {
+
+            return $this->returnUnauthorizedResponse();
+        }
+
         // Check for data validity
         $user = User::find($id);
         if (!$id || empty($user)) {
@@ -153,11 +177,7 @@ class UserController extends Controller
             );
         }
         // Update the data
-        if ($user->email_verified_at) {
-            $user->status = UserStatus::Activated;
-        } else {
-            $user->status = UserStatus::Unactivated;
-        }
+        $user->status = UserStatus::Active;
         $user->save();
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
@@ -189,8 +209,15 @@ class UserController extends Controller
     *         ),
     * )
     */
-    public function delete($id)
+    public function delete(Request $request, $id)
     {
+        // Authorization check
+        $user = $request->user();
+        if (!$user->hasPermissionTo(PermissionType::DELETE_USERS)) {
+
+            return $this->returnUnauthorizedResponse();
+        }
+
         // Check for data validity
         $user = User::find($id);
         if (!$id || empty($user)) {
@@ -249,6 +276,13 @@ class UserController extends Controller
     */
     public function batchDelete(Request $request)
     {
+        // Authorization check
+        $user = $request->user();
+        if (!$user->hasPermissionTo(PermissionType::DELETE_USERS)) {
+
+            return $this->returnUnauthorizedResponse();
+        }
+
         // Check for data validity
         $ids = $request->input('ids');
 
@@ -320,6 +354,13 @@ class UserController extends Controller
     */
     public function update(Request $request, $id)
     {
+        // Authorization check
+        $user = $request->user();
+        if (!$user->hasPermissionTo(PermissionType::UPDATE_USERS)) {
+
+            return $this->returnUnauthorizedResponse();
+        }
+
         $roleIds = $request->input('role_ids');
         // Check for data validity
         if (empty($roleIds) || !is_array(explode(',', $roleIds)) || count(explode(',', $roleIds)) == 0) {
@@ -443,6 +484,13 @@ class UserController extends Controller
     */
     public function store(Request $request)
     {
+        // Authorization check
+        $user = $request->user();
+        if (!$user->hasPermissionTo(PermissionType::CREATE_USERS)) {
+
+            return $this->returnUnauthorizedResponse();
+        }
+
         $roleIds = $request->input('role_ids');
         $verifiedAt = $request->input('email_verified_at');
 
@@ -524,6 +572,13 @@ class UserController extends Controller
     */
     public function registeredUserStats(Request $request)
     {
+        // Authorization check
+        $user = $request->user();
+        if (!$user->hasPermissionTo(PermissionType::VIEW_USERS)) {
+
+            return $this->returnUnauthorizedResponse();
+        }
+
         $registeredUserStats = [];
         $last7Days = [];
         $last7DayStats = [];

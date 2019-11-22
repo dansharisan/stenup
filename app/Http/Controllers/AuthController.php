@@ -9,6 +9,7 @@ use Spatie\Permission\Models\Permission;
 use App\Enums\Error;
 use App\Enums\DefaultRoleType;
 use App\Enums\UserStatus;
+use App\Enums\PermissionType;
 use Illuminate\Http\Request;
 use App\Models\PasswordReset;
 use Illuminate\Support\Facades\Auth;
@@ -19,9 +20,11 @@ use App\Notifications\PasswordResetSuccess;
 use App\Notifications\PasswordChangeSuccess;
 use Symfony\Component\HttpFoundation\Response as Response;
 use Illuminate\Support\Facades\DB;
+use App\Http\Traits\ResponseTrait;
 
 class AuthController extends Controller
 {
+    use ResponseTrait;
     /**
     * @OA\Post(
     *         path="/api/auth/register",
@@ -692,7 +695,14 @@ class AuthController extends Controller
     *         ),
     * )
     */
-    public function getRolesAndPermissions() {
+    public function getRolesAndPermissions(Request $request) {
+        // Authorization check
+        $user = $request->user();
+        if (!$user->hasPermissionTo(PermissionType::VIEW_ROLES_PERMISSIONS)) {
+
+            return $this->returnUnauthorizedResponse();
+        }
+
         $roles = Role::get();
         $permissions = Permission::get();
 
@@ -715,19 +725,17 @@ class AuthController extends Controller
     *         ),
     * )
     */
-    public function getRolesWithPermissions() {
+    public function getRolesWithPermissions(Request $request) {
+        // Authorization check
+        $user = $request->user();
+        if (!$user->hasPermissionTo(PermissionType::VIEW_ROLES_PERMISSIONS)) {
+
+            return $this->returnUnauthorizedResponse();
+        }
+
         $roles = Role::with('permissions')->get();
 
         return response()->json(['roles' => $roles], Response::HTTP_OK);
-    }
-
-    protected function respondWithToken($token)
-    {
-        return [
-            'token' => $token,
-            'token_type'   => 'bearer',
-            'expires_in' => auth('api')->factory()->getTTL() * 60
-        ];
     }
 
     /**
@@ -767,6 +775,13 @@ class AuthController extends Controller
     */
     public function createRole(Request $request)
     {
+        // Authorization check
+        $user = $request->user();
+        if (!$user->hasPermissionTo(PermissionType::CREATE_ROLES)) {
+
+            return $this->returnUnauthorizedResponse();
+        }
+
         // Validate input data
         $validator = Validator::make($request->all(), [
             'role_name' => 'required|string|unique:roles,name',
@@ -829,6 +844,13 @@ class AuthController extends Controller
     */
     public function updateRolesPermissionsMatrix(Request $request)
     {
+        // Authorization check
+        $user = $request->user();
+        if (!$user->hasPermissionTo(PermissionType::UPDATE_PERMISSIONS)) {
+
+            return $this->returnUnauthorizedResponse();
+        }
+
         // Validate input data
         $validator = Validator::make($request->all(), [
             'matrix' => 'required',
@@ -873,7 +895,7 @@ class AuthController extends Controller
         }
 
         // Return roles with permissions after the update
-        return $this->getRolesWithPermissions();
+        return $this->getRolesWithPermissions($request);
     }
 
     /*
@@ -884,5 +906,17 @@ class AuthController extends Controller
         $pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
         return substr(str_shuffle(str_repeat($pool, 5)), 0, $length);
+    }
+
+    /*
+    *   Return json with token inside
+    **/
+    protected function respondWithToken($token)
+    {
+        return [
+            'token' => $token,
+            'token_type'   => 'bearer',
+            'expires_in' => auth('api')->factory()->getTTL() * 60
+        ];
     }
 }
