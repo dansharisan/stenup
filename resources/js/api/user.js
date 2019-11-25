@@ -26,7 +26,7 @@ export default {
     },
 
     /*
-    DELETE /api/users/{id}/delete
+    DELETE /api/users/{id}
     To delete an user
     */
     deleteUser: function(userId) {

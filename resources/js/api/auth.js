@@ -100,18 +100,26 @@ export default {
     },
 
     /*
-    POST /api/auth/create_role
+    POST /api/auth/roles
     Create a new role
     */
     createRole: function(role_name) {
-        return axios.post(APP_CONFIG.API_URL + '/auth/create_role',
+        return axios.post(APP_CONFIG.API_URL + '/auth/roles',
         {
             role_name: role_name,
         });
     },
 
     /*
-    PUT /api/auth/create_role
+    DELETE /api/auth/roles/{id}
+    Delete a specified role
+    */
+    deleteRole: function(id) {
+        return axios.delete(APP_CONFIG.API_URL + '/auth/roles/' + id);
+    },
+
+    /*
+    PUT /api/auth/update_roles_permissions_matrix
     Update roles and permissions
     */
     updateRolesPermissionsMatrix: function(matrix) {

@@ -740,7 +740,7 @@ class AuthController extends Controller
 
     /**
     * @OA\Post(
-    *         path="/api/auth/create_role",
+    *         path="/api/auth/roles",
     *         tags={"Authorization"},
     *         summary="Create role",
     *         description="Create a new role",
@@ -805,6 +805,59 @@ class AuthController extends Controller
         $role = Role::create(['name' => $request->input('role_name')]);
 
         return response()->json(['role' => $role], Response::HTTP_OK);
+    }
+
+    /**
+    * @OA\Delete(
+    *         path="/api/auth/roles/{id}",
+    *         tags={"Authorization"},
+    *         summary="Delete a role",
+    *         description="Delete a role",
+    *         operationId="delete-role",
+    *         @OA\Response(
+    *             response=204,
+    *             description="Successful operation with no content in return"
+    *         ),
+    *         @OA\Response(
+    *             response=500,
+    *             description="Server error"
+    *         ),
+    *         @OA\Parameter(
+    *             name="id",
+    *             in="path",
+    *             description="Role ID",
+    *             required=true,
+    *             @OA\Schema(
+    *                 type="integer",
+    *             )
+    *         ),
+    * )
+    */
+    public function deleteRole(Request $request, $id)
+    {
+        // Authorization check
+        $user = $request->user();
+        if (!$user->hasPermissionTo(PermissionType::DELETE_ROLES)) {
+
+            return $this->returnUnauthorizedResponse();
+        }
+
+        // Check for data validity
+        $role = Role::find($id);
+        if (!$id || empty($role)) {
+            return response()->json(
+                ['error' =>
+                            [
+                                'code' => Error::AUTH0012,
+                                'message' => Error::getDescription(Error::AUTH0012)
+                            ]
+                ], Response::HTTP_BAD_REQUEST
+            );
+        }
+        // Delete the data
+        $role->delete();
+
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 
     /**

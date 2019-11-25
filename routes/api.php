@@ -19,7 +19,8 @@ Route::group([
         Route::patch('password/change', 'AuthController@changePassword');
         Route::get('roles_w_permissions', 'AuthController@getRolesWithPermissions');
         Route::get('roles_permissions', 'AuthController@getRolesAndPermissions');
-        Route::post('create_role', 'AuthController@createRole');
+        Route::post('roles', 'AuthController@createRole');
+        Route::delete('roles/{id}', 'AuthController@deleteRole');
         Route::put('update_roles_permissions_matrix', 'AuthController@updateRolesPermissionsMatrix');
     });
 

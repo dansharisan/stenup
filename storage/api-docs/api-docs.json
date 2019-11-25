@@ -384,7 +384,7 @@
                 }
             }
         },
-        "/api/auth/create_role": {
+        "/api/auth/roles": {
             "post": {
                 "tags": [
                     "Authorization"
@@ -414,6 +414,35 @@
                     },
                     "422": {
                         "description": "Validation error"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/auth/roles/{id}": {
+            "delete": {
+                "tags": [
+                    "Authorization"
+                ],
+                "summary": "Delete a role",
+                "description": "Delete a role",
+                "operationId": "delete-role",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Role ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful operation with no content in return"
                     },
                     "500": {
                         "description": "Server error"

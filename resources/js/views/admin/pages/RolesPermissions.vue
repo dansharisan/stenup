@@ -1,18 +1,18 @@
 <template>
     <div class="animated fadeIn">
-        <b-modal id="create-role-modal" modal-class="text-left" centered title="Create new role" @ok="createRole" ref="create-role-modal">
-            <loading :active="createRoleRequest.loadStatus == 1"></loading>
+        <b-modal id="create-role-modal" modal-class="text-left" centered title="Create new role" @ok="createRole" ok-variant="success" ref="create-role-modal">
+            <loading :active="crudRoleRequest.loadStatus == 1"></loading>
             <template>
-                <div class="invalid-feedback d-block" v-if="createRoleRequest.message">
-                    {{ createRoleRequest.message }}
+                <div class="invalid-feedback d-block" v-if="crudRoleRequest.message">
+                    {{ crudRoleRequest.message }}
                 </div>
                 <b-form-group>
                     <label for="company">Role name</label>
-                    <b-form-input type="text" placeholder="developer" v-model="createRoleRequest.form.role_name" v-on:input="$v.createRoleRequest.form.role_name.$touch()" :state="$v.createRoleRequest.form.role_name.$dirty ? !$v.createRoleRequest.form.role_name.$error : null" v-on:keyup.enter="createRole" />
+                    <b-form-input type="text" placeholder="developer" v-model="crudRoleRequest.form.role_name" v-on:input="$v.crudRoleRequest.form.role_name.$touch()" :state="$v.crudRoleRequest.form.role_name.$dirty ? !$v.crudRoleRequest.form.role_name.$error : null" v-on:keyup.enter="createRole" />
                 </b-form-group>
                 <div class="row">
-                    <div class="col-12 invalid-feedback text-left d-block" v-if="createRoleRequest.data.validation && createRoleRequest.data.validation.role_name">
-                        {{ createRoleRequest.data.validation.role_name[0] }}
+                    <div class="col-12 invalid-feedback text-left d-block" v-if="crudRoleRequest.data.validation && crudRoleRequest.data.validation.role_name">
+                        {{ crudRoleRequest.data.validation.role_name[0] }}
                     </div>
                 </div>
             </template>
@@ -45,7 +45,14 @@
                     </div>
                     <div class="grid-col" v-for="(role, roleIndex) in getRolesAndPermissionsRequest.data.roles">
                         <div class="grid-item grid-item--role-name">
-                            <p class="m-0 ml-1 mr-1 text-center" style="line-height: 3em">{{ role.name }}</p>
+                            <p class="m-0 ml-1 mr-1 text-center" style="line-height: 3em">
+                                {{ role.name }}
+                                <template v-if="1 != role.id">
+                                    <b-button size="sm" class="btn btn-action" variant="danger" @click="deleteRole(role.id)">
+                                        <i class="fas fa-trash text-white" aria-hidden="true"></i></span>
+                                    </b-button>
+                                </template>
+                            </p>
                         </div>
                         <div class="grid-item" v-for="(permission, permissionIndex) in getRolesAndPermissionsRequest.data.permissions">
                             <div class="custom-control form-control-lg text-center">
@@ -78,7 +85,7 @@ import { required } from 'vuelidate/lib/validators'
 export default {
     validations () {
         return {
-            createRoleRequest: {
+            crudRoleRequest: {
                 form: {
                     role_name: { required }
                 },
@@ -95,7 +102,7 @@ export default {
                 loadStatus: 0,
                 data: {}
             },
-            createRoleRequest: {
+            crudRoleRequest: {
                 loadStatus: 0,
                 data: {},
                 form: {
@@ -167,27 +174,65 @@ export default {
             bvModalEvt.preventDefault()
 
             var vm = this
-            vm.createRoleRequest.loadStatus = 1
-            AuthAPI.createRole(vm.createRoleRequest.form.role_name)
+            vm.crudRoleRequest.loadStatus = 1
+            AuthAPI.createRole(vm.crudRoleRequest.form.role_name)
             .then((response) => {
                 // Reload the matrix
                 vm.loadMatrixData()
 
-                vm.createRoleRequest.data = response.data
-                vm.createRoleRequest.loadStatus = 2
+                vm.crudRoleRequest.data = response.data
+                vm.crudRoleRequest.loadStatus = 2
                 // Close the modal
                 vm.$refs['create-role-modal'].hide()
                 // Fire notification
                 vm.$snotify.success("Created successfully")
             })
             .catch( function(error) {
-                vm.createRoleRequest.loadStatus = 3
+                vm.crudRoleRequest.loadStatus = 3
                 if (error && error.response) {
-                    vm.createRoleRequest.data = error.response.data
+                    vm.crudRoleRequest.data = error.response.data
                     let msg = error.response.data.error ? error.response.data.error.message : error.response.data.message;
                     vm.$snotify.error("Failed to create this role: " + msg)
                 } else {
                     vm.$snotify.error("Network error")
+                }
+            })
+        },
+        deleteRole(roleId) {
+            var vm = this
+
+            this.$swal({
+                title: 'You sure to delete this role?',
+                text: "This action can't be undone. You might need to set roles for members who were associated with this role.",
+                type: 'warning',
+                animation: false,
+                showCancelButton: true,
+                reverseButtons: true,
+                confirmButtonColor: '#f86c6b',
+                cancelButtonColor: '#a4b7c1',
+                confirmButtonText: 'Delete'
+            }).then((result) => {
+                if (result.value) {
+                    vm.crudRoleRequest.loadStatus = 1
+                    AuthAPI.deleteRole(roleId)
+                    .then((response) => {
+                        // Reload the matrix
+                        vm.loadMatrixData()
+                        vm.crudRoleRequest.data = response.data
+                        vm.crudRoleRequest.loadStatus = 2
+                        // Fire notification
+                        vm.$snotify.success("Deleted successfully")
+                    })
+                    .catch( function(error) {
+                        vm.crudRoleRequest.loadStatus = 3
+                        if (error && error.response) {
+                            vm.crudRoleRequest.data = error.response.data
+                            let msg = error.response.data.error ? error.response.data.error.message : error.response.data.message;
+                            vm.$snotify.error("Failed to delete this role: " + msg)
+                        } else {
+                            vm.$snotify.error("Network error")
+                        }
+                    })
                 }
             })
         },
