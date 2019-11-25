@@ -16,18 +16,18 @@
                                 </div>
                                 <b-input-group class="mb-3">
                                     <b-input-group-prepend is-text class="item-header-text">
-                                        <span>Email</span>
+                                        <i class="fas fa-at"></i>
                                     </b-input-group-prepend>
-                                    <b-input v-model="form.email" v-on:input="$v.form.email.$touch()" :state="$v.form.email.$dirty ? !$v.form.email.$error : null" type="text" class="form-control" placeholder="youremail@something.com" v-on:keyup.enter="submit"/>
+                                    <b-input v-model="form.email" v-on:input="$v.form.email.$touch()" :state="$v.form.email.$dirty ? !$v.form.email.$error : null" type="text" class="form-control" placeholder="Email" v-on:keyup.enter="submit"/>
                                     <div class="invalid-feedback d-block" v-if="validation && validation.email">
                                         {{ validation.email[0] }}
                                     </div>
                                 </b-input-group>
                                 <b-input-group class="mb-3">
                                     <b-input-group-prepend is-text class="item-header-text">
-                                        <span>Password</span>
+                                        <i class="fas fa-key"></i>
                                     </b-input-group-prepend>
-                                    <b-input v-model="form.password" v-on:input="$v.form.password.$touch()" :state="$v.form.password.$dirty ? !$v.form.password.$error : null" type="password" class="form-control" placeholder="********" v-on:keyup.enter="submit"/>
+                                    <b-input v-model="form.password" v-on:input="$v.form.password.$touch()" :state="$v.form.password.$dirty ? !$v.form.password.$error : null" type="password" class="form-control" placeholder="Password" v-on:keyup.enter="submit"/>
                                     <div class="invalid-feedback d-block" v-if="validation && validation.password">
                                         {{ validation.password[0] }}
                                     </div>

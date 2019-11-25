@@ -12,7 +12,7 @@
                                 </p>
                                 <b-input-group class="mb-3">
                                     <b-input-group-prepend is-text class="item-header-text">
-                                            Email
+                                        <i class="fas fa-at"></i>
                                     </b-input-group-prepend>
                                     <input
                                     type="text"
@@ -24,7 +24,7 @@
                                 </b-input-group>
                                 <b-input-group class="mb-3">
                                     <b-input-group-prepend is-text class="item-header-text">
-                                        Roles
+                                        <i class="fas fa-user-circle"></i>
                                     </b-input-group-prepend>
                                     <input
                                     type="text"

@@ -16,24 +16,24 @@
                                 </div>
                                 <b-input-group class="mb-3" v-if="this.findTokenRequest.status == 2 && this.resetPasswordRequest.status != 2">
                                     <b-input-group-prepend is-text class="item-header-text">
-                                        <span>Email</span>
+                                        <i class="fas fa-at"></i>
                                     </b-input-group-prepend>
-                                    <b-input type="text" class="form-control" placeholder:="youremail@something.com" :value="form.email" disabled/>
+                                    <b-input type="text" class="form-control" placeholder:="Email" :value="form.email" disabled/>
                                 </b-input-group>
                                 <b-input-group class="mb-3" v-if="this.findTokenRequest.status == 2 && this.resetPasswordRequest.status != 2">
                                     <b-input-group-prepend is-text class="item-header-text">
-                                        <span>Password</span>
+                                        <i class="fas fa-key"></i>
                                     </b-input-group-prepend>
-                                    <b-input type="password" class="form-control" v-model="form.password" v-on:input="$v.form.password.$touch()" :state="$v.form.password.$dirty ? !$v.form.password.$error : null" placeholder="********" v-on:keyup.enter="submit"/>
+                                    <b-input type="password" class="form-control" v-model="form.password" v-on:input="$v.form.password.$touch()" :state="$v.form.password.$dirty ? !$v.form.password.$error : null" placeholder="Password" v-on:keyup.enter="submit"/>
                                     <div class="invalid-feedback d-block" v-if="validation && validation.password">
                                         {{ validation.password[0] }}
                                     </div>
                                 </b-input-group>
                                 <b-input-group class="mb-3" v-if="this.findTokenRequest.status == 2 && this.resetPasswordRequest.status != 2">
                                     <b-input-group-prepend is-text class="item-header-text">
-                                        <span>Confirm password</span>
+                                        <i class="fas fa-key"></i>
                                     </b-input-group-prepend>
-                                    <b-input type="password" class="form-control" v-model="form.password_confirmation" v-on:input="$v.form.password_confirmation.$touch()" :state="$v.form.password_confirmation.$dirty ? !$v.form.password_confirmation.$error : null" placeholder="********" v-on:keyup.enter="submit"/>
+                                    <b-input type="password" class="form-control" v-model="form.password_confirmation" v-on:input="$v.form.password_confirmation.$touch()" :state="$v.form.password_confirmation.$dirty ? !$v.form.password_confirmation.$error : null" placeholder="Confirm password" v-on:keyup.enter="submit"/>
                                     <div class="invalid-feedback d-block" v-if="validation && validation.password_confirmation">
                                         {{ validation.password_confirmation[0] }}
                                     </div>
