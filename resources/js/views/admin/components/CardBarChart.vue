@@ -16,7 +16,9 @@ export default {
                 label: this.label,
                 backgroundColor: this.backgroundColor,
                 borderColor: 'transparent',
-                data: Object.values(this.data)
+                data: Object.values(this.data),
+                barPercentage: 0.5,
+                categoryPercentage: 1
             }
         ]
         this.renderChart(
@@ -35,9 +37,7 @@ export default {
                 },
                 scales: {
                     xAxes: [{
-                        display: false,
-                        categoryPercentage: 1,
-                        barPercentage: 0.5
+                        display: false
                     }],
                     yAxes: [{
                         display: false
