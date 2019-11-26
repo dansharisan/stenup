@@ -14,6 +14,8 @@ Boilerplate for API-based web app project, with basic admin panel and api docume
 - darkaonline/l5-swagger: enable swagger, we can create API documentation as well as API execution page
 
 ## Used Node Packages
+- bootstrap-vue: great bootstrap for vue
+- jquery: manipulate DOM easily
 - vue-snotify: Show toast notifications
 - vue-loading-overlay: Show loading icon on full page or its container
 - simple-line-icons: Some icons for the admin panel
@@ -41,6 +43,7 @@ And of course unmissable common packages like vuex, vue-router...
 - Run "php artisan migrate:fresh --seed" in the command line to generate tables and seeding data
 - Run "php artisan storage:link" to create symbolic link to storage
 - Adjust app timezone in app.php (currenly Asia/Tokyo)
+- Run "php artisan l5-swagger:generate" to generate API docs
 - Run "php artisan serve" to start the server then go to localhost:8000 and enjoy
 
 ## URLs
