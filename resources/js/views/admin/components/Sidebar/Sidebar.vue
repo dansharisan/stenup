@@ -6,94 +6,96 @@
       <div slot="header" />
       <ul class="nav">
         <template v-for="(item, index) in navItems">
-          <template v-if="item.title">
-            <sidebar-nav-title
-              :key="index"
-              :name="item.name"
-              :classes="item.class"
-              :wrapper="item.wrapper"
-            />
-          </template>
-          <template v-else-if="item.divider">
-            <sidebar-nav-divider
-              :key="index"
-              :classes="item.class"
-            />
-          </template>
-          <template v-else-if="item.label">
-            <sidebar-nav-label
-              :key="index"
-              :name="item.name"
-              :url="item.url"
-              :icon="item.icon"
-              :label="item.label"
-              :classes="item.class"
-            />
-          </template>
-          <template v-else>
-            <template v-if="item.children">
-              <!-- First level dropdown -->
-              <sidebar-nav-dropdown
-                :key="index"
-                :name="item.name"
-                :url="item.url"
-                :icon="item.icon"
-              >
-                <template v-for="(childL1, index1) in item.children">
-                  <template v-if="childL1.children">
-                    <!-- Second level dropdown -->
-                    <sidebar-nav-dropdown
-                      :key="index1"
-                      :name="childL1.name"
-                      :url="childL1.url"
-                      :icon="childL1.icon"
-                    >
-                      <li
-                        v-for="(childL2, index2) in childL1.children"
-                        :key="index2"
-                        class="nav-item"
-                      >
-                        <sidebar-nav-link
-                          :name="childL2.name"
-                          :url="childL2.url"
-                          :icon="childL2.icon"
-                          :badge="childL2.badge"
-                          :variant="item.variant"
-                        />
-                      </li>
-                    </sidebar-nav-dropdown>
-                  </template>
-                  <template v-else>
-                    <sidebar-nav-item
-                      :key="index1"
-                      :classes="item.class"
-                    >
-                      <sidebar-nav-link
-                        :name="childL1.name"
-                        :url="childL1.url"
-                        :icon="childL1.icon"
-                        :badge="childL1.badge"
-                        :variant="item.variant"
-                      />
-                    </sidebar-nav-item>
-                  </template>
-                </template>
-              </sidebar-nav-dropdown>
-            </template>
-            <template v-else>
-              <sidebar-nav-item
-                :key="index"
-                :classes="item.class"
-              >
-                <sidebar-nav-link
+            <template v-if="hasPermission(user, item.permission)">
+              <template v-if="item.title">
+                <sidebar-nav-title
+                  :key="index"
+                  :name="item.name"
+                  :classes="item.class"
+                  :wrapper="item.wrapper"
+                />
+              </template>
+              <template v-else-if="item.divider">
+                <sidebar-nav-divider
+                  :key="index"
+                  :classes="item.class"
+                />
+              </template>
+              <template v-else-if="item.label">
+                <sidebar-nav-label
+                  :key="index"
                   :name="item.name"
                   :url="item.url"
                   :icon="item.icon"
-                  :badge="item.badge"
-                  :variant="item.variant"
+                  :label="item.label"
+                  :classes="item.class"
                 />
-              </sidebar-nav-item>
-            </template>
+              </template>
+              <template v-else>
+                <template v-if="item.children">
+                  <!-- First level dropdown -->
+                  <sidebar-nav-dropdown
+                    :key="index"
+                    :name="item.name"
+                    :url="item.url"
+                    :icon="item.icon"
+                  >
+                    <template v-for="(childL1, index1) in item.children">
+                      <template v-if="childL1.children">
+                        <!-- Second level dropdown -->
+                        <sidebar-nav-dropdown
+                          :key="index1"
+                          :name="childL1.name"
+                          :url="childL1.url"
+                          :icon="childL1.icon"
+                        >
+                          <li
+                            v-for="(childL2, index2) in childL1.children"
+                            :key="index2"
+                            class="nav-item"
+                          >
+                            <sidebar-nav-link
+                              :name="childL2.name"
+                              :url="childL2.url"
+                              :icon="childL2.icon"
+                              :badge="childL2.badge"
+                              :variant="item.variant"
+                            />
+                          </li>
+                        </sidebar-nav-dropdown>
+                      </template>
+                      <template v-else>
+                        <sidebar-nav-item
+                          :key="index1"
+                          :classes="item.class"
+                        >
+                          <sidebar-nav-link
+                            :name="childL1.name"
+                            :url="childL1.url"
+                            :icon="childL1.icon"
+                            :badge="childL1.badge"
+                            :variant="item.variant"
+                          />
+                        </sidebar-nav-item>
+                      </template>
+                    </template>
+                  </sidebar-nav-dropdown>
+                </template>
+                <template v-else>
+                  <sidebar-nav-item
+                    :key="index"
+                    :classes="item.class"
+                  >
+                    <sidebar-nav-link
+                      :name="item.name"
+                      :url="item.url"
+                      :icon="item.icon"
+                      :badge="item.badge"
+                      :variant="item.variant"
+                    />
+                  </sidebar-nav-item>
+                </template>
+              </template>
           </template>
         </template>
       </ul>
@@ -150,6 +152,11 @@ export default {
       e.preventDefault()
       e.target.parentElement.classList.toggle('open')
     },
+  },
+  computed: {
+      user(){
+          return this.$store.get('auth/user');
+      },
   },
 }
 

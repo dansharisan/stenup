@@ -19,7 +19,7 @@
         </b-modal>
 
         <div class="col-12 text-right pr-0 mb-4">
-            <b-button size="md" class="btn btn-action" variant="primary" v-b-modal.create-role-modal>
+            <b-button v-if="hasPermission(user, PERMISSION_NAME.CREATE_ROLES)" size="md" class="btn btn-action" variant="primary" v-b-modal.create-role-modal>
                 <i class="fas fa-plus text-white" aria-hidden="true"></i> <span class="text-white">Create Role</span>
             </b-button>
         </div>
@@ -47,7 +47,7 @@
                         <div class="grid-item grid-item--role-name">
                             <p class="m-0 ml-1 mr-1 text-center" style="line-height: 3em">
                                 {{ role.name }}
-                                <template v-if="1 != role.id">
+                                <template v-if="1 != role.id && hasPermission(user, PERMISSION_NAME.DELETE_ROLES)">
                                     <b-button size="sm" class="btn btn-action" variant="danger" @click="deleteRole(role.id)">
                                         <i class="fas fa-trash text-white" aria-hidden="true"></i></span>
                                     </b-button>
@@ -56,9 +56,9 @@
                         </div>
                         <div class="grid-item" v-for="(permission, permissionIndex) in getRolesAndPermissionsRequest.data.permissions">
                             <div class="custom-control form-control-lg text-center">
-                                <input v-if="roleHasPermission(role.id, permission.id) && 1 == role.id" type="checkbox" checked disabled class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
-                                <input v-else-if="!roleHasPermission(role.id, permission.id) && 1 == role.id" type="checkbox" disabled class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
-                                <input v-else-if="roleHasPermission(role.id, permission.id)" type="checkbox" checked class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
+                                <input v-if="roleHasPermission(role.id, permission.id) && (1 == role.id || !hasPermission(user, PERMISSION_NAME.UPDATE_PERMISSIONS))" type="checkbox" checked disabled class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
+                                <input v-else-if="!roleHasPermission(role.id, permission.id) && (1 == role.id || !hasPermission(user, PERMISSION_NAME.UPDATE_PERMISSIONS))" type="checkbox" disabled class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
+                                <input v-else-if="roleHasPermission(role.id, permission.id) && hasPermission(user, PERMISSION_NAME.UPDATE_PERMISSIONS)" type="checkbox" checked class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
                                 <input v-else type="checkbox" class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
                             </div>
                         </div>
@@ -67,7 +67,7 @@
             </template>
         </div>
 
-        <div class="col-12 text-right pr-0" style="margin-top: 1.5rem">
+        <div class="col-12 text-right pr-0" style="margin-top: 1.5rem" v-if="hasPermission(user, PERMISSION_NAME.UPDATE_PERMISSIONS)">
             <b-button size="md" class="btn btn-action" variant="secondary" @click="reload()">
                 <i class="fas fa-undo-alt text-white" aria-hidden="true"></i> <span class="text-white">Reload</span>
             </b-button>
@@ -81,6 +81,7 @@
 <script>
 import AuthAPI from '../../../api/auth.js'
 import { required } from 'vuelidate/lib/validators'
+import { PERMISSION_NAME } from '../../../const.js'
 
 export default {
     validations () {
@@ -94,6 +95,7 @@ export default {
     },
     data: function () {
         return {
+            PERMISSION_NAME: PERMISSION_NAME,
             getRolesAndPermissionsRequest: {
                 loadStatus: 0,
                 data: {}
@@ -111,6 +113,11 @@ export default {
                 message: ''
             }
         }
+    },
+    computed: {
+        user(){
+            return this.$store.get('auth/user');
+        },
     },
     methods: {
         applyPermissions() {

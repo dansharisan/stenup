@@ -35,14 +35,14 @@
                                     />
                                 </b-input-group>
                                 <b-button
-                                v-if="this.hasRole(this.user, 'administrator')"
+                                v-if="hasPermission(user, PERMISSION_NAME.VIEW_DASHBOARD)"
                                 variant="link"
                                 class="px-0"
                                 @click="$router.push({ name: 'Dashboard' })"
                                 >
                                     Go to Admin panel
                                 </b-button>
-                                <br v-if="this.hasRole(this.user, 'administrator')"/>
+                                <br v-if="hasPermission(user, PERMISSION_NAME.VIEW_DASHBOARD)"/>
                                 <button type="button" class="btn px-0 btn-link" @click="goToHome()">
                                     Back to Home
                                 </button>
@@ -62,11 +62,13 @@
 <script>
 import AuthAPI from '../../../api/auth.js'
 import { AuthUtils } from '../../../mixins/auth-utils.js';
+import { PERMISSION_NAME } from '../../../const.js'
 
 export default {
     name: 'UserInfo',
     data () {
         return {
+            PERMISSION_NAME: PERMISSION_NAME,
         }
     },
     computed: {

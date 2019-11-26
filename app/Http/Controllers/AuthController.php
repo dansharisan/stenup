@@ -205,7 +205,7 @@ class AuthController extends Controller
         }
 
         // Get roles and permissions
-        $user->getAllPermissions();
+        $user['associated_permissions'] = $user->getAllPermissions();
         $user['roles'] = $user->getRoleNames();
 
         return response()->json(['user' => $user], Response::HTTP_OK)->withCookie('token', $token, config('jwt.ttl'), "/", null, false, true);
@@ -257,8 +257,8 @@ class AuthController extends Controller
         $user = $request->user();
 
         // Get roles and permissions
-        $user->getAllPermissions();
-        $user['roles'] = $user->getRoleNames();
+        $user['associated_permissions'] = $user->getAllPermissions();
+        $user->getRoleNames();
 
         return response()->json(['user' => $user], Response::HTTP_OK);
     }

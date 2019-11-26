@@ -33,7 +33,7 @@ Vue.use(AuthPlugin)
 function requireAccessPermission(to, from, next) {
     // Check if current has the permission to access the component
     function checkAccessPermission(permission) {
-        if (Vue.hasPermission(store.get('auth/user'), permission)) {
+        if (Vue.prototype.hasPermission(store.get('auth/user'), permission)) {
             next()
         } else {
             next('/403')
