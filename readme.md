@@ -4,20 +4,30 @@ Boilerplate for API-based web app project, with basic admin panel and api docume
 ## Tech stack
 - Laravel 6.2.0 for the backend
 - VueJS 2.x for the frontend (admin site and user site)
-- Bootstrap 4
+- Bootstrap Vue 4
 - Swagger with OpenAPI 3.0
 
-## Used Packages
+## Used PHP Packages
 - bensampo/laravel-enum: more features on enum data type
 - tymondesigns/jwt-auth: JWT Authentication from frontend (ui) to backend (api)
 - spatie/laravel-permission: one user can have multiple roles, and one role can have multiple permissions
 - darkaonline/l5-swagger: enable swagger, we can create API documentation as well as API execution page
 
+## Used Node Packages
+- vue-snotify: Show toast notifications
+- vue-loading-overlay: Show loading icon on full page or its container
+- simple-line-icons: Some icons for the admin panel
+- vue-chartjs: Build charts for dashboard
+- vuelidate: One of the most flexible validation packages for vue
+- vue-sweetalert2: Alert box for vue
+And of course unmissable common packages like vuex, vue-router...
+
 ## Notes
-- Roles and permissions will be added when running RolesAndPermissionsSeeder.
-- There are 3 roles: Administrator, Moderator, and Member and 4 default permissions: view users, create users, update users and delete users.
+- Default roles and permissions will be added when running RolesAndPermissionsSeeder.
+- There are 3 default roles: ADMINISTRATOR, MODERATOR, and MEMBER
+- You can add new roles and adjust permissions in admin panel.
+- Use PermissionType when you want to create/edit permissions. Don't forget to build seeder to add then into database as well.
 - AccountSeeder can be used to create admin account. Password is hashed using bcrypt with 10 rounds. You can hash it here: https://bcrypt-generator.com/
-- Use RoleType enum when you want to create/adjust roles, and PermissionType for permissions.
 
 ## Installation
 - Run "composer install"
@@ -32,3 +42,8 @@ Boilerplate for API-based web app project, with basic admin panel and api docume
 - Run "php artisan storage:link" to create symbolic link to storage
 - Adjust app timezone in app.php (currenly Asia/Tokyo)
 - Run "php artisan serve" to start the server then go to localhost:8000 and enjoy
+
+## URLs
+- User site: /
+- Admin site: /admin
+- API documentation: /api

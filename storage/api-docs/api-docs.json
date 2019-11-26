@@ -6,7 +6,7 @@
     },
     "servers": [
         {
-            "url": "http://localhost:8000",
+            "url": "https://stenup.test",
             "description": "Default server"
         }
     ],
@@ -341,6 +341,431 @@
                     },
                     "403": {
                         "description": "Wrong combination of email and password or email not verified"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/auth/roles_permissions": {
+            "get": {
+                "tags": [
+                    "Authorization"
+                ],
+                "summary": "Get all roles and permissions",
+                "description": "Get all roles and permissions",
+                "operationId": "App\\Http\\Controllers\\AuthController::getRolesAndPermissions",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/auth/roles_w_permissions": {
+            "get": {
+                "tags": [
+                    "Authorization"
+                ],
+                "summary": "Get all roles with associated permissions",
+                "description": "Get all roles with associated permissions",
+                "operationId": "App\\Http\\Controllers\\AuthController::getRolesWithPermissions",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/auth/roles": {
+            "post": {
+                "tags": [
+                    "Authorization"
+                ],
+                "summary": "Create role",
+                "description": "Create a new role",
+                "operationId": "create-role",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "role_name": {
+                                        "description": "Role name",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/auth/roles/{id}": {
+            "delete": {
+                "tags": [
+                    "Authorization"
+                ],
+                "summary": "Delete a role",
+                "description": "Delete a role",
+                "operationId": "delete-role",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Role ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful operation with no content in return"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/auth/update_roles_permissions_matrix": {
+            "put": {
+                "tags": [
+                    "Authorization"
+                ],
+                "summary": "Update roles permissions matrix",
+                "description": "Update roles permissions matrix",
+                "operationId": "update-roles-permissions-matrix",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "matrix": {
+                                        "description": "JSON of matrix object {'<role-1>':['<permission-name-1>','<permissions-name-2>'], '<role-2>':['<permission-name-1']}. Please replace single quotes with double quotes.",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/users": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get users",
+                "description": "Get list of users",
+                "operationId": "user-list",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Current page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Create an user",
+                "description": "Create an user",
+                "operationId": "create-user",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "description": "Email",
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "description": "Password",
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "email_verified_at": {
+                                        "description": "Email verified date",
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "role_ids": {
+                                        "description": "Role IDs",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "422": {
+                        "description": "Invalid input or email taken"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/users/{id}/ban": {
+            "patch": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Ban an user",
+                "description": "Ban an user",
+                "operationId": "ban-user",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful operation with no content in return"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/users/{id}/unban": {
+            "patch": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Unban an user",
+                "description": "Unban an user",
+                "operationId": "unban-user",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful operation with no content in return"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/users/{id}": {
+            "delete": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Delete an user",
+                "description": "Delete an user",
+                "operationId": "delete-user",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful operation with no content in return"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Edit an user",
+                "description": "Edit an user",
+                "operationId": "edit-user",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "email_verified_at": {
+                                        "description": "Email verified date",
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "role_ids": {
+                                        "description": "Role IDs",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/users/collection:batchDelete": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Delete selected users",
+                "description": "Delete selected users",
+                "operationId": "delete-user-batch",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "ids": {
+                                        "description": "Users' IDs",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Successful operation with no content in return"
+                    },
+                    "422": {
+                        "description": "Invalid input"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/users/registered_user_stats": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get registered user stats",
+                "description": "Get registered user stats",
+                "operationId": "registered-user-stats",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
                     },
                     "500": {
                         "description": "Server error"
