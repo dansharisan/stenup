@@ -14,6 +14,8 @@ Boilerplate for API-based web app project, with basic admin panel and api docume
 - darkaonline/l5-swagger: enable swagger, we can create API documentation as well as API execution page
 
 ## Used Node Packages
+- bootstrap-vue: great bootstrap for vue
+- jquery: manipulate DOM easily
 - vue-snotify: Show toast notifications
 - vue-loading-overlay: Show loading icon on full page or its container
 - simple-line-icons: Some icons for the admin panel
