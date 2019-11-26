@@ -570,7 +570,7 @@ class UserController extends Controller
     {
         // Authorization check
         $user = $request->user();
-        if (!$user->hasPermissionTo(PermissionType::VIEW_USERS)) {
+        if (!$user->hasPermissionTo(PermissionType::VIEW_DASHBOARD)) {
 
             return $this->returnUnauthorizedResponse();
         }
