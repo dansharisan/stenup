@@ -393,9 +393,6 @@ class UserController extends Controller
             $verifiedAt = $request->input('email_verified_at');
             if ($verifiedAt) {
                 $user->email_verified_at = date("Y-m-d H:i:s", strtotime($verifiedAt));
-                $user->status = UserStatus::Activated;
-            } else {
-                $user->status = UserStatus::Unactivated;
             }
             $user->save();
 
@@ -492,7 +489,6 @@ class UserController extends Controller
         }
 
         $roleIds = $request->input('role_ids');
-        $verifiedAt = $request->input('email_verified_at');
 
         // Validate input data
         $validator = Validator::make($request->all(), [
@@ -520,12 +516,12 @@ class UserController extends Controller
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
             ]);
+
+            $verifiedAt = $request->input('email_verified_at');
             if ($verifiedAt) {
                 $user->email_verified_at = date("Y-m-d H:i:s", strtotime($verifiedAt));
-                $user->status = UserStatus::Activated;
-            } else {
-                $user->status = UserStatus::Unactivated;
             }
+
             $user->save();
 
             // Add new roles

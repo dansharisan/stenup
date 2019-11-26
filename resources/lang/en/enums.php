@@ -4,7 +4,7 @@ use App\Enums\Error;
 
 return [
     Error::class => [
-        Error::AUTH0001 => "Either wrong combination of email and password or the account is inactive/banned",
+        Error::AUTH0001 => "Either wrong combination of email and password or the account is inactive/banned/deleted",
         Error::AUTH0002 => "Invalid activation token",
         Error::AUTH0003 => "Couldn't find the user with that e-mail address",
         Error::AUTH0004 => "Invalid password reset token",
