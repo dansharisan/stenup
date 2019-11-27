@@ -1,26 +1,28 @@
 <template>
     <div class="animated fadeIn">
-        <b-row>
-            <b-col sm="6" lg="3">
-                <b-card no-body class="bg-success">
-                    <div class="middle-center" v-if="getUserStatsRequest.loadStatus == 1" style="height: 152px">
-                        <div>
-                            <loading :active="true"></loading>
+        <b-card header="Overall Stats" header-class="text-left" class="text-center">
+            <b-row>
+                <b-col sm="6" lg="3">
+                    <b-card no-body class="bg-success mb-0">
+                        <div class="middle-center" v-if="getUserStatsRequest.loadStatus == 1" style="height: 152px">
+                            <div>
+                                <loading :active="true"></loading>
+                            </div>
                         </div>
-                    </div>
-                    <template v-else-if="getUserStatsRequest.loadStatus == 2">
-                        <b-card-body class="pb-0">
-                            <h4 class="mb-0">{{ getUserStatsRequest.totalUser }}</h4>
-                            <p>Total registered users</p>
-                        </b-card-body>
-                        <card-bar-chart :data="getUserStatsRequest.last7DayStats" label="New user(s)" backgroundColor="rgba(255,255,255,.3)" chartId="card-chart-01" class="chart-wrapper px-3" style="height:70px;" height="70"/>
-                    </template>
-                    <template v-else-if="getUserStatsRequest.loadStatus == 3">
-                        <div class="mb-0 mt-0 middle-center" style="height: 152px">Data load error</div>
-                    </template>
-                </b-card>
-            </b-col>
-        </b-row>
+                        <template v-else-if="getUserStatsRequest.loadStatus == 2">
+                            <b-card-body class="pb-0">
+                                <h4 class="mb-0">{{ getUserStatsRequest.totalUser }}</h4>
+                                <p>Total registered users</p>
+                            </b-card-body>
+                            <card-bar-chart :data="getUserStatsRequest.last7DayStats" label="New user(s)" backgroundColor="rgba(255,255,255,.3)" chartId="card-chart-01" class="chart-wrapper px-3" style="height:70px;" height="70"/>
+                        </template>
+                        <template v-else-if="getUserStatsRequest.loadStatus == 3">
+                            <div class="mb-0 mt-0 middle-center" style="height: 152px">Data load error</div>
+                        </template>
+                    </b-card>
+                </b-col>
+            </b-row>
+        </b-card>
     </div>
 </template>
 

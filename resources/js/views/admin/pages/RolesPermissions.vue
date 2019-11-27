@@ -18,63 +18,65 @@
             </template>
         </b-modal>
 
-        <div class="col-12 text-right pr-0 mb-4">
-            <b-button v-if="hasPermission(user, PERMISSION_NAME.CREATE_ROLES)" size="md" class="btn btn-action" variant="primary" v-b-modal.create-role-modal>
-                <i class="fas fa-plus text-white" aria-hidden="true"></i> <span class="text-white">Create Role</span>
-            </b-button>
-        </div>
-
-        <div class="grid-container">
-            <div class="middle-center" v-if="getRolesAndPermissionsRequest.loadStatus == 1 || getRolesWithPermissionsRequest.loadStatus == 1">
-                <div>
-                    <loading :active="true" :is-full-page="false"></loading>
-                </div>
+        <b-card header="Roles-Permissions Matrix" header-class="text-left" class="text-center">
+            <div class="col-12 text-right pr-0 mb-4">
+                <b-button v-if="hasPermission(user, PERMISSION_NAME.CREATE_ROLES)" size="md" class="btn btn-action" variant="primary" v-b-modal.create-role-modal>
+                    <i class="fas fa-plus text-white" aria-hidden="true"></i> <span class="text-white">Create Role</span>
+                </b-button>
             </div>
-            <p v-else-if="getRolesAndPermissionsRequest.loadStatus == 3 || getRolesWithPermissionsRequest.loadStatus == 3" class="text-center mb-0">Data load error</p>
-            <template v-else-if="getRolesAndPermissionsRequest.loadStatus == 2 && getRolesWithPermissionsRequest.loadStatus == 2">
-                <div class="grid" style="margin: auto">
-                    <div class="grid-col grid-col--fixed-left">
-                        <div class="grid-item grid-item--role-name">
-                            <p class="m-0 ml-1 mr-1 text-center" style="line-height: 2.5em; font-size: large"><sub>permission</sub>\<sup>role</sup></p>
-                        </div>
-                        <template v-for="(permission, permissionIndex) in getRolesAndPermissionsRequest.data.permissions">
-                            <div class="grid-item grid-item--permission-name">
-                                <abbr :title="permission.name"><p class="m-0 ml-1 mr-1" style="line-height: 3em">{{ permission.name }}</p></abbr>
-                            </div>
-                        </template>
-                    </div>
-                    <div class="grid-col" v-for="(role, roleIndex) in getRolesAndPermissionsRequest.data.roles">
-                        <div class="grid-item grid-item--role-name">
-                            <p class="m-0 ml-1 mr-1 text-center" style="line-height: 3em">
-                                {{ role.name }}
-                                <template v-if="1 != role.id && hasPermission(user, PERMISSION_NAME.DELETE_ROLES)">
-                                    <b-button size="sm" class="btn btn-action" variant="danger" @click="deleteRole(role.id)">
-                                        <i class="fas fa-trash text-white" aria-hidden="true"></i></span>
-                                    </b-button>
-                                </template>
-                            </p>
-                        </div>
-                        <div class="grid-item" v-for="(permission, permissionIndex) in getRolesAndPermissionsRequest.data.permissions">
-                            <div class="custom-control form-control-lg text-center">
-                                <input v-if="roleHasPermission(role.id, permission.id) && (1 == role.id || !hasPermission(user, PERMISSION_NAME.UPDATE_PERMISSIONS))" type="checkbox" checked disabled class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
-                                <input v-else-if="!roleHasPermission(role.id, permission.id) && (1 == role.id || !hasPermission(user, PERMISSION_NAME.UPDATE_PERMISSIONS))" type="checkbox" disabled class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
-                                <input v-else-if="roleHasPermission(role.id, permission.id) && hasPermission(user, PERMISSION_NAME.UPDATE_PERMISSIONS)" type="checkbox" checked class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
-                                <input v-else type="checkbox" class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
-                            </div>
-                        </div>
+
+            <div class="grid-container">
+                <div class="middle-center" v-if="getRolesAndPermissionsRequest.loadStatus == 1 || getRolesWithPermissionsRequest.loadStatus == 1">
+                    <div>
+                        <loading :active="true" :is-full-page="false"></loading>
                     </div>
                 </div>
-            </template>
-        </div>
+                <p v-else-if="getRolesAndPermissionsRequest.loadStatus == 3 || getRolesWithPermissionsRequest.loadStatus == 3" class="text-center mb-0">Data load error</p>
+                <template v-else-if="getRolesAndPermissionsRequest.loadStatus == 2 && getRolesWithPermissionsRequest.loadStatus == 2">
+                    <div class="grid" style="margin: auto">
+                        <div class="grid-col grid-col--fixed-left">
+                            <div class="grid-item grid-item--role-name">
+                                <p class="m-0 ml-1 mr-1 text-center" style="line-height: 2.5em; font-size: large"><sub>permission</sub>\<sup>role</sup></p>
+                            </div>
+                            <template v-for="(permission, permissionIndex) in getRolesAndPermissionsRequest.data.permissions">
+                                <div class="grid-item grid-item--permission-name">
+                                    <abbr :title="permission.name"><p class="m-0 ml-1 mr-1" style="line-height: 3em">{{ permission.name }}</p></abbr>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="grid-col" v-for="(role, roleIndex) in getRolesAndPermissionsRequest.data.roles">
+                            <div class="grid-item grid-item--role-name">
+                                <p class="m-0 ml-1 mr-1 text-center" style="line-height: 3em">
+                                    {{ role.name }}
+                                    <template v-if="1 != role.id && hasPermission(user, PERMISSION_NAME.DELETE_ROLES)">
+                                        <b-button size="sm" class="btn btn-action" variant="danger" @click="deleteRole(role.id)">
+                                            <i class="fas fa-trash text-white" aria-hidden="true"></i></span>
+                                        </b-button>
+                                    </template>
+                                </p>
+                            </div>
+                            <div class="grid-item" v-for="(permission, permissionIndex) in getRolesAndPermissionsRequest.data.permissions">
+                                <div class="custom-control form-control-lg text-center">
+                                    <input v-if="roleHasPermission(role.id, permission.id) && (1 == role.id || !hasPermission(user, PERMISSION_NAME.UPDATE_PERMISSIONS))" type="checkbox" checked disabled class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
+                                    <input v-else-if="!roleHasPermission(role.id, permission.id) && (1 == role.id || !hasPermission(user, PERMISSION_NAME.UPDATE_PERMISSIONS))" type="checkbox" disabled class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
+                                    <input v-else-if="roleHasPermission(role.id, permission.id) && hasPermission(user, PERMISSION_NAME.UPDATE_PERMISSIONS)" type="checkbox" checked class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
+                                    <input v-else type="checkbox" class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
 
-        <div class="col-12 text-right pr-0" style="margin-top: 1.5rem" v-if="hasPermission(user, PERMISSION_NAME.UPDATE_PERMISSIONS)">
-            <b-button size="md" class="btn btn-action" variant="secondary" @click="reload()">
-                <i class="fas fa-undo-alt text-white" aria-hidden="true"></i> <span class="text-white">Reload</span>
-            </b-button>
-            <b-button size="md" class="btn btn-action" variant="success" @click="applyPermissions()">
-                <i class="fas fa-check text-white" aria-hidden="true"></i> <span class="text-white">Apply</span>
-            </b-button>
-        </div>
+            <div class="col-12 text-right pr-0" style="margin-top: 1.5rem" v-if="hasPermission(user, PERMISSION_NAME.UPDATE_PERMISSIONS)">
+                <b-button size="md" class="btn btn-action" variant="secondary" @click="reload()">
+                    <i class="fas fa-undo-alt text-white" aria-hidden="true"></i> <span class="text-white">Reload</span>
+                </b-button>
+                <b-button size="md" class="btn btn-action" variant="success" @click="applyPermissions()">
+                    <i class="fas fa-check text-white" aria-hidden="true"></i> <span class="text-white">Apply</span>
+                </b-button>
+            </div>
+        </b-card>
     </div>
 </template>
 
@@ -308,8 +310,8 @@ export default {
 .grid-container {
     display: grid; /* This is a (hacky) way to make the .grid element size to fit its content */
     overflow: auto;
-    min-height: 550px;
-    max-height: calc(100vh - 202px - 7.5rem);
+    min-height: 100%;
+    max-height: calc(100vh - 314px - 7.5rem);
     width: 100%;
 }
 .grid {
