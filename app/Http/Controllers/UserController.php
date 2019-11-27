@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Validator;
 use App\Models\User;
 use App\Enums\Error;
-use App\Enums\DefaultRoleType;
 use App\Enums\UserStatus;
 use App\Enums\PermissionType;
 use Illuminate\Http\Request;
@@ -66,7 +65,7 @@ class UserController extends Controller
         for ($i=0; $i<count($users); $i++) {
             $roleArr = [];
             foreach ($users[$i]->getRoleNames() as $role) {
-                array_push($roleArr, DefaultRoleType::getKey($role));
+                array_push($roleArr, $role);
             }
             $users[$i]['display_roles'] = implode(", ", $roleArr);
             $users[$i]['status'] = UserStatus::getKey($users[$i]['status']);
