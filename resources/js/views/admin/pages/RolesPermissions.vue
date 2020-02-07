@@ -26,7 +26,7 @@
             </div>
 
             <div class="grid-container">
-                <div class="middle-center" v-if="getRolesAndPermissionsRequest.loadStatus == 1 || getRolesWithPermissionsRequest.loadStatus == 1">
+                <div class="middle-center" style="position: inherit" v-if="getRolesAndPermissionsRequest.loadStatus == 1 || getRolesWithPermissionsRequest.loadStatus == 1">
                     <div>
                         <loading :active="true" :is-full-page="false"></loading>
                     </div>
