@@ -1,17 +1,13 @@
 <template>
-    <b-nav-item-dropdown right no-caret>
+    <b-nav-item-dropdown ref="headerbtndropdown" right no-caret>
         <template slot="button-content" v-if="user">
             <abbr :title="user.email">
-                <button type="button" class="btn btn-light" v-if="logoutLoadStatus == 1">
-                    <div class="text-center text-info">
-                        <!-- <b-spinner small></b-spinner> -->
-                        <loading :active="true"></loading>
-                    </div>
+                <button type="button" class="btn btn-light">
+                    <i class="fa fa-user" /> Account
                 </button>
-                <button type="button" class="btn btn-light" v-else><i class="fa fa-user" /> Account</button>
             </abbr>
         </template>
-        <b-dropdown-header tag="div" class="text-center" v-if="user">
+        <b-dropdown-header tag="div" class="text-center">
             <strong>{{ user.email }}</strong>
         </b-dropdown-header>
         <b-dropdown-item @click="logout()">
@@ -25,11 +21,6 @@ import AuthAPI from '../../../../api/auth.js'
 
 export default {
     name: 'HeaderDropdown',
-    data: () => {
-        return {
-            logoutLoadStatus: 0,
-        }
-    },
     computed: {
         user(){
             return this.$store.get('auth/user');
@@ -38,14 +29,14 @@ export default {
     methods: {
         logout () {
             var vm = this
-            vm.logoutLoadStatus = 1
+            // Hide the dropdown
+            vm.$refs.headerbtndropdown.hide()
+            // Do the logout
             vm.$store.dispatch('auth/logout')
             .then(response => {
-                vm.logoutLoadStatus = 2
                 vm.$router.push({ name: 'Home' })
             })
             .catch(function(error) {
-                vm.logoutLoadStatus = 3
                 if (error.response) {
                     // Show message error
                     vm.$snotify.error("Server error")
