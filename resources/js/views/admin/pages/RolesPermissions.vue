@@ -117,12 +117,12 @@ export default {
         }
     },
     computed: {
-        user(){
+        user () {
             return this.$store.get('auth/user');
         },
     },
     methods: {
-        applyPermissions() {
+        applyPermissions () {
             var vm = this
             this.$swal({
                 title: 'You sure to apply this role-permission matrix?',
@@ -178,7 +178,7 @@ export default {
                 }
             })
         },
-        createRole(bvModalEvt) {
+        createRole (bvModalEvt) {
             // Prevent modal from closing
             bvModalEvt.preventDefault()
 
@@ -207,7 +207,7 @@ export default {
                 }
             })
         },
-        deleteRole(roleId) {
+        deleteRole (roleId) {
             var vm = this
 
             this.$swal({
@@ -245,7 +245,7 @@ export default {
                 }
             })
         },
-        roleHasPermission(roleId, permissionId) {
+        roleHasPermission (roleId, permissionId) {
             var hasRole = false
 
             for (let role of this.getRolesWithPermissionsRequest.data.roles) {
@@ -262,18 +262,18 @@ export default {
 
             return hasRole
         },
-        reload() {
+        reload () {
             // Reload the matrix data
             this.loadMatrixData()
         },
-        loadMatrixData() {
+        loadMatrixData () {
             var vm = this
             // Get all roles and permissions
             vm.loadRolesAndPermissions()
             // Get all roles with associated permissions
             vm.loadRolesWithPermissions()
         },
-        loadRolesAndPermissions() {
+        loadRolesAndPermissions () {
             var vm = this
             vm.getRolesAndPermissionsRequest.loadStatus = 1
             AuthAPI.getRolesAndPermissions()
@@ -286,7 +286,7 @@ export default {
                 vm.getRolesAndPermissionsRequest.loadStatus = 3
             })
         },
-        loadRolesWithPermissions() {
+        loadRolesWithPermissions () {
             var vm = this
             vm.getRolesWithPermissionsRequest.loadStatus = 1
             AuthAPI.getRolesWithPermissions()

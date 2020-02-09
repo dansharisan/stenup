@@ -117,7 +117,7 @@ export default {
         }
     },
     methods: {
-        goToHome() {
+        goToHome () {
             this.$router.push({ name: 'Home' })
         },
         submit () {

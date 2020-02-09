@@ -116,7 +116,7 @@ export default {
         this.checkToken(this.params.token);
     },
     methods: {
-        goToHome() {
+        goToHome () {
             this.$router.push({ name: 'Home' })
         },
 

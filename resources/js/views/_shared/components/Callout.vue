@@ -1,19 +1,19 @@
 <template>
-  <div :class="classList">
-    <slot />
-  </div>
+    <div :class="classList">
+        <slot />
+    </div>
 </template>
 
 <script>
 export default {
-  props   : { variant: { type: String } },
-  computed: {
-    classList () {
-      return ['callout', this.calloutVariant]
+    props   : { variant: { type: String } },
+    computed: {
+        classList () {
+            return ['callout', this.calloutVariant]
+        },
+        calloutVariant () {
+            return this.variant ? `callout-${this.variant}` : ''
+        },
     },
-    calloutVariant () {
-      return this.variant ? `callout-${this.variant}` : ''
-    },
-  },
 }
 </script>

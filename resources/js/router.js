@@ -52,7 +52,7 @@ function requireAccessPermission(to, from, next) {
                 checkAccessPermission(PERMISSION_NAME.VIEW_ROLES_PERMISSIONS)
                 break;
             default:
-                next('/home')
+                next('/')
         }
     }
 
@@ -81,7 +81,7 @@ function requireAccessPermission(to, from, next) {
 
 function requireNonAuth (to, from, next) {
     if (store.get('auth/user') && store.get('auth/user').id) {
-        next('/home')
+        next('/')
     } else {
         if (store.get('auth/userLoadStatus') == 3) {
             next()
@@ -92,7 +92,7 @@ function requireNonAuth (to, from, next) {
             }
             store.watch(store.getters['auth/getUserLoadStatus'], n => {
                 if (store.get('auth/userLoadStatus') == 2) {
-                    next('/home')
+                    next('/')
                 } else if (store.get('auth/userLoadStatus') == 3) {
                     next()
                 }

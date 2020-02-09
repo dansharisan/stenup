@@ -1,6 +1,6 @@
 <template>
-  <div />
-  <!-- <div class="sidebar-footer"></div> -->
+    <div />
+    <!-- <div class="sidebar-footer"></div> -->
 </template>
 <script>
 
