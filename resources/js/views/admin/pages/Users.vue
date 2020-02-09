@@ -126,7 +126,7 @@ export default {
             // Remember user's preference for per_page
             window.localStorage.setItem('per_page', newPerPage)
         },
-        getUsers(page = 1, perPage = 15) {
+        getUsers (page = 1, perPage = 15) {
             var vm = this
             vm.crudUsersRequest.loadStatus = 1
             UserAPI.getUsers(page, perPage)

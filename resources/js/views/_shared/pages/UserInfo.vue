@@ -61,7 +61,7 @@
 
 <script>
 import AuthAPI from '../../../api/auth.js'
-import { AuthUtils } from '../../../mixins/auth-utils.js';
+import { AuthUtils } from '../../../mixins/auth-utils.js'
 import { PERMISSION_NAME } from '../../../const.js'
 
 export default {
@@ -72,29 +72,14 @@ export default {
         }
     },
     computed: {
-        user(){
+        user () {
             return this.$store.get('auth/user');
         },
     },
     methods: {
-        goToHome() {
+        goToHome () {
             this.$router.push({ name: 'Home' })
-        },
-        logout () {
-            var vm = this
-            vm.$store.dispatch('auth/logout')
-            .then(response => {
-                vm.$router.push({ name: 'Home' })
-            })
-            .catch(function(error) {
-                if (error.response) {
-                    // Show message error
-                    vm.$snotify.error("Server error")
-                } else {
-                    vm.$snotify.error("Network error")
-                }
-            })
-        },
+        }
     },
     mixins:[
         AuthUtils,

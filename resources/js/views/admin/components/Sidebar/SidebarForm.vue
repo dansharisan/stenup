@@ -1,6 +1,6 @@
 <template>
-  <div />
-  <!-- <div class="sidebar-form"></div> -->
+    <div />
+    <!-- <div class="sidebar-form"></div> -->
 </template>
 <script>
 

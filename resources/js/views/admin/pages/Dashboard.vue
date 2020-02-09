@@ -43,8 +43,6 @@ export default {
             },
         }
     },
-    methods: {
-    },
     created () {
         var vm = this;
         vm.getUserStatsRequest.loadStatus = 1

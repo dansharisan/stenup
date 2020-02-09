@@ -73,7 +73,7 @@ export default {
         this.activateAccount(this.params.token);
     },
     methods: {
-        goToHome() {
+        goToHome () {
             this.$router.push({ name: 'Home' })
         },
 

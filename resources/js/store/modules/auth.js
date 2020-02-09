@@ -4,7 +4,8 @@ import AuthAPI from '../../api/auth.js'
 
 const state = {
     user: {},
-    userLoadStatus: 0
+    userLoadStatus: 0,
+    logoutLoadStatus: 0
 }
 
 // add generate mutation vuex easy access
@@ -13,7 +14,8 @@ const mutations = { ...defaultMutations(state) }
 
 const getters = {
     getUser: state => () => state.user,
-    getUserLoadStatus: state => () => state.userLoadStatus
+    getUserLoadStatus: state => () => state.userLoadStatus,
+    getLogoutLoadStatus: state => () => state.logoutLoadStatus
 }
 
 const actions = {
@@ -32,15 +34,19 @@ const actions = {
     },
 
     logout ({ commit }) {
+        commit('logoutLoadStatus', 1)
+
         return new Promise((resolve, reject) => {
             AuthAPI.logout()
             .then((response) => {
+                commit('logoutLoadStatus', 2)
                 commit('userLoadStatus', 0)
                 commit('user', {})
                 // Return successful response
                 resolve(response)
             })
             .catch((error) => {
+                commit('logoutLoadStatus', 3)
                 // Return error
                 reject(error)
             })

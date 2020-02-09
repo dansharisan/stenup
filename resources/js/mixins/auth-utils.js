@@ -1,11 +1,11 @@
 export const AuthUtils = {
     methods: {
-        hasRole(userObject, roleName) {
+        hasRole (userObject, roleName) {
             var roles = this.getRoles(userObject)
 
             return roles.includes(roleName);
         },
-        getRoles(userObject) {
+        getRoles (userObject) {
             if (!userObject.roles) {
                 return []
             }
@@ -15,6 +15,24 @@ export const AuthUtils = {
             }
 
             return roles
-        }
+        },
+        logout () {
+            var vm = this
+            vm.$store.dispatch('auth/logout')
+            .then(response => {
+                // Only redirect if current page is not Index
+                if (vm.$route.name != 'Index') {
+                    vm.$router.push({ name: 'Index' })
+                }
+            })
+            .catch(function(error) {
+                if (error.response) {
+                    // Show message error
+                    vm.$snotify.error("Server error")
+                } else {
+                    vm.$snotify.error("Network error")
+                }
+            })
+        },
     }
 }

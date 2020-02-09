@@ -111,7 +111,7 @@ export default {
                 // Mark request status as loaded succesully
                 vm.request.status = 2
                 // Move to UserInfo page
-                vm.$router.push({ name: 'Home' })
+                vm.$router.push({ name: 'UserInfo' })
             })
             .catch(error => {
                 // Mark request status as failed to load

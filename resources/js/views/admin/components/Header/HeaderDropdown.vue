@@ -10,7 +10,7 @@
         <b-dropdown-header tag="div" class="text-center">
             <strong>{{ user.email }}</strong>
         </b-dropdown-header>
-        <b-dropdown-item @click="logout()">
+        <b-dropdown-item @click="doLogout()">
             <i class="fas fa-sign-out-alt" /> Logout
         </b-dropdown-item>
     </b-nav-item-dropdown>
@@ -18,33 +18,26 @@
 
 <script>
 import AuthAPI from '../../../../api/auth.js'
+import { AuthUtils } from '../../../../mixins/auth-utils.js';
 
 export default {
     name: 'HeaderDropdown',
     computed: {
-        user(){
+        user () {
             return this.$store.get('auth/user');
         },
     },
     methods: {
-        logout () {
+        doLogout () {
             var vm = this
             // Hide the dropdown
             vm.$refs.headerbtndropdown.hide()
-            // Do the logout
-            vm.$store.dispatch('auth/logout')
-            .then(response => {
-                vm.$router.push({ name: 'Home' })
-            })
-            .catch(function(error) {
-                if (error.response) {
-                    // Show message error
-                    vm.$snotify.error("Server error")
-                } else {
-                    vm.$snotify.error("Network error")
-                }
-            })
+            // Call logout function from mixin
+            vm.logout()
         },
     },
+    mixins:[
+        AuthUtils,
+    ],
 }
 </script>
