@@ -6,7 +6,7 @@
     },
     "servers": [
         {
-            "url": "https://stenup.test",
+            "url": "http://localhost",
             "description": "Default server"
         }
     ],
