@@ -17894,6 +17894,8 @@ body {
   font-size: 2.5rem !important;
 }
 
+/* To use animated fade-in effect, add classes "animated fadeIn" to element */
+
 .animated {
   -webkit-animation-duration: 1s;
           animation-duration: 1s;
