@@ -79,6 +79,18 @@ function requireAccessPermission(to, from, next) {
     }
 }
 
+function checkAuth (to, from, next) {
+    if (store.get('auth/userLoadStatus') == 0 && store.get('auth/logoutLoadStatus') != 2) {
+        store.dispatch('auth/getUser')
+        var unwatch = store.watch(store.getters['auth/getUserLoadStatus'], n => {
+            unwatch()
+            next()
+        })
+    } else {
+        next()
+    }
+}
+
 function requireNonAuth (to, from, next) {
     if (store.get('auth/user') && store.get('auth/user').id) {
         next('/')
@@ -134,6 +146,7 @@ export default new Router({
             redirect : '/index',
             name     : COMPONENT_NAME.HOME,
             component: UserContainer,
+            beforeEnter: checkAuth,
             children : [
                 {
                     path     : 'index',

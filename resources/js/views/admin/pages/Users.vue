@@ -1,5 +1,5 @@
 <template>
-    <div class="animated fadeIn">
+    <div>
         <b-card header="Users" header-class="text-left" class="text-center">
             <p v-if="crudUsersRequest.loadStatus == 3" class="text-center mb-0">Data load error</p>
             <div v-else id="master-table">

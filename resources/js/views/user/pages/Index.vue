@@ -1,5 +1,5 @@
 <template>
-    <div class="animated fadeIn">
+    <div>
         Index page
     </div>
 </template>

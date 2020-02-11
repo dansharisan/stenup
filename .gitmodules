@@ -1,0 +1,4 @@
+[submodule "laradock"]
+	path = laradock
+	url = https://github.com/dansharisan/laradock.git
+	branch = stenup

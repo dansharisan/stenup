@@ -1,5 +1,5 @@
 <template>
-    <div class="animated fadeIn">
+    <div>
         <b-card header="Overall Stats" header-class="text-left" class="text-center">
             <b-row>
                 <b-col sm="6" lg="3">

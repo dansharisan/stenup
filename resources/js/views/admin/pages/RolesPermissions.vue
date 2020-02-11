@@ -1,5 +1,5 @@
 <template>
-    <div class="animated fadeIn">
+    <div>
         <b-modal id="create-role-modal" modal-class="text-left" centered title="Create new role" @ok="createRole" ok-variant="success" ref="create-role-modal">
             <loading :active="crudRoleRequest.loadStatus == 1"></loading>
             <template>

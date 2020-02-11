@@ -9,6 +9,9 @@
             <a href="#" @click="logout()"><h3><center>Logout</center></h3></a>
         </template>
         <a v-else href="#" @click="$router.push('/login')"><h3><center>Go to Login page</center></h3></a>
+        <div class="container-fluid">
+            <center><router-view /></center>
+        </div>
     </div>
 </template>
 
