@@ -80,7 +80,7 @@ function requireAccessPermission(to, from, next) {
 }
 
 function checkAuth (to, from, next) {
-    if (store.get('auth/userLoadStatus') == 0 && store.get('auth/logoutLoadStatus') != 2) {
+    if (store.get('auth/userLoadStatus') != 1 && store.get('auth/logoutLoadStatus') != 1) {
         store.dispatch('auth/getUser')
         var unwatch = store.watch(store.getters['auth/getUserLoadStatus'], n => {
             unwatch()

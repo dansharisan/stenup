@@ -95,7 +95,11 @@
 
 <script>
 import UserAPI from '../../../api/user.js'
+import { AuthUtils } from '../../../mixins/auth-utils.js'
 export default {
+    mixins:[
+        AuthUtils,
+    ],
     data: function () {
         return {
             crudUsersRequest: {
@@ -135,6 +139,8 @@ export default {
                 vm.crudUsersRequest.loadStatus = 2
             })
             .catch(error => {
+                // Handle unauthorized error
+                vm.handleAuthError(error)
                 vm.crudUsersRequest.loadStatus = 3
             })
         },

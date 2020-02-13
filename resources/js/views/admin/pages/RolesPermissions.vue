@@ -84,8 +84,11 @@
 import AuthAPI from '../../../api/auth.js'
 import { required } from 'vuelidate/lib/validators'
 import { PERMISSION_NAME } from '../../../const.js'
-
+import { AuthUtils } from '../../../mixins/auth-utils.js'
 export default {
+    mixins:[
+        AuthUtils,
+    ],
     validations () {
         return {
             crudRoleRequest: {
@@ -168,7 +171,9 @@ export default {
                         // Fire notification
                         vm.$snotify.success("Applied successfully")
                     })
-                    .catch( function( e ) {
+                    .catch( function(error) {
+                        // Handle unauthorized error
+                        vm.handleAuthError(error)
                         // vm.getRolesWithPermissionsRequest.data = {}
                         // vm.getRolesWithPermissionsRequest.loadStatus = 3
                         vm.loadRolesWithPermissions()
@@ -197,6 +202,8 @@ export default {
                 vm.$snotify.success("Created successfully")
             })
             .catch( function(error) {
+                // Handle unauthorized error
+                vm.handleAuthError(error)
                 vm.crudRoleRequest.loadStatus = 3
                 if (error && error.response) {
                     vm.crudRoleRequest.data = error.response.data
@@ -233,6 +240,8 @@ export default {
                         vm.$snotify.success("Deleted successfully")
                     })
                     .catch( function(error) {
+                        // Handle unauthorized error
+                        vm.handleAuthError(error)
                         vm.crudRoleRequest.loadStatus = 3
                         if (error && error.response) {
                             vm.crudRoleRequest.data = error.response.data
@@ -281,7 +290,9 @@ export default {
                 vm.getRolesAndPermissionsRequest.data = response.data
                 vm.getRolesAndPermissionsRequest.loadStatus = 2
             })
-            .catch( function( e ) {
+            .catch( function(error) {
+                // Handle unauthorized error
+                vm.handleAuthError(error)
                 vm.getRolesAndPermissionsRequest.data = {}
                 vm.getRolesAndPermissionsRequest.loadStatus = 3
             })
@@ -294,7 +305,9 @@ export default {
                 vm.getRolesWithPermissionsRequest.data = response.data
                 vm.getRolesWithPermissionsRequest.loadStatus = 2
             })
-            .catch( function( e ) {
+            .catch( function(error) {
+                // Handle unauthorized error
+                vm.handleAuthError(error)
                 vm.getRolesWithPermissionsRequest.data = {}
                 vm.getRolesWithPermissionsRequest.loadStatus = 3
             })
