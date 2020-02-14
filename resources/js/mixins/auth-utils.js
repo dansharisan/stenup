@@ -27,7 +27,7 @@ export const AuthUtils = {
             })
             .catch(function(error) {
                 vm.handleAuthError(error)
-                vm.$snotify.error("Something is not right")
+                vm.$snotify.error("Something went wrong")
             })
         },
         handleAuthError (error) {
@@ -37,8 +37,9 @@ export const AuthUtils = {
                 let timerInterval
                 vm.$swal({
                     title: 'Unauthorized',
-                    html: "You're not authorized to do this action. We will redirect you to Home page in <b></b> seconds.",
+                    html: "Something went wrong. You might not be authorized to do this action. We will redirect you to Home page in <b></b> seconds.",
                     timer: 3000,
+                    type: 'warning',
                     onBeforeOpen: () => {
                         vm.$swal.showLoading()
                         timerInterval = setInterval(() => {
@@ -58,13 +59,7 @@ export const AuthUtils = {
                 .then((result) => {
                     /* Read more about handling dismissals below */
                     if (result.dismiss === vm.$swal.DismissReason.timer) {
-                        // Only redirect if current page is not Index
-                        if (vm.$route.name != 'Index') {
-                            vm.$router.push({ name: 'Index' })
-                        } else {
-                            // Retrieve the current auth status
-                            vm.$store.dispatch('auth/getUser')
-                        }
+                        window.location.replace('/');
                     }
                 })
         }

@@ -65,7 +65,7 @@ function requireAccessPermission(to, from, next) {
             next('/login')
         } else {
             // Before request to auth, make sure it's not being requested
-            if (store.get('auth/userLoadStatus') != 1) {
+            if (store.get('auth/userLoadStatus') != 1 && store.get('auth/logoutLoadStatus') != 1) {
                 store.dispatch('auth/getUser')
             }
             store.watch(store.getters['auth/getUserLoadStatus'], n => {
@@ -80,7 +80,7 @@ function requireAccessPermission(to, from, next) {
 }
 
 function checkAuth (to, from, next) {
-    if (store.get('auth/userLoadStatus') != 1 && store.get('auth/logoutLoadStatus') != 1) {
+    if (store.get('auth/userLoadStatus') == 0 && store.get('auth/logoutLoadStatus') != 2) {
         store.dispatch('auth/getUser')
         var unwatch = store.watch(store.getters['auth/getUserLoadStatus'], n => {
             unwatch()
@@ -92,46 +92,32 @@ function checkAuth (to, from, next) {
 }
 
 function requireNonAuth (to, from, next) {
-    if (store.get('auth/user') && store.get('auth/user').id) {
-        next('/')
-    } else {
-        if (store.get('auth/userLoadStatus') == 3) {
-            next()
-        } else {
-            // Before request to auth, make sure it's not being requested
-            if (store.get('auth/userLoadStatus') != 1) {
-                store.dispatch('auth/getUser')
+    // Before request to auth, make sure it's not being requested
+    if (store.get('auth/userLoadStatus') != 1 && store.get('auth/logoutLoadStatus') != 1) {
+        store.dispatch('auth/getUser')
+        var unwatch = store.watch(store.getters['auth/getUserLoadStatus'], n => {
+            unwatch()
+            if (store.get('auth/userLoadStatus') == 2) {
+                next('/userinfo')
+            } else {
+                next()
             }
-            store.watch(store.getters['auth/getUserLoadStatus'], n => {
-                if (store.get('auth/userLoadStatus') == 2) {
-                    next('/')
-                } else if (store.get('auth/userLoadStatus') == 3) {
-                    next()
-                }
-            })
-        }
+        })
     }
 }
 
 function requireAuth (to, from, next) {
-    if (store.get('auth/user') && store.get('auth/user').id) {
-        next()
-    } else {
-        if (store.get('auth/userLoadStatus') == 3) {
-            next('/login')
-        } else {
-            // Before request to auth, make sure it's not being requested
-            if (store.get('auth/userLoadStatus') != 1) {
-                store.dispatch('auth/getUser')
+    // Before request to auth, make sure it's not being requested
+    if (store.get('auth/userLoadStatus') != 1 && store.get('auth/logoutLoadStatus') != 1) {
+        store.dispatch('auth/getUser')
+        var unwatch = store.watch(store.getters['auth/getUserLoadStatus'], n => {
+            unwatch()
+            if (store.get('auth/userLoadStatus') == 2) {
+                next()
+            } else {
+                next('/login')
             }
-            store.watch(store.getters['auth/getUserLoadStatus'], n => {
-                if (store.get('auth/userLoadStatus') == 2) {
-                    next()
-                } else if (store.get('auth/userLoadStatus') == 3) {
-                   next('/login')
-                }
-            })
-        }
+        })
     }
 }
 
