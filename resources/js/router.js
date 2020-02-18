@@ -57,71 +57,47 @@ function requireAccessPermission(to, from, next) {
     }
 
     // In case user info is already in the store
-    if (store.get('auth/user') && store.get('auth/user').id) {
+    if (store.get('auth/userLoadStatus') == 2) {
         checkRouteAccessLogic()
     } else {
-        // If unauthenticated, redirect to login page
-        if (store.get('auth/userLoadStatus') == 3) {
-            next('/login')
+        // Not authorized or auth state has changed
+        if (from.name) {
+            Vue.prototype.handleInvalidAuthState(router.app)
         } else {
-            // Before request to auth, make sure it's not being requested
-            if (store.get('auth/userLoadStatus') != 1 && store.get('auth/logoutLoadStatus') != 1) {
-                store.dispatch('auth/getUser')
-            }
-            store.watch(store.getters['auth/getUserLoadStatus'], n => {
-                if (store.get('auth/userLoadStatus') == 2) {
-                    checkRouteAccessLogic()
-                } else if (store.get('auth/userLoadStatus') == 3) {
-                    next('/login')
-                }
-            })
+            next('/403')
         }
     }
 }
 
-function checkAuth (to, from, next) {
-    if (store.get('auth/userLoadStatus') == 0 && store.get('auth/logoutLoadStatus') != 2) {
-        store.dispatch('auth/getUser')
-        var unwatch = store.watch(store.getters['auth/getUserLoadStatus'], n => {
-            unwatch()
-            next()
-        })
-    } else {
-        next()
-    }
-}
-
 function requireNonAuth (to, from, next) {
-    // Before request to auth, make sure it's not being requested
     if (store.get('auth/userLoadStatus') != 1 && store.get('auth/logoutLoadStatus') != 1) {
-        store.dispatch('auth/getUser')
-        var unwatch = store.watch(store.getters['auth/getUserLoadStatus'], n => {
-            unwatch()
-            if (store.get('auth/userLoadStatus') == 2) {
-                next('/userinfo')
+        if (store.get('auth/userLoadStatus') != 2) {
+            next()
+        } else {
+            if (from.name) {
+                Vue.prototype.handleInvalidAuthState(router.app)
             } else {
-                next()
+                next('/userinfo')
             }
-        })
+        }
     }
 }
 
 function requireAuth (to, from, next) {
-    // Before request to auth, make sure it's not being requested
     if (store.get('auth/userLoadStatus') != 1 && store.get('auth/logoutLoadStatus') != 1) {
-        store.dispatch('auth/getUser')
-        var unwatch = store.watch(store.getters['auth/getUserLoadStatus'], n => {
-            unwatch()
-            if (store.get('auth/userLoadStatus') == 2) {
-                next()
+        if (store.get('auth/userLoadStatus') == 2) {
+            next()
+        } else {
+            if (from.name) {
+                Vue.prototype.handleInvalidAuthState(router.app)
             } else {
                 next('/login')
             }
-        })
+        }
     }
 }
 
-export default new Router({
+const router = new Router({
     mode           : 'history',
     linkActiveClass: 'open active',
     scrollBehavior : () => ({ y: 0 }),
@@ -132,7 +108,6 @@ export default new Router({
             redirect : '/index',
             name     : COMPONENT_NAME.HOME,
             component: UserContainer,
-            beforeEnter: checkAuth,
             children : [
                 {
                     path     : 'index',
@@ -226,3 +201,17 @@ export default new Router({
         },
     ],
 })
+
+router.beforeEach((to, from, next) => {
+    if (store.get('auth/userLoadStatus') != 1 && store.get('auth/logoutLoadStatus') != 1) {
+        store.dispatch('auth/getUser')
+        var unwatch = store.watch(store.getters['auth/getUserLoadStatus'], n => {
+            unwatch()
+            next()
+        })
+    } else {
+        next()
+    }
+})
+
+export default router

@@ -59,8 +59,11 @@ export default {
         })
         .catch(error => {
             // Handle unauthorized error
-            vm.handleAuthError(error)
-            vm.getUserStatsRequest.loadStatus = 3
+            if (error.response && error.response.status == 401) {
+                vm.handleInvalidAuthState(vm)
+            } else {
+                vm.getUserStatsRequest.loadStatus = 3
+            }
         })
     },
 }
