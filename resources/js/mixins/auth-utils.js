@@ -26,11 +26,11 @@ export const AuthUtils = {
                 }
             })
             .catch(function(error) {
-                if (error.response) {
-                    // Show message error
-                    vm.$snotify.error("Server error")
+                // Handle unauthorized error
+                if (error.response && error.response.status == 401) {
+                    vm.handleInvalidAuthState(vm)
                 } else {
-                    vm.$snotify.error("Network error")
+                    vm.$snotify.error("Something went wrong")
                 }
             })
         },

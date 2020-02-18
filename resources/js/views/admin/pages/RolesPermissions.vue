@@ -84,7 +84,6 @@
 import AuthAPI from '../../../api/auth.js'
 import { required } from 'vuelidate/lib/validators'
 import { PERMISSION_NAME } from '../../../const.js'
-
 export default {
     validations () {
         return {
@@ -168,7 +167,11 @@ export default {
                         // Fire notification
                         vm.$snotify.success("Applied successfully")
                     })
-                    .catch( function( e ) {
+                    .catch( function(error) {
+                        // Handle unauthorized error
+                        if (error.response && error.response.status == 401) {
+                            vm.handleInvalidAuthState(vm)
+                        }
                         // vm.getRolesWithPermissionsRequest.data = {}
                         // vm.getRolesWithPermissionsRequest.loadStatus = 3
                         vm.loadRolesWithPermissions()
@@ -197,13 +200,18 @@ export default {
                 vm.$snotify.success("Created successfully")
             })
             .catch( function(error) {
-                vm.crudRoleRequest.loadStatus = 3
-                if (error && error.response) {
-                    vm.crudRoleRequest.data = error.response.data
-                    let msg = error.response.data.error ? error.response.data.error.message : error.response.data.message;
-                    vm.$snotify.error("Failed to create this role: " + msg)
+                // Handle unauthorized error
+                if (error.response && error.response.status == 401) {
+                    vm.handleInvalidAuthState(vm)
                 } else {
-                    vm.$snotify.error("Network error")
+                    vm.crudRoleRequest.loadStatus = 3
+                    if (error && error.response) {
+                        vm.crudRoleRequest.data = error.response.data
+                        let msg = error.response.data.error ? error.response.data.error.message : error.response.data.message;
+                        vm.$snotify.error("Failed to create this role: " + msg)
+                    } else {
+                        vm.$snotify.error("Network error")
+                    }
                 }
             })
         },
@@ -233,13 +241,18 @@ export default {
                         vm.$snotify.success("Deleted successfully")
                     })
                     .catch( function(error) {
-                        vm.crudRoleRequest.loadStatus = 3
-                        if (error && error.response) {
-                            vm.crudRoleRequest.data = error.response.data
-                            let msg = error.response.data.error ? error.response.data.error.message : error.response.data.message;
-                            vm.$snotify.error("Failed to delete this role: " + msg)
+                        // Handle unauthorized error
+                        if (error.response && error.response.status == 401) {
+                            vm.handleInvalidAuthState(vm)
                         } else {
-                            vm.$snotify.error("Network error")
+                            vm.crudRoleRequest.loadStatus = 3
+                            if (error && error.response) {
+                                vm.crudRoleRequest.data = error.response.data
+                                let msg = error.response.data.error ? error.response.data.error.message : error.response.data.message;
+                                vm.$snotify.error("Failed to delete this role: " + msg)
+                            } else {
+                                vm.$snotify.error("Network error")
+                            }
                         }
                     })
                 }
@@ -281,9 +294,14 @@ export default {
                 vm.getRolesAndPermissionsRequest.data = response.data
                 vm.getRolesAndPermissionsRequest.loadStatus = 2
             })
-            .catch( function( e ) {
-                vm.getRolesAndPermissionsRequest.data = {}
-                vm.getRolesAndPermissionsRequest.loadStatus = 3
+            .catch( function(error) {
+                // Handle unauthorized error
+                if (error.response && error.response.status == 401) {
+                    vm.handleInvalidAuthState(vm)
+                } else {
+                    vm.getRolesAndPermissionsRequest.data = {}
+                    vm.getRolesAndPermissionsRequest.loadStatus = 3
+                }
             })
         },
         loadRolesWithPermissions () {
@@ -294,9 +312,14 @@ export default {
                 vm.getRolesWithPermissionsRequest.data = response.data
                 vm.getRolesWithPermissionsRequest.loadStatus = 2
             })
-            .catch( function( e ) {
-                vm.getRolesWithPermissionsRequest.data = {}
-                vm.getRolesWithPermissionsRequest.loadStatus = 3
+            .catch( function(error) {
+                // Handle unauthorized error
+                if (error.response && error.response.status == 401) {
+                    vm.handleInvalidAuthState(vm)
+                } else {
+                    vm.getRolesWithPermissionsRequest.data = {}
+                    vm.getRolesWithPermissionsRequest.loadStatus = 3
+                }
             })
         }
     },

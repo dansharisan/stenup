@@ -95,6 +95,7 @@
 
 <script>
 import UserAPI from '../../../api/user.js'
+
 export default {
     data: function () {
         return {
@@ -135,7 +136,12 @@ export default {
                 vm.crudUsersRequest.loadStatus = 2
             })
             .catch(error => {
-                vm.crudUsersRequest.loadStatus = 3
+                // Handle unauthorized error
+                if (error.response && error.response.status == 401) {
+                    vm.handleInvalidAuthState(vm)
+                } else {
+                    vm.crudUsersRequest.loadStatus = 3
+                }
             })
         },
     },
