@@ -95,11 +95,8 @@
 
 <script>
 import UserAPI from '../../../api/user.js'
-import { AuthUtils } from '../../../mixins/auth-utils.js'
+
 export default {
-    mixins:[
-        AuthUtils,
-    ],
     data: function () {
         return {
             crudUsersRequest: {

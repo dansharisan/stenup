@@ -84,11 +84,7 @@
 import AuthAPI from '../../../api/auth.js'
 import { required } from 'vuelidate/lib/validators'
 import { PERMISSION_NAME } from '../../../const.js'
-import { AuthUtils } from '../../../mixins/auth-utils.js'
 export default {
-    mixins:[
-        AuthUtils,
-    ],
     validations () {
         return {
             crudRoleRequest: {

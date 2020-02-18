@@ -29,15 +29,11 @@
 <script>
 import UserAPI from '../../../api/user.js'
 import CardBarChart from '../components/CardBarChart'
-import { AuthUtils } from '../../../mixins/auth-utils.js'
 export default {
     name      : 'Dashboard',
     components: {
         CardBarChart,
     },
-    mixins:[
-        AuthUtils,
-    ],
     data: function () {
         return {
             getUserStatsRequest: {
