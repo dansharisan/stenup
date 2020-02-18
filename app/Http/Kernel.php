@@ -38,7 +38,8 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            'throttle:60,1',
+            // TODO: Prevent [Too Many Attempts] issue. Turn on it when on production
+            // 'throttle:60,1',
             'bindings',
         ],
     ];
