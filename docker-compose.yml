@@ -22,6 +22,8 @@ services:
     restart: unless-stopped
     ports:
       - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
     environment:
       MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
@@ -47,3 +49,7 @@ services:
 networks:
   stenup:
     driver: bridge
+
+volumes:
+  dbdata:
+    driver: local

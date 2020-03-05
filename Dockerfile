@@ -1,3 +1,5 @@
+# Reference: https://www.digitalocean.com/community/tutorials/how-to-containerize-a-laravel-application-for-development-with-docker-compose-on-ubuntu-18-04
+
 FROM php:7.4-fpm
 
 # Arguments defined in docker-compose.yml
