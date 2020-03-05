@@ -1,0 +1,11 @@
+# Codeception Test Suite Configuration
+#
+# Suite for api tests.
+
+actor: ApiTester
+path: .
+modules:
+    enabled:
+        - REST:
+            url: http://localhost/api
+            depends: PhpBrowser
