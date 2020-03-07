@@ -8,3 +8,12 @@ modules:
         - REST:
             url: nginx:80/api
             depends: PhpBrowser
+        - Db:
+            dsn: 'mysql:host=db;dbname=stenup_test'
+            user: 'root'
+            password: '5002elnets'
+            dump: 'tests/_data/dump.sql'
+            populate: true
+            cleanup: true
+            reconnect: true
+            waitlock: 0
