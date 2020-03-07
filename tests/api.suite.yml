@@ -6,5 +6,5 @@ path: .
 modules:
     enabled:
         - REST:
-            url: http://localhost:8000/api
+            url: nginx:80/api
             depends: PhpBrowser

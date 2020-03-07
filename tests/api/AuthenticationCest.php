@@ -5,12 +5,39 @@ class AuthenticationCest
 {
     public function loginFailure(ApiTester $I)
     {
-        // Send the request
+        // Case: Empty email should return validation error
         $I->sendPOST('/auth/login', [
-            'email' => 'fake_email@something.com',
+            'email' => '',
             'password' => 'anything'
         ]);
+        $this->seeValidationError($I);
 
-        $I->seeResponseCodeIs(Response::HTTP_UNAUTHORIZED);
+        // Case: Email not valid should return validation error
+        $I->sendPOST('/auth/login', [
+            'email' => 'invalid_email',
+            'password' => 'anything'
+        ]);
+        $this->seeValidationError($I);
+
+        // Case: Empty password should return validation error
+        $I->sendPOST('/auth/login', [
+            'email' => 'some_email@something.com',
+            'password' => ''
+        ]);
+        $this->seeValidationError($I);
+
+        // Case: Wrong 
+        $I->sendPOST('/auth/login', [
+            'email' => 'some_email@something.com',
+            'password' => ''
+        ]);
+        $this->seeValidationError($I);
+    }
+
+    private function seeValidationError(ApiTester $I)
+    {
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(['error' => ['code' => 'GENR0002']]);
+        $I->seeResponseCodeIs(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 }
