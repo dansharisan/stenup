@@ -2,10 +2,11 @@
 Boilerplate for API-based web app project, with basic admin panel and api documentation.
 
 ## Tech stack
-- Laravel 6.2.0 for the backend
+- Laravel 6.x for the backend
 - VueJS 2.x for the frontend (admin site and user site)
 - Bootstrap Vue 4
-- Swagger with OpenAPI 3.0
+- Swagger with OpenAPI 3.0 for API documentation
+- Codeception for automation test
 
 ## Used PHP Packages
 - bensampo/laravel-enum: more features on enum data type

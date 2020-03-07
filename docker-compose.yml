@@ -23,7 +23,9 @@ services:
     ports:
       - "3306:3306"
     volumes:
+      # Remain DB even when "docker-compose down"
       - dbdata:/var/lib/mysql
+      # Execute docker-compose/mysql/db_init.sql when build image with "docker-compose build --no-cache"
       - ./docker-compose/mysql:/docker-entrypoint-initdb.d
     environment:
       MYSQL_DATABASE: ${DB_DATABASE}

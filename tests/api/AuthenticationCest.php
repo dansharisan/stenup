@@ -6,28 +6,21 @@ class AuthenticationCest
     public function loginFailure(ApiTester $I)
     {
         // Case: Empty email should return validation error
-        $I->sendPOST('/auth/login', [
+        $I->sendPOST('/api/auth/login', [
             'email' => '',
             'password' => 'anything'
         ]);
         $this->seeValidationError($I);
 
         // Case: Email not valid should return validation error
-        $I->sendPOST('/auth/login', [
+        $I->sendPOST('/api/auth/login', [
             'email' => 'invalid_email',
             'password' => 'anything'
         ]);
         $this->seeValidationError($I);
 
         // Case: Empty password should return validation error
-        $I->sendPOST('/auth/login', [
-            'email' => 'some_email@something.com',
-            'password' => ''
-        ]);
-        $this->seeValidationError($I);
-
-        // Case: Wrong 
-        $I->sendPOST('/auth/login', [
+        $I->sendPOST('/api/auth/login', [
             'email' => 'some_email@something.com',
             'password' => ''
         ]);

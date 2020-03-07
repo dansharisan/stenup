@@ -6,8 +6,7 @@ path: .
 modules:
     enabled:
         - REST:
-            url: nginx:80/api
-            depends: PhpBrowser
+            depends: Laravel5
         - Db:
             dsn: 'mysql:host=db;dbname=stenup_test'
             user: 'root'
@@ -17,3 +16,5 @@ modules:
             cleanup: true
             reconnect: true
             waitlock: 0
+        - Laravel5:
+            environment_file: .env.test
