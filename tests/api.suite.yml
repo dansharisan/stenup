@@ -18,3 +18,4 @@ modules:
             waitlock: 0
         - Laravel5:
             environment_file: .env.test
+            part: ORM

@@ -27,6 +27,11 @@ class AuthenticationCest
         $this->seeValidationError($I);
     }
 
+    public function loginSuccess(ApiTester $I)
+    {
+        
+    }
+
     private function seeValidationError(ApiTester $I)
     {
         $I->seeResponseIsJson();
