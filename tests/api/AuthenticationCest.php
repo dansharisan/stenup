@@ -1,5 +1,6 @@
 <?php
 use Symfony\Component\HttpFoundation\Response as Response;
+use App\Models\User;
 
 class AuthenticationCest
 {
@@ -25,6 +26,53 @@ class AuthenticationCest
             'password' => ''
         ]);
         $this->seeValidationError($I);
+
+        // Case: Unverified account should not be able to login
+        $unverifiedUser = factory(User::class)->create();
+        $I->sendPOST('/api/auth/login', [
+            'email' => $unverifiedUser->email,
+            'password' => 'password'
+        ]);
+        $this->seeUnverifiedEmailError($I);
+
+        // Case: Wrong credential should return unauthorized response
+        $verifiedUser = factory(User::class)->create([
+            'email_verified_at' => now()
+        ]);
+        $I->sendPOST('/api/auth/login', [
+            'email' => $verifiedUser->email,
+            'password' => 'wrongpassword'
+        ]);
+        $this->seeWrongCredentialOrInvalidAccountError($I);
+    }
+
+    public function loginSuccess(ApiTester $I)
+    {
+        $verifiedUser = factory(User::class)->create([
+            'email_verified_at' => now(),
+        ]);
+
+        $I->sendPOST('/api/auth/login', [
+            'email' => $verifiedUser->email,
+            'password' => 'password'
+        ]);
+
+        $I->seeResponseIsJson();
+        $I->seeResponseCodeIs(Response::HTTP_OK);
+    }
+
+    private function seeUnverifiedEmailError(ApiTester $I)
+    {
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(['error' => ['code' => 'AUTH0011']]);
+        $I->seeResponseCodeIs(Response::HTTP_UNAUTHORIZED);
+    }
+
+    private function seeWrongCredentialOrInvalidAccountError(ApiTester $I)
+    {
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(['error' => ['code' => 'AUTH0001']]);
+        $I->seeResponseCodeIs(Response::HTTP_UNAUTHORIZED);
     }
 
     private function seeValidationError(ApiTester $I)
