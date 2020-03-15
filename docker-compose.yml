@@ -15,6 +15,9 @@ services:
       - ./:/var/www
     networks:
       - stenup
+    depends_on:
+      - db
+      - nginx
 
   db:
     image: mysql:5.7
