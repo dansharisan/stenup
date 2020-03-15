@@ -49,6 +49,21 @@ services:
     networks:
       - stenup
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:4.9
+    container_name: stenup-phpmyadmin
+    ports:
+      - "8080:80"
+#    volumes:
+#      - ./phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
+    environment:
+      PMA_HOST: ${DB_HOST}
+      PMA_PORT: ${DB_PORT}
+    networks:
+      - stenup
+    depends_on:
+      - db
+
 networks:
   stenup:
     driver: bridge
