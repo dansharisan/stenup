@@ -54,6 +54,8 @@ And of course unmissable common packages like vuex, vue-router...
 - Install and run Docker
 - Go to the project folder, and run "docker-compose build --no-cache && docker-compose up -d" to build and run start containers
 - Run "docker exec -it stenup-app bash" to go inside the stenup-app container
+- Run "composer install"
+- Run "npm install"
 - Run "php artisan key:generate" to generate the app key
 - Run "php artisan jwt:secret" to generate jwt secret key
 - Run "php artisan migrate:fresh --seed" in the command line to generate tables and seeding data
