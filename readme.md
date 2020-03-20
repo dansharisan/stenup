@@ -33,19 +33,40 @@ And of course unmissable common packages like vuex, vue-router...
 - AccountSeeder can be used to create admin account. Password is hashed using bcrypt with 10 rounds. You can hash it here: https://bcrypt-generator.com/
 
 ## Installation
+# Normal installation
 - Run "composer install"
 - Run "npm install"
 - Create a new database
 - Clone the .env.example file and rename it to .env
 - Config database information and mail server information in .env
 - Run "sudo chmod -R 777 storage" (on mac or linux) or "chmod -R 777 storage" (on windows) to grant permission for the app to access/modify storage folder
+- Adjust app timezone in app.php (currenly Asia/Tokyo)
 - Run "php artisan key:generate" to generate the app key
 - Run "php artisan jwt:secret" to generate jwt secret key
 - Run "php artisan migrate:fresh --seed" in the command line to generate tables and seeding data
 - Run "php artisan storage:link" to create symbolic link to storage
-- Adjust app timezone in app.php (currenly Asia/Tokyo)
 - Run "php artisan l5-swagger:generate" to generate API docs
 - Run "php artisan serve" to start the server then go to localhost:8000 and enjoy
+# With Docker
+- Clone the .env.example file and rename it to .env
+- Open .env file, adjust DB connection information and Mail information
+- Adjust app timezone in app.php (currenly Asia/Tokyo)
+- Install and run Docker
+- Go to the project folder, and run "docker-compose build --no-cache && docker-compose up -d" to build and run start containers
+- Run "docker exec -it stenup-app bash" to go inside the stenup-app container
+- Run "php artisan key:generate" to generate the app key
+- Run "php artisan jwt:secret" to generate jwt secret key
+- Run "php artisan migrate:fresh --seed" in the command line to generate tables and seeding data
+- Run "php artisan storage:link" to create symbolic link to storage
+- Run "php artisan l5-swagger:generate" to generate API docs
+- Go to localhost:8000 and enjoy
+
+## Testing (Only ready on Docker environment)
+- Clone the .env.test.example file and rename it to .env.test
+- Copy the JWT_SECRET inside .env to .env.test
+- Start containers if not started yet (see steps in Installation with Docker section)
+- Go inside the stenup-app container if not there yet (see steps in Installation with Docker section)
+- Run "php vendor/bin/codecept run" to run the tests
 
 ## URLs
 - User site: /

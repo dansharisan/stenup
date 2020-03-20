@@ -4,7 +4,7 @@ use App\Models\User;
 
 class AuthenticationCest
 {
-    public function loginFailure(ApiTester $I)
+    public function login(ApiTester $I)
     {
         // Case: Empty email should return validation error
         $I->sendPOST('/api/auth/login', [
@@ -44,19 +44,78 @@ class AuthenticationCest
             'password' => 'wrongpassword'
         ]);
         $this->seeWrongCredentialOrInvalidAccountError($I);
-    }
 
-    public function loginSuccess(ApiTester $I)
-    {
+        // Case: Login successfully with correct email and password
         $verifiedUser = factory(User::class)->create([
             'email_verified_at' => now(),
         ]);
-
         $I->sendPOST('/api/auth/login', [
             'email' => $verifiedUser->email,
             'password' => 'password'
         ]);
+        $I->seeResponseIsJson();
+        $I->seeResponseCodeIs(Response::HTTP_OK);
+    }
 
+    public function register(ApiTester $I)
+    {
+        // Case: Empty email should return validation error
+        $I->sendPOST('/api/auth/register', [
+            'email' => '',
+            'password' => 'anything',
+            'password_confirmation' => 'anything'
+        ]);
+        $this->seeValidationError($I);
+
+        // Case: Empty password should return validation error
+        $I->sendPOST('/api/auth/register', [
+            'email' => 'email@example.com',
+            'password' => '',
+            'password_confirmation' => 'anything'
+        ]);
+        $this->seeValidationError($I);
+
+        // Case: Empty password confirmation should return validation error
+        $I->sendPOST('/api/auth/register', [
+            'email' => 'email@example.com',
+            'password' => 'anything',
+            'password_confirmation' => ''
+        ]);
+        $this->seeValidationError($I);
+
+        // Case: Email not valid should return validation error
+        $I->sendPOST('/api/auth/register', [
+            'email' => 'invalid_email',
+            'password' => 'anything',
+            'password_confirmation' => 'anything'
+        ]);
+        $this->seeValidationError($I);
+
+        // Case: Not matching Password and Password confirmation should return validation error
+        $I->sendPOST('/api/auth/register', [
+            'email' => 'email@example.com',
+            'password' => 'anything',
+            'password_confirmation' => 'anything1'
+        ]);
+        $this->seeValidationError($I);
+
+        // Case: Existing email should return validation error
+        $user = factory(User::class)->create([
+            'email' => 'myemail@example.com',
+        ]);
+        $I->sendPOST('/api/auth/register', [
+            'email' => 'myemail@example.com',
+            'password' => 'anything',
+            'password_confirmation' => 'anything'
+        ]);
+        $this->seeValidationError($I);
+
+        // Case: Register successfully
+        $I->sendPOST('/api/auth/register', [
+            'email' => 'email@example.com',
+            'password' => 'anything',
+            'password_confirmation' => 'anything'
+        ]);
         $I->seeResponseIsJson();
         $I->seeResponseCodeIs(Response::HTTP_OK);
     }
