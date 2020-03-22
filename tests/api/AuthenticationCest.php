@@ -1,9 +1,14 @@
 <?php
 use Symfony\Component\HttpFoundation\Response as Response;
 use App\Models\User;
+use App\Http\Traits\UtilTrait;
 
 class AuthenticationCest
 {
+    use UtilTrait;
+    /**
+    * Endpoint: POST /api/auth/login
+    **/
     public function login(ApiTester $I)
     {
         /* Case: Empty email should return validation error */
@@ -57,6 +62,9 @@ class AuthenticationCest
         $I->seeResponseCodeIs(Response::HTTP_OK);
     }
 
+    /**
+    * Endpoint: POST /api/auth/register
+    **/
     public function register(ApiTester $I)
     {
         /* Case: Empty email should return validation error */
@@ -121,6 +129,7 @@ class AuthenticationCest
     }
 
     /**
+    * Endpoint: GET /api/auth/getUser
     * Depends on: login
     **/
     public function getUser(ApiTester $I)
@@ -151,6 +160,7 @@ class AuthenticationCest
     }
 
     /**
+    * Endpoint: GET /api/auth/logout
     * Depends on: login, getUser
     **/
     public function logout(ApiTester $I)
@@ -181,6 +191,41 @@ class AuthenticationCest
         // Try getting user again
         $I->sendGET('/api/auth/getUser');
         $this->seeUnauthorizedRequestError($I);
+    }
+
+    /**
+    * Endpoint: GET /api/auth/register/activate/{token}
+    **/
+    public function activateUser(ApiTester $I)
+    {
+        // Prepare data: an unactivated user
+        $activationToken = $this->quickRandom(60);
+        $email = 'unactivated@example.com';
+        $verifiedUser = factory(User::class)->create([
+            'email' => $email,
+            'activation_token' => $activationToken
+        ]);
+
+        /* Case: Wrong activation token should return error */
+        $I->sendGET('/api/auth/register/activate/' . 'non_existing_token');
+        $this->seeInvalidTokenError($I);
+
+        /* Case: With correct token, activate user successfully */
+        $I->sendGET('/api/auth/register/activate/' . $activationToken);
+        $I->seeResponseIsJson();
+        $I->seeResponseCodeIs(Response::HTTP_OK);
+        $I->seeResponseContainsJson([
+            'user' => [
+              'email' => $email
+            ]
+        ]);
+    }
+
+    private function seeInvalidTokenError(ApiTester $I)
+    {
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(['error' => ['code' => 'AUTH0002']]);
+        $I->seeResponseCodeIs(Response::HTTP_BAD_REQUEST);
     }
 
     private function seeUnauthorizedRequestError(ApiTester $I)

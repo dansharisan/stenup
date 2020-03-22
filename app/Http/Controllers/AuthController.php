@@ -21,10 +21,12 @@ use App\Notifications\PasswordChangeSuccess;
 use Symfony\Component\HttpFoundation\Response as Response;
 use Illuminate\Support\Facades\DB;
 use App\Http\Traits\ResponseTrait;
+use App\Http\Traits\UtilTrait;
 
 class AuthController extends Controller
 {
-    use ResponseTrait;
+    const PASSWORD_RESET_TOKEN_TIME_VALIDITY_IN_MINUTE = 720;
+    use ResponseTrait, UtilTrait;
     /**
     * @OA\Post(
     *         path="/api/auth/register",
@@ -445,7 +447,7 @@ class AuthController extends Controller
             );
         }
 
-        if (Carbon::parse($passwordReset->updated_at)->addMinutes(720)->isPast()) {
+        if (Carbon::parse($passwordReset->updated_at)->addMinutes(self::PASSWORD_RESET_TOKEN_TIME_VALIDITY_IN_MINUTE)->isPast()) {
             $passwordReset->delete();
             return response()->json(
                 ['error' =>
@@ -949,16 +951,6 @@ class AuthController extends Controller
 
         // Return roles with permissions after the update
         return $this->getRolesWithPermissions($request);
-    }
-
-    /*
-    *   Generate a random string combined with digit and alphabetical characters
-    **/
-    protected static function quickRandom($length = 16)
-    {
-        $pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-        return substr(str_shuffle(str_repeat($pool, 5)), 0, $length);
     }
 
     /*
