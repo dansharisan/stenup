@@ -141,7 +141,6 @@ class AuthenticationCest
         /* Case: Successfully get user information after login */
         // Login
         $verifiedUser = factory(User::class)->create([
-            'email' => 'myemail@example.com',
             'email_verified_at' => now()
         ]);
         $I->sendPOST('/api/auth/login', [
@@ -154,7 +153,7 @@ class AuthenticationCest
         $I->seeResponseCodeIs(Response::HTTP_OK);
         $I->seeResponseContainsJson([
             'user' => [
-              'email' => 'myemail@example.com'
+              'email' => $verifiedUser->email
             ]
         ]);
     }
@@ -168,7 +167,6 @@ class AuthenticationCest
         /* Successfully get user information after login */
         // Login
         $verifiedUser = factory(User::class)->create([
-            'email' => 'myemail@example.com',
             'email_verified_at' => now()
         ]);
         $I->sendPOST('/api/auth/login', [
@@ -181,7 +179,7 @@ class AuthenticationCest
         $I->seeResponseCodeIs(Response::HTTP_OK);
         $I->seeResponseContainsJson([
             'user' => [
-              'email' => 'myemail@example.com'
+              'email' => $verifiedUser->email
             ]
         ]);
         /* Cannot get user information anymore after logout */
@@ -200,9 +198,7 @@ class AuthenticationCest
     {
         // Prepare data: an unactivated user
         $activationToken = $this->quickRandom(60);
-        $email = 'unactivated@example.com';
         $verifiedUser = factory(User::class)->create([
-            'email' => $email,
             'activation_token' => $activationToken
         ]);
 
@@ -216,9 +212,51 @@ class AuthenticationCest
         $I->seeResponseCodeIs(Response::HTTP_OK);
         $I->seeResponseContainsJson([
             'user' => [
-              'email' => $email
+              'email' => $verifiedUser->email
             ]
         ]);
+    }
+
+    /**
+    * Endpoint: POST /api/auth/password/token/create
+    **/
+    public function requestResettingPassword(ApiTester $I)
+    {
+        /* Case: Empty email should return validation error */
+        $I->sendPOST('/api/auth/password/token/create', [
+            'email' => ''
+        ]);
+        $this->seeValidationError($I);
+
+        /* Case: Email not valid should return validation error */
+        $I->sendPOST('/api/auth/password/token/create', [
+            'email' => 'invalid_email'
+        ]);
+        $this->seeValidationError($I);
+
+        /* Case: Non-existing email should return bad request error */
+        $I->sendPOST('/api/auth/password/token/create', [
+            'email' => 'non_existing_email@example.com'
+        ]);
+        $this->seeEmailNotFoundError($I);
+
+        /* Case: Existing email return a success response */
+        $email = 'real_email@example.com';
+        factory(User::class)->create([
+            'email_verified_at' => now(),
+            'email' => $email
+        ]);
+        $I->sendPOST('/api/auth/password/token/create', [
+            'email' => $email
+        ]);
+        $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
+    }
+
+    private function seeEmailNotFoundError(ApiTester $I)
+    {
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(['error' => ['code' => 'AUTH0003']]);
+        $I->seeResponseCodeIs(Response::HTTP_BAD_REQUEST);
     }
 
     private function seeInvalidTokenError(ApiTester $I)
