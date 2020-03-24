@@ -276,6 +276,135 @@ class AuthenticationCest
         $I->seeResponseCodeIs(Response::HTTP_OK);
     }
 
+    /**
+    * Endpoint: PATCH /api/auth/password/reset
+    * Depends on: login
+    **/
+    public function resetPassword(ApiTester $I)
+    {
+        // Prepare data
+        $user = factory(User::class)->create([
+            'email_verified_at' => now()
+        ]);
+        $passwordReset = factory(PasswordReset::class)->create([
+            'updated_at' => now(),
+            'email' => $user->email
+        ]);
+        $nonExistentUserPasswordReset = factory(PasswordReset::class)->create([
+            'updated_at' => now(),
+        ]);
+
+        /* Case: Empty email should return validation error */
+        $I->sendPATCH('/api/auth/password/reset', [
+            'email' => '',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'token' => $passwordReset->token
+        ]);
+        $this->seeValidationError($I);
+
+        /* Case: Email not valid should return validation error */
+        $I->sendPATCH('/api/auth/password/reset', [
+            'email' => 'invalid_email',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'token' => $passwordReset->token
+        ]);
+        $this->seeValidationError($I);
+
+        /* Case: Empty password should return validation error */
+        $I->sendPATCH('/api/auth/password/reset', [
+            'email' => $passwordReset->email,
+            'password' => '',
+            'password_confirmation' => 'password',
+            'token' => $passwordReset->token
+        ]);
+        $this->seeValidationError($I);
+
+        /* Case: Not matching Password and Password confirmation should return validation error */
+        $I->sendPATCH('/api/auth/password/reset', [
+            'email' => $passwordReset->email,
+            'password' => 'password',
+            'password_confirmation' => 'password1',
+            'token' => $passwordReset->token
+        ]);
+        $this->seeValidationError($I);
+
+        /* Case: Empty token should return validation error */
+        $I->sendPATCH('/api/auth/password/reset', [
+            'email' => $passwordReset->email,
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'token' => ''
+        ]);
+        $this->seeValidationError($I);
+
+        /* Case: Incorrect token should return invalid token or email error */
+        $I->sendPATCH('/api/auth/password/reset', [
+            'email' => $passwordReset->email,
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'token' => 'non_existing_token'
+        ]);
+        $this->seeInvalidTokenOrEmailError($I);
+
+        /* Case: Incorrect email should return invalid token or email error */
+        $I->sendPATCH('/api/auth/password/reset', [
+            'email' => 'fake_email@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'token' => $passwordReset->token
+        ]);
+        $this->seeInvalidTokenOrEmailError($I);
+
+        /* Case: Non-existent user email should return email not found error */
+        $I->sendPATCH('/api/auth/password/reset', [
+            'email' => $nonExistentUserPasswordReset->email,
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'token' => $nonExistentUserPasswordReset->token
+        ]);
+        $this->seeEmailNotFoundError($I);
+
+        /* Case: Successfully reset password with correct provided information */
+        $newPassword = 'new_password';
+        $I->sendPATCH('/api/auth/password/reset', [
+            'email' => $passwordReset->email,
+            'password' => $newPassword,
+            'password_confirmation' => $newPassword,
+            'token' => $passwordReset->token
+        ]);
+        $I->seeResponseIsJson();
+        $I->seeResponseCodeIs(Response::HTTP_OK);
+        $I->seeResponseContainsJson([
+            'user' => [
+              'email' => $passwordReset->email
+            ]
+        ]);
+        // That Password Reset token should be deleted right after that process is done
+        $I->sendPATCH('/api/auth/password/reset', [
+            'email' => $passwordReset->email,
+            'password' => $newPassword,
+            'password_confirmation' => $newPassword,
+            'token' => $passwordReset->token
+        ]);
+        $this->seeInvalidTokenOrEmailError($I);
+        // Should be able to login with the new password
+        $I->sendPOST('/api/auth/login', [
+            'email' => $user->email,
+            'password' => $newPassword
+        ]);
+        $I->seeResponseIsJson();
+        $I->seeResponseCodeIs(Response::HTTP_OK);
+    }
+
+    private function seeInvalidTokenOrEmailError(ApiTester $I)
+    {
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(['error' => ['code' => 'AUTH0006']]);
+        $I->seeResponseCodeIs(Response::HTTP_BAD_REQUEST);
+    }
+
     private function seeExpiredPasswordResetTokenError(ApiTester $I)
     {
         $I->seeResponseIsJson();
