@@ -19,7 +19,7 @@ class UserController extends Controller
     /**
     * @OA\Get(
     *         path="/api/users",
-    *         tags={"Users"},
+    *         tags={"User"},
     *         summary="Get users",
     *         description="Get list of users",
     *         operationId="user-list",
@@ -77,7 +77,7 @@ class UserController extends Controller
     /**
     * @OA\Patch(
     *         path="/api/users/{id}/ban",
-    *         tags={"Users"},
+    *         tags={"User"},
     *         summary="Ban an user",
     *         description="Ban an user",
     *         operationId="ban-user",
@@ -131,7 +131,7 @@ class UserController extends Controller
     /**
     * @OA\Patch(
     *         path="/api/users/{id}/unban",
-    *         tags={"Users"},
+    *         tags={"User"},
     *         summary="Unban an user",
     *         description="Unban an user",
     *         operationId="unban-user",
@@ -185,7 +185,7 @@ class UserController extends Controller
     /**
     * @OA\Delete(
     *         path="/api/users/{id}",
-    *         tags={"Users"},
+    *         tags={"User"},
     *         summary="Delete an user",
     *         description="Delete an user",
     *         operationId="delete-user",
@@ -238,7 +238,7 @@ class UserController extends Controller
     /**
     * @OA\Post(
     *         path="/api/users/collection:batchDelete",
-    *         tags={"Users"},
+    *         tags={"User"},
     *         summary="Delete selected users",
     *         description="Delete selected users",
     *         operationId="delete-user-batch",
@@ -305,7 +305,7 @@ class UserController extends Controller
     /**
     * @OA\Patch(
     *         path="/api/users/{id}",
-    *         tags={"Users"},
+    *         tags={"User"},
     *         summary="Edit an user",
     *         description="Edit an user",
     *         operationId="edit-user",
@@ -426,7 +426,7 @@ class UserController extends Controller
     /**
     * @OA\Post(
     *         path="/api/users",
-    *         tags={"Users"},
+    *         tags={"User"},
     *         summary="Create an user",
     *         description="Create an user",
     *         operationId="create-user",
@@ -551,7 +551,7 @@ class UserController extends Controller
     /**
     * @OA\Get(
     *         path="/api/users/registered_user_stats",
-    *         tags={"Users"},
+    *         tags={"User"},
     *         summary="Get registered user stats",
     *         description="Get registered user stats",
     *         operationId="registered-user-stats",

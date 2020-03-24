@@ -30,7 +30,7 @@ class AuthController extends Controller
     /**
     * @OA\Post(
     *         path="/api/auth/register",
-    *         tags={"Authentication"},
+    *         tags={"Auth"},
     *         summary="Register",
     *         description="Register a new user and send notification mail",
     *         operationId="register",
@@ -115,7 +115,7 @@ class AuthController extends Controller
     /**
     * @OA\Post(
     *         path="/api/auth/login",
-    *         tags={"Authentication"},
+    *         tags={"Auth"},
     *         summary="Login",
     *         description="Login an user",
     *         operationId="login",
@@ -216,7 +216,7 @@ class AuthController extends Controller
     /**
     * @OA\Get(
     *         path="/api/auth/logout",
-    *         tags={"Authentication"},
+    *         tags={"Auth"},
     *         summary="Logout",
     *         description="Logout an user",
     *         operationId="logout",
@@ -240,7 +240,7 @@ class AuthController extends Controller
     /**
     * @OA\Get(
     *         path="/api/auth/getUser",
-    *         tags={"Authentication"},
+    *         tags={"Auth"},
     *         summary="Get user",
     *         description="Retrieve information from current user",
     *         operationId="getUser",
@@ -268,7 +268,7 @@ class AuthController extends Controller
     /**
     * @OA\Get(
     *         path="/api/auth/register/activate/{token}",
-    *         tags={"Authentication"},
+    *         tags={"Auth"},
     *         summary="Activate user",
     *         description="Activate an registered user",
     *         operationId="activateUser",
@@ -320,7 +320,7 @@ class AuthController extends Controller
     /**
     * @OA\Post(
     *         path="/api/auth/password/token/create",
-    *         tags={"Authentication"},
+    *         tags={"Auth"},
     *         summary="Request resetting password",
     *         description="Generate password reset token and send that token to user through mail",
     *         operationId="createPasswordResetToken",
@@ -405,7 +405,7 @@ class AuthController extends Controller
     /**
     * @OA\Get(
     *         path="/api/auth/password/token/find/{token}",
-    *         tags={"Authentication"},
+    *         tags={"Auth"},
     *         summary="Verify reset password token",
     *         description="Verify the reset password token and make sure it is existing and still valid",
     *         operationId="findPasswordResetToken",
@@ -465,7 +465,7 @@ class AuthController extends Controller
     /**
     * @OA\Patch(
     *         path="/api/auth/password/reset",
-    *         tags={"Authentication"},
+    *         tags={"Auth"},
     *         summary="Reset password",
     *         description="Set new password for the user",
     *         operationId="resetPassword",
@@ -581,7 +581,7 @@ class AuthController extends Controller
     /**
     * @OA\Patch(
     *         path="/api/auth/password/change",
-    *         tags={"Authentication"},
+    *         tags={"Auth"},
     *         summary="Change password",
     *         description="Change an user's password (requires current password) and send notification mail",
     *         operationId="changePassword",
@@ -684,7 +684,7 @@ class AuthController extends Controller
     /**
     * @OA\Get(
     *         path="/api/auth/roles_permissions",
-    *         tags={"Authorization"},
+    *         tags={"Auth"},
     *         summary="Get all roles and permissions",
     *         description="Get all roles and permissions",
     *         @OA\Response(
@@ -714,7 +714,7 @@ class AuthController extends Controller
     /**
     * @OA\Get(
     *         path="/api/auth/roles_w_permissions",
-    *         tags={"Authorization"},
+    *         tags={"Auth"},
     *         summary="Get all roles with associated permissions",
     *         description="Get all roles with associated permissions",
     *         @OA\Response(
@@ -743,7 +743,7 @@ class AuthController extends Controller
     /**
     * @OA\Post(
     *         path="/api/auth/roles",
-    *         tags={"Authorization"},
+    *         tags={"Auth"},
     *         summary="Create role",
     *         description="Create a new role",
     *         operationId="create-role",
@@ -812,7 +812,7 @@ class AuthController extends Controller
     /**
     * @OA\Delete(
     *         path="/api/auth/roles/{id}",
-    *         tags={"Authorization"},
+    *         tags={"Auth"},
     *         summary="Delete a role",
     *         description="Delete a role",
     *         operationId="delete-role",
@@ -865,7 +865,7 @@ class AuthController extends Controller
     /**
     * @OA\Put(
     *         path="/api/auth/update_roles_permissions_matrix",
-    *         tags={"Authorization"},
+    *         tags={"Auth"},
     *         summary="Update roles permissions matrix",
     *         description="Update roles permissions matrix",
     *         operationId="update-roles-permissions-matrix",
