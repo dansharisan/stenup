@@ -1,6 +1,7 @@
 <?php
 use Symfony\Component\HttpFoundation\Response as Response;
 use App\Models\User;
+use Carbon\Carbon;
 use App\Http\Traits\UtilTrait;
 
 class AuthenticationCest
@@ -51,9 +52,6 @@ class AuthenticationCest
         $this->seeWrongCredentialOrInvalidAccountError($I);
 
         /* Case: Login successfully with correct email and password */
-        $verifiedUser = factory(User::class)->create([
-            'email_verified_at' => now(),
-        ]);
         $I->sendPOST('/api/auth/login', [
             'email' => $verifiedUser->email,
             'password' => 'password'
@@ -250,6 +248,43 @@ class AuthenticationCest
             'email' => $email
         ]);
         $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+    * Endpoint: GET /api/auth/password/token/find/{token}
+    **/
+    public function verifyPasswordResetToken(ApiTester $I)
+    {
+        /* Case: Empty token should return invalid password reset token error */
+        $token = '';
+        $I->sendGET('/api/auth/password/token/find/' . $token);
+        $this->seeInvalidPasswordResetTokenError($I);
+
+        /* Case: non-existing token should return invalid password reset token error */
+        $token = 'non_existing_token';
+        $I->sendGET('/api/auth/password/token/find/' . $token);
+        $this->seeInvalidPasswordResetTokenError($I);
+
+        /* Case: expired token should return expired password reset token error */
+        $passwordReset = factory(PasswordReset::class)->create([
+            'updated_at' => Carbon::parse(now())->addMinutes(PasswordReset::PASSWORD_RESET_TOKEN_TIME_VALIDITY_IN_MINUTE + 1)
+        ]);
+        $I->sendGET('/api/auth/password/token/find/' . $passwordReset->token);
+        $this->seeExpiredPasswordResetTokenError($I);
+    }
+
+    private function seeExpiredPasswordResetTokenError(ApiTester $I)
+    {
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(['error' => ['code' => 'AUTH0005']]);
+        $I->seeResponseCodeIs(Response::HTTP_BAD_REQUEST);
+    }
+
+    private function seeInvalidPasswordResetTokenError(ApiTester $I)
+    {
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(['error' => ['code' => 'AUTH0004']]);
+        $I->seeResponseCodeIs(Response::HTTP_BAD_REQUEST);
     }
 
     private function seeEmailNotFoundError(ApiTester $I)

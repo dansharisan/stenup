@@ -25,7 +25,7 @@ use App\Http\Traits\UtilTrait;
 
 class AuthController extends Controller
 {
-    const PASSWORD_RESET_TOKEN_TIME_VALIDITY_IN_MINUTE = 720;
+    const PASSWORD_RESET_TOKEN_TIME_VALIDITY_IN_MINUTE = 60;
     use ResponseTrait, UtilTrait;
     /**
     * @OA\Post(
@@ -447,7 +447,7 @@ class AuthController extends Controller
             );
         }
 
-        if (Carbon::parse($passwordReset->updated_at)->addMinutes(self::PASSWORD_RESET_TOKEN_TIME_VALIDITY_IN_MINUTE)->isPast()) {
+        if (Carbon::parse($passwordReset->updated_at)->addMinutes(PasswordReset::PASSWORD_RESET_TOKEN_TIME_VALIDITY_IN_MINUTE)->isPast()) {
             $passwordReset->delete();
             return response()->json(
                 ['error' =>
