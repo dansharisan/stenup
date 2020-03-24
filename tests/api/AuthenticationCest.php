@@ -1,6 +1,7 @@
 <?php
 use Symfony\Component\HttpFoundation\Response as Response;
 use App\Models\User;
+use App\Models\PasswordReset;
 use Carbon\Carbon;
 use App\Http\Traits\UtilTrait;
 
@@ -255,11 +256,6 @@ class AuthenticationCest
     **/
     public function verifyPasswordResetToken(ApiTester $I)
     {
-        /* Case: Empty token should return invalid password reset token error */
-        $token = '';
-        $I->sendGET('/api/auth/password/token/find/' . $token);
-        $this->seeInvalidPasswordResetTokenError($I);
-
         /* Case: non-existing token should return invalid password reset token error */
         $token = 'non_existing_token';
         $I->sendGET('/api/auth/password/token/find/' . $token);
@@ -267,10 +263,17 @@ class AuthenticationCest
 
         /* Case: expired token should return expired password reset token error */
         $passwordReset = factory(PasswordReset::class)->create([
-            'updated_at' => Carbon::parse(now())->addMinutes(PasswordReset::PASSWORD_RESET_TOKEN_TIME_VALIDITY_IN_MINUTE + 1)
+            'updated_at' => Carbon::parse(now())->addMinutes(0 - PasswordReset::PASSWORD_RESET_TOKEN_TIME_VALIDITY_IN_MINUTE - 1)
         ]);
         $I->sendGET('/api/auth/password/token/find/' . $passwordReset->token);
         $this->seeExpiredPasswordResetTokenError($I);
+
+        /* Case: valid token should return success response */
+        $passwordReset = factory(PasswordReset::class)->create([
+            'updated_at' => now()
+        ]);
+        $I->sendGET('/api/auth/password/token/find/' . $passwordReset->token);
+        $I->seeResponseCodeIs(Response::HTTP_OK);
     }
 
     private function seeExpiredPasswordResetTokenError(ApiTester $I)

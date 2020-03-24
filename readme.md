@@ -65,9 +65,10 @@ And of course unmissable common packages like vuex, vue-router...
 
 ## Testing (Only ready on Docker environment)
 - Clone the .env.test.example file and rename it to .env.test
-- Copy the JWT_SECRET inside .env to .env.test
 - Start containers if not started yet (see steps in Installation with Docker section)
 - Go inside the stenup-app container if not there yet (see steps in Installation with Docker section)
+- Run "php artisan key:generate --env=test"
+- Run "php artisan jwt:secret --env=test"
 - Run "php vendor/bin/codecept run" to run the tests
 
 ## URLs
