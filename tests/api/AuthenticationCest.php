@@ -398,6 +398,49 @@ class AuthenticationCest
         $I->seeResponseCodeIs(Response::HTTP_OK);
     }
 
+    /**
+    * Endpoint: PATCH /api/auth/password/change
+    * Depends on: login
+    **/
+    public function changePassword(ApiTester $I)
+    {
+        // Prepare data
+        $user = factory(User::class)->create([
+            'email_verified_at' => now()
+        ]);
+        $currentPassword = 'password'; // Current password is 'password' by default (see UserFactory)
+        $newPassword = 'new_password';
+
+        /* Case: Calling the API while not logged in should return unauthorized error */
+        $currentPassword = 'password'; // Current password is 'password' by default (see UserFactory)
+        $newPassword = 'new_password';
+        $I->sendPATCH('/api/auth/password/change', [
+            'password' => $currentPassword,
+            'new_password' => $newPassword
+        ]);
+        $this->seeUnauthorizedRequestError($I);
+
+        // Now we need to login to do the rest of tests
+        $I->sendPOST('/api/auth/login', [
+            'email' => $user->email,
+            'password' => $currentPassword
+        ]);
+
+        /* Case: Empty email should return validation error */
+        $I->sendPATCH('/api/auth/password/change', [
+            'password' => $currentPassword,
+            'new_password' => $newPassword
+        ]);
+        $this->seeValidationError($I);
+
+        /* Case: Email not valid should return validation error */
+        $I->sendPATCH('/api/auth/password/change', [
+            'password' => $currentPassword,
+            'new_password' => $newPassword
+        ]);
+        $this->seeValidationError($I);
+    }
+
     private function seeInvalidTokenOrEmailError(ApiTester $I)
     {
         $I->seeResponseIsJson();
