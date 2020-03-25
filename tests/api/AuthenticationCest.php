@@ -416,7 +416,8 @@ class AuthenticationCest
         $newPassword = 'new_password';
         $I->sendPATCH('/api/auth/password/change', [
             'password' => $currentPassword,
-            'new_password' => $newPassword
+            'new_password' => $newPassword,
+            'new_password_confirmation' => $newPassword
         ]);
         $this->seeUnauthorizedRequestError($I);
 
@@ -426,19 +427,58 @@ class AuthenticationCest
             'password' => $currentPassword
         ]);
 
-        /* Case: Empty email should return validation error */
+        /* Case: Empty password should return validation error */
         $I->sendPATCH('/api/auth/password/change', [
-            'password' => $currentPassword,
-            'new_password' => $newPassword
+            'password' => '',
+            'new_password' => $newPassword,
+            'new_password_confirmation' => $newPassword
         ]);
         $this->seeValidationError($I);
 
-        /* Case: Email not valid should return validation error */
+        /* Case: Empty new password should return validation error */
         $I->sendPATCH('/api/auth/password/change', [
             'password' => $currentPassword,
-            'new_password' => $newPassword
+            'new_password' => '',
+            'new_password_confirmation' => $newPassword
         ]);
         $this->seeValidationError($I);
+
+        /* Case: Not matching New Password and New Password Confirmation should return validation error */
+        $I->sendPATCH('/api/auth/password/change', [
+            'password' => $currentPassword,
+            'new_password' => $newPassword,
+            'new_password_confirmation' => $newPassword . '1'
+        ]);
+        $this->seeValidationError($I);
+
+        /* Case: Wrong credential should return unauthorized response */
+        $I->sendPATCH('/api/auth/password/change', [
+            'password' => 'wrong_password',
+            'new_password' => $newPassword,
+            'new_password_confirmation' => $newPassword
+        ]);
+        $this->seeWrongCredentialOrInvalidAccountError($I);
+
+        /* Case: Successfully change password with proper information */
+        $I->sendPATCH('/api/auth/password/change', [
+            'password' => $currentPassword,
+            'new_password' => $newPassword,
+            'new_password_confirmation' => $newPassword
+        ]);
+        $I->seeResponseIsJson();
+        $I->seeResponseCodeIs(Response::HTTP_OK);
+        $I->seeResponseContainsJson([
+            'user' => [
+              'email' => $user->email
+            ]
+        ]);
+        // Should be able to login with the new password
+        $I->sendPOST('/api/auth/login', [
+            'email' => $user->email,
+            'password' => $newPassword
+        ]);
+        $I->seeResponseIsJson();
+        $I->seeResponseCodeIs(Response::HTTP_OK);
     }
 
     private function seeInvalidTokenOrEmailError(ApiTester $I)

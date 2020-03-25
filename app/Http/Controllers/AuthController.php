@@ -667,7 +667,7 @@ class AuthController extends Controller
                                 'code' => Error::AUTH0001,
                                 'message' => Error::getDescription(Error::AUTH0001)
                             ]
-                ], Response::HTTP_BAD_REQUEST
+                ], Response::HTTP_UNAUTHORIZED
             );
         }
 
