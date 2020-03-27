@@ -103,7 +103,7 @@ class AuthController extends Controller
         ]);
         $user->save();
 
-        // Default role:
+        // Default role
         $user->assignRole(DefaultRoleType::MEMBER);
 
         // Send email with activation link

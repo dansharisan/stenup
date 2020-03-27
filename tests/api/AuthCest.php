@@ -489,13 +489,7 @@ class AuthenticationCest
     * Depends on: login
     **/
     public function getRolesAndPermissions(ApiTester $I) {
-        // Prepare data: An admin user and a member user
-        $adminUser = factory(User::class)->create([
-            'email_verified_at' => now()
-        ]);
-        $adminRole = Role::where('name', DefaultRoleType::ADMINISTRATOR)->first();
-        $adminUser->assignRole($adminRole);
-
+        // Prepare data
         $memberUser = factory(User::class)->create([
              'email_verified_at' => now()
         ]);
@@ -522,8 +516,23 @@ class AuthenticationCest
         // Make sure we have the expected data
         $I->seeResponseContainsJson(
             [
-                'roles' => [],
-                'permissions' => []
+                'roles' => [
+                                [
+                                    'id' => 1,
+                                    'name' => DefaultRoleType::ADMINISTRATOR
+                                ],
+                                [
+                                    'name' => DefaultRoleType::MODERATOR
+                                ]
+                            ],
+                'permissions' => [
+                                    [
+                                        'name' => PermissionType::VIEW_ROLES_PERMISSIONS
+                                    ],
+                                    [
+                                        'name' => PermissionType::VIEW_USERS
+                                    ],
+                            ]
             ]
         );
     }
