@@ -4,6 +4,9 @@ use App\Models\User;
 use App\Models\PasswordReset;
 use Carbon\Carbon;
 use App\Http\Traits\UtilTrait;
+use App\Enums\DefaultRoleType;
+use App\Enums\PermissionType;
+use Spatie\Permission\Models\Role;
 
 class AuthenticationCest
 {
@@ -193,7 +196,7 @@ class AuthenticationCest
     /**
     * Endpoint: GET /api/auth/register/activate/{token}
     **/
-    public function activateUser(ApiTester $I)
+    public function activate(ApiTester $I)
     {
         // Prepare data: an unactivated user
         $activationToken = $this->quickRandom(60);
@@ -219,7 +222,7 @@ class AuthenticationCest
     /**
     * Endpoint: POST /api/auth/password/token/create
     **/
-    public function requestResettingPassword(ApiTester $I)
+    public function createPasswordResetToken(ApiTester $I)
     {
         /* Case: Empty email should return validation error */
         $I->sendPOST('/api/auth/password/token/create', [
@@ -254,7 +257,7 @@ class AuthenticationCest
     /**
     * Endpoint: GET /api/auth/password/token/find/{token}
     **/
-    public function verifyPasswordResetToken(ApiTester $I)
+    public function findPasswordResetToken(ApiTester $I)
     {
         /* Case: non-existing token should return invalid password reset token error */
         $token = 'non_existing_token';
@@ -479,6 +482,50 @@ class AuthenticationCest
         ]);
         $I->seeResponseIsJson();
         $I->seeResponseCodeIs(Response::HTTP_OK);
+    }
+
+    /**
+    * Endpoint: GET /api/auth/roles_permissions
+    * Depends on: login
+    **/
+    public function getRolesAndPermissions(ApiTester $I) {
+        // Prepare data: An admin user and a member user
+        $adminUser = factory(User::class)->create([
+            'email_verified_at' => now()
+        ]);
+        $adminRole = Role::where('name', DefaultRoleType::ADMINISTRATOR)->first();
+        $adminUser->assignRole($adminRole);
+
+        $memberUser = factory(User::class)->create([
+             'email_verified_at' => now()
+        ]);
+        $memberRole = Role::where('name', DefaultRoleType::MEMBER)->first();
+        $memberUser->assignRole($memberRole);
+
+        /* Case: Calling the API while not logged in should return unauthorized error */
+        $I->sendGET('/api/auth/roles_permissions');
+        $this->seeUnauthorizedRequestError($I);
+
+        /* Case: By default, member user, which normally don't have VIEW_ROLES_PERMISSIONS permission, shouldn't be able to access this API */
+        $I->sendPOST('/api/auth/login', [
+            'email' => $memberUser->email,
+            'password' => 'password'
+        ]);
+        $I->sendGET('/api/auth/roles_permissions');
+        $this->seeUnauthorizedRequestError($I);
+
+        /* Case: When that user is set to have VIEW_ROLES_PERMISSIONS permission, he could get access to this API */
+        $memberUser->roles[0]->givePermissionTo(PermissionType::VIEW_ROLES_PERMISSIONS);
+        $I->sendGET('/api/auth/roles_permissions');
+        $I->seeResponseIsJson();
+        $I->seeResponseCodeIs(Response::HTTP_OK);
+        // Make sure we have the expected data
+        $I->seeResponseContainsJson(
+            [
+                'roles' => [],
+                'permissions' => []
+            ]
+        );
     }
 
     private function seeInvalidTokenOrEmailError(ApiTester $I)
