@@ -582,6 +582,61 @@ class AuthenticationCest
         );
     }
 
+    /**
+    * Endpoint: POST /api/auth/roles
+    * Depends on: login
+    **/
+    public function createRole(ApiTester $I) {
+        // Prepare data
+        $memberUser = $this->generateMemberUser();
+
+        /* Case: Calling the API while not logged in should return unauthorized error */
+        $I->sendPOST('/api/auth/roles' , [
+            'role_name' => 'New role'
+        ]);
+        $this->seeUnauthorizedRequestError($I);
+
+        /* Case: By default, member user, which normally don't have CREATE_ROLES permission, shouldn't be able to access this API */
+        $I->sendPOST('/api/auth/login', [
+            'email' => $memberUser->email,
+            'password' => 'password'
+        ]);
+        $I->sendPOST('/api/auth/roles' , [
+            'role_name' => 'New role'
+        ]);
+        $this->seeUnauthorizedRequestError($I);
+
+        // When that user is set to have CREATE_ROLES permission, he could get access to this API //
+        $memberUser->roles[0]->givePermissionTo(PermissionType::CREATE_ROLES);
+        /* Case: Empty role_name should return validation error */
+        $I->sendPOST('/api/auth/roles' , [
+            'role_name' => ''
+        ]);
+        $this->seeValidationError($I);
+
+        /* Case: Existing role_name should return validation error */
+        $I->sendPOST('/api/auth/roles' , [
+            'role_name' => DefaultRoleType::MEMBER
+        ]);
+        $this->seeValidationError($I);
+
+        /* Case: Successfully create a new role */
+        $newRoleName = 'New role';
+        $I->sendPOST('/api/auth/roles' , [
+            'role_name' => $newRoleName
+        ]);
+        $I->seeResponseIsJson();
+        $I->seeResponseCodeIs(Response::HTTP_OK);
+        // Make sure we have the expected data
+        $I->seeResponseContainsJson(
+            [
+                'role' => [
+                    'name' => $newRoleName,
+                ],
+            ]
+        );
+    }
+
     private function generateMemberUser()
     {
         $memberUser = factory(User::class)->create([
