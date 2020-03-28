@@ -490,11 +490,7 @@ class AuthenticationCest
     **/
     public function getRolesAndPermissions(ApiTester $I) {
         // Prepare data
-        $memberUser = factory(User::class)->create([
-             'email_verified_at' => now()
-        ]);
-        $memberRole = Role::where('name', DefaultRoleType::MEMBER)->first();
-        $memberUser->assignRole($memberRole);
+        $memberUser = $this->generateMemberUser();
 
         /* Case: Calling the API while not logged in should return unauthorized error */
         $I->sendGET('/api/auth/roles_permissions');
@@ -518,11 +514,10 @@ class AuthenticationCest
             [
                 'roles' => [
                                 [
-                                    'id' => 1,
                                     'name' => DefaultRoleType::ADMINISTRATOR
                                 ],
                                 [
-                                    'name' => DefaultRoleType::MODERATOR
+                                    'name' => DefaultRoleType::MEMBER
                                 ]
                             ],
                 'permissions' => [
@@ -535,6 +530,67 @@ class AuthenticationCest
                             ]
             ]
         );
+    }
+
+    /**
+    * Endpoint: GET /api/auth/roles_w_permissions
+    * Depends on: login
+    **/
+    public function getRolesWithPermissions(ApiTester $I) {
+        // Prepare data
+        $memberUser = $this->generateMemberUser();
+
+        /* Case: Calling the API while not logged in should return unauthorized error */
+        $I->sendGET('/api/auth/roles_w_permissions');
+        $this->seeUnauthorizedRequestError($I);
+
+        /* Case: By default, member user, which normally don't have VIEW_ROLES_PERMISSIONS permission, shouldn't be able to access this API */
+        $I->sendPOST('/api/auth/login', [
+            'email' => $memberUser->email,
+            'password' => 'password'
+        ]);
+        $I->sendGET('/api/auth/roles_w_permissions');
+        $this->seeUnauthorizedRequestError($I);
+
+        /* Case: When that user is set to have VIEW_ROLES_PERMISSIONS permission, he could get access to this API */
+        $memberUser->roles[0]->givePermissionTo(PermissionType::VIEW_ROLES_PERMISSIONS);
+        $I->sendGET('/api/auth/roles_w_permissions');
+        $I->seeResponseIsJson();
+        $I->seeResponseCodeIs(Response::HTTP_OK);
+        // Make sure we have the expected data
+        $I->seeResponseContainsJson(
+            [
+                'roles' => [
+                                [
+                                    'name' => DefaultRoleType::ADMINISTRATOR,
+                                    'permissions' => [
+                                        [
+                                            'name' => PermissionType::VIEW_DASHBOARD
+                                        ],
+                                    ]
+                                ],
+                                [
+                                    'name' => DefaultRoleType::MEMBER,
+                                    'permissions' => [
+                                        [
+                                            'name' => PermissionType::VIEW_ROLES_PERMISSIONS
+                                        ],
+                                    ]
+                                ],
+                            ]
+            ]
+        );
+    }
+
+    private function generateMemberUser()
+    {
+        $memberUser = factory(User::class)->create([
+             'email_verified_at' => now()
+        ]);
+        $memberRole = Role::where('name', DefaultRoleType::MEMBER)->first();
+        $memberUser->assignRole($memberRole);
+
+        return $memberUser;
     }
 
     private function seeInvalidTokenOrEmailError(ApiTester $I)

@@ -18,6 +18,7 @@ services:
     depends_on:
       - db
       - nginx
+      - phpmyadmin
 
   db:
     image: mysql:5.7
