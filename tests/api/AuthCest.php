@@ -647,7 +647,7 @@ class AuthenticationCest
         $memberUser = $this->generateMemberUser();
 
         /* Case: Calling the API while not logged in should return unauthorized error */
-        $I->sendDELETE('/api/auth/roles/' . '$newRole->id');
+        $I->sendDELETE('/api/auth/roles/' . $newRole->id);
         $this->seeUnauthorizedRequestError($I);
 
         /* Case: By default, member user, which normally don't have DELETE_ROLES permission, shouldn't be able to access this API */
@@ -655,7 +655,7 @@ class AuthenticationCest
             'email' => $memberUser->email,
             'password' => 'password'
         ]);
-        $I->sendDELETE('/api/auth/roles/' . '$newRole->id');
+        $I->sendDELETE('/api/auth/roles/' . $newRole->id);
         $this->seeUnauthorizedRequestError($I);
 
         // When that user is set to have DELETE_ROLES permission, he could get access to this API //
@@ -672,6 +672,78 @@ class AuthenticationCest
         /* Case: Successfully delete the role*/
         $I->sendDELETE('/api/auth/roles/' . $newRole->id);
         $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+    * Endpoint: PUT /api/auth/update_roles_permissions_matrix
+    * Depends on: login
+    **/
+    public function updateRolesPermissionsMatrix(ApiTester $I) {
+        // Prepare data
+        $memberUser = $this->generateMemberUser();
+
+        /* Case: Calling the API while not logged in should return unauthorized error */
+        $dumpMatrix = '{"'. DefaultRoleType::MEMBER . '":["' . PermissionType::VIEW_DASHBOARD . '","' . PermissionType::VIEW_ROLES_PERMISSIONS . '"], "' . DefaultRoleType::ADMINISTRATOR . '":["' . PermissionType::UPDATE_PERMISSIONS . '"]}';
+        $I->sendPUT('/api/auth/update_roles_permissions_matrix', [
+            'matrix' => $dumpMatrix
+        ]);
+        $this->seeUnauthorizedRequestError($I);
+
+        /* Case: By default, member user, which normally don't have UPDATE_PERMISSIONS permission, shouldn't be able to access this API */
+        $I->sendPOST('/api/auth/login', [
+            'email' => $memberUser->email,
+            'password' => 'password'
+        ]);
+        $I->sendPUT('/api/auth/update_roles_permissions_matrix', [
+            'matrix' => $dumpMatrix
+        ]);
+        $this->seeUnauthorizedRequestError($I);
+
+        // When that user is set to have DELETE_ROLES permission, he could get access to this API //
+        $memberUser->roles[0]->givePermissionTo(PermissionType::UPDATE_PERMISSIONS);
+        /* Case: Empty matrix should return validation error */
+        $I->sendPUT('/api/auth/update_roles_permissions_matrix', [
+            'matrix' => ''
+        ]);
+        $this->seeValidationError($I);
+
+        /* Successfully apply the matrix */
+        $I->sendPUT('/api/auth/update_roles_permissions_matrix', [
+            'matrix' => $dumpMatrix
+        ]);
+        $I->seeResponseIsJson();
+        $I->seeResponseCodeIs(Response::HTTP_OK);
+        // Make sure we have the expected data
+        $I->seeResponseContainsJson(
+            [
+                'roles' => [
+                                [
+                                    'name' => DefaultRoleType::ADMINISTRATOR,
+                                    'permissions' => [
+                                        [
+                                            'name' => PermissionType::UPDATE_PERMISSIONS
+                                        ],
+                                    ]
+                                ],
+                                [
+                                    'name' => DefaultRoleType::MEMBER,
+                                    'permissions' => [
+                                        [
+                                            'name' => PermissionType::VIEW_DASHBOARD
+                                        ],
+                                        [
+                                            'name' => PermissionType::VIEW_ROLES_PERMISSIONS
+                                        ],
+                                    ]
+                                ],
+                            ]
+            ]
+        );
+        // After updating, this user should not be able to access this api anymore
+        $I->sendPUT('/api/auth/update_roles_permissions_matrix', [
+            'matrix' => $dumpMatrix
+        ]);
+        $this->seeUnauthorizedRequestError($I);
     }
 
     private function generateMemberUser()
