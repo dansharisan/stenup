@@ -637,6 +637,43 @@ class AuthenticationCest
         );
     }
 
+    /**
+    * Endpoint: DELETE /api/auth/roles/{id}
+    * Depends on: login
+    **/
+    public function deleteRole(ApiTester $I) {
+        // Prepare data
+        $newRole = factory(Role::class)->create();
+        $memberUser = $this->generateMemberUser();
+
+        /* Case: Calling the API while not logged in should return unauthorized error */
+        $I->sendDELETE('/api/auth/roles/' . '$newRole->id');
+        $this->seeUnauthorizedRequestError($I);
+
+        /* Case: By default, member user, which normally don't have DELETE_ROLES permission, shouldn't be able to access this API */
+        $I->sendPOST('/api/auth/login', [
+            'email' => $memberUser->email,
+            'password' => 'password'
+        ]);
+        $I->sendDELETE('/api/auth/roles/' . '$newRole->id');
+        $this->seeUnauthorizedRequestError($I);
+
+        // When that user is set to have DELETE_ROLES permission, he could get access to this API //
+        $memberUser->roles[0]->givePermissionTo(PermissionType::DELETE_ROLES);
+        /* Case: If 0 is provided, it should return invalid role id error */
+        $I->sendDELETE('/api/auth/roles/' . '0');
+        $this->seeInvalidRoleIDError($I);
+
+        /* Case: If non-existent ID is provided, it should return invalid role id error */
+        $nonExistentRoleId = 999;
+        $I->sendDELETE('/api/auth/roles/' . $nonExistentRoleId);
+        $this->seeInvalidRoleIDError($I);
+
+        /* Case: Successfully delete the role*/
+        $I->sendDELETE('/api/auth/roles/' . $newRole->id);
+        $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
+    }
+
     private function generateMemberUser()
     {
         $memberUser = factory(User::class)->create([
@@ -646,6 +683,13 @@ class AuthenticationCest
         $memberUser->assignRole($memberRole);
 
         return $memberUser;
+    }
+
+    private function seeInvalidRoleIDError(ApiTester $I)
+    {
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(['error' => ['code' => 'AUTH0012']]);
+        $I->seeResponseCodeIs(Response::HTTP_BAD_REQUEST);
     }
 
     private function seeInvalidTokenOrEmailError(ApiTester $I)

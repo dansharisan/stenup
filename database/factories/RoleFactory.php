@@ -1,11 +1,8 @@
 <?php
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
-use App\Models\User;
-use App\Models\PasswordReset;
 use Faker\Generator as Faker;
-use Illuminate\Support\Str;
-use App\Enums\UserStatus;
+use Spatie\Permission\Models\Role;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,12 +15,8 @@ use App\Enums\UserStatus;
 |
 */
 
-$factory->define(User::class, function (Faker $faker) {
+$factory->define(Role::class, function (Faker $faker) {
     return [
-        'email' => $faker->unique()->safeEmail,
-        //'email_verified_at' => now(),
-        'status' => UserStatus::Active,
-        'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-        'remember_token' => Str::random(10),
+        'name' => $faker->name,
     ];
 });
