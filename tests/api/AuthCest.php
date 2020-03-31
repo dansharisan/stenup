@@ -707,12 +707,12 @@ class AuthenticationCest
         ]);
         $this->seeValidationError($I);
 
-        /* Case: Invalid matrix will return validation error ? */
+        /* Case: Invalid matrix will return validation error */
         $invalidMatrix = '[Invalid}.';
         $I->sendPUT('/api/auth/update_roles_permissions_matrix', [
             'matrix' => $invalidMatrix
         ]);
-        $this->seeValidationError($I);
+        $this->seeInvalidRolesPermissionsMatrixError($I);
 
         /* Successfully apply the matrix */
         $I->sendPUT('/api/auth/update_roles_permissions_matrix', [
@@ -762,6 +762,13 @@ class AuthenticationCest
         $memberUser->assignRole($memberRole);
 
         return $memberUser;
+    }
+
+    private function seeInvalidRolesPermissionsMatrixError(ApiTester $I)
+    {
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(['error' => ['code' => 'AUTH0013']]);
+        $I->seeResponseCodeIs(Response::HTTP_BAD_REQUEST);
     }
 
     private function seeInvalidRoleIDError(ApiTester $I)

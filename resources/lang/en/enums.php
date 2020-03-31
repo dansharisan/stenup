@@ -16,6 +16,7 @@ return [
         Error::AUTH0010 => "Unauthorized request",
         Error::AUTH0011 => "Email is not yet verified",
         Error::AUTH0012 => "Invalid role ID",
+        Error::AUTH0013 => "Invalid roles-permissions matrix",
         Error::USER0001 => "Invalid user ID",
         Error::USER0002 => "Invalid user ID string sequence",
         Error::USER0003 => "No role was selected",

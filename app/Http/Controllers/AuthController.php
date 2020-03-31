@@ -951,10 +951,10 @@ class AuthController extends Controller
             return response()->json(
                 ['error' =>
                             [
-                                'code' => Error::GENR0002,
-                                'message' => Error::getDescription(Error::GENR0002)
+                                'code' => Error::AUTH0013,
+                                'message' => Error::getDescription(Error::AUTH0013)
                             ]
-                ], Response::HTTP_UNPROCESSABLE_ENTITY
+                ], Response::HTTP_BAD_REQUEST
             );
         }
 
