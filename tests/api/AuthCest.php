@@ -707,6 +707,13 @@ class AuthenticationCest
         ]);
         $this->seeValidationError($I);
 
+        /* Case: Invalid matrix will return validation error ? */
+        $invalidMatrix = '[Invalid}.';
+        $I->sendPUT('/api/auth/update_roles_permissions_matrix', [
+            'matrix' => $invalidMatrix
+        ]);
+        $this->seeValidationError($I);
+
         /* Successfully apply the matrix */
         $I->sendPUT('/api/auth/update_roles_permissions_matrix', [
             'matrix' => $dumpMatrix

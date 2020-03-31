@@ -947,6 +947,15 @@ class AuthController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
+
+            return response()->json(
+                ['error' =>
+                            [
+                                'code' => Error::GENR0002,
+                                'message' => Error::getDescription(Error::GENR0002)
+                            ]
+                ], Response::HTTP_UNPROCESSABLE_ENTITY
+            );
         }
 
         // Return roles with permissions after the update
