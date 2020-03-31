@@ -8,7 +8,7 @@ use App\Enums\DefaultRoleType;
 use App\Enums\PermissionType;
 use Spatie\Permission\Models\Role;
 
-class AuthenticationCest
+class AuthCest
 {
     use UtilTrait;
     /**
