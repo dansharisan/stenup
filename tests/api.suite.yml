@@ -5,6 +5,7 @@ actor: ApiTester
 path: .
 modules:
     enabled:
+        - \Helper\Api
         - REST:
             depends: Laravel5
         - Db:
