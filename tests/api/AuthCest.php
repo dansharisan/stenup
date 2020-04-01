@@ -490,7 +490,7 @@ class AuthCest
     **/
     public function getRolesAndPermissions(ApiTester $I) {
         // Prepare data
-        $memberUser = $this->generateMemberUser();
+        $memberUser = $I->generateMemberUser();
 
         /* Case: Calling the API while not logged in should return unauthorized error */
         $I->sendGET('/api/auth/roles_permissions');
@@ -538,7 +538,7 @@ class AuthCest
     **/
     public function getRolesWithPermissions(ApiTester $I) {
         // Prepare data
-        $memberUser = $this->generateMemberUser();
+        $memberUser = $I->generateMemberUser();
 
         /* Case: Calling the API while not logged in should return unauthorized error */
         $I->sendGET('/api/auth/roles_w_permissions');
@@ -588,7 +588,7 @@ class AuthCest
     **/
     public function createRole(ApiTester $I) {
         // Prepare data
-        $memberUser = $this->generateMemberUser();
+        $memberUser = $I->generateMemberUser();
 
         /* Case: Calling the API while not logged in should return unauthorized error */
         $I->sendPOST('/api/auth/roles' , [
@@ -644,7 +644,7 @@ class AuthCest
     public function deleteRole(ApiTester $I) {
         // Prepare data
         $newRole = factory(Role::class)->create();
-        $memberUser = $this->generateMemberUser();
+        $memberUser = $I->generateMemberUser();
 
         /* Case: Calling the API while not logged in should return unauthorized error */
         $I->sendDELETE('/api/auth/roles/' . $newRole->id);
@@ -680,7 +680,7 @@ class AuthCest
     **/
     public function updateRolesPermissionsMatrix(ApiTester $I) {
         // Prepare data
-        $memberUser = $this->generateMemberUser();
+        $memberUser = $I->generateMemberUser();
 
         /* Case: Calling the API while not logged in should return unauthorized error */
         $dumpMatrix = '{"'. DefaultRoleType::MEMBER . '":["' . PermissionType::VIEW_DASHBOARD . '","' . PermissionType::VIEW_ROLES_PERMISSIONS . '"], "' . DefaultRoleType::ADMINISTRATOR . '":["' . PermissionType::UPDATE_PERMISSIONS . '"]}';
@@ -751,16 +751,5 @@ class AuthCest
             'matrix' => $dumpMatrix
         ]);
         $I->seeUnauthorizedRequestError();
-    }
-
-    private function generateMemberUser()
-    {
-        $memberUser = factory(User::class)->create([
-             'email_verified_at' => now()
-        ]);
-        $memberRole = Role::where('name', DefaultRoleType::MEMBER)->first();
-        $memberUser->assignRole($memberRole);
-
-        return $memberUser;
     }
 }
