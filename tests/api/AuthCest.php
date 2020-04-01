@@ -14,7 +14,7 @@ class AuthCest
     /**
     * Endpoint: POST /api/auth/login
     **/
-    public function login(Step\Api\CommonTest $I)
+    public function login(ApiTester $I)
     {
         /* Case: Empty email should return validation error */
         $I->sendPOST('/api/auth/login', [
@@ -67,7 +67,7 @@ class AuthCest
     /**
     * Endpoint: POST /api/auth/register
     **/
-    public function register(Step\Api\CommonTest $I)
+    public function register(ApiTester $I)
     {
         /* Case: Empty email should return validation error */
         $I->sendPOST('/api/auth/register', [
@@ -134,7 +134,7 @@ class AuthCest
     * Endpoint: GET /api/auth/getUser
     * Depends on: login
     **/
-    public function getUser(Step\Api\CommonTest $I)
+    public function getUser(ApiTester $I)
     {
         /* Case: Cannot get user information when not logged in */
         $I->sendGET('/api/auth/getUser');
@@ -164,7 +164,7 @@ class AuthCest
     * Endpoint: GET /api/auth/logout
     * Depends on: login, getUser
     **/
-    public function logout(Step\Api\CommonTest $I)
+    public function logout(ApiTester $I)
     {
         /* Successfully get user information after login */
         // Login
@@ -196,7 +196,7 @@ class AuthCest
     /**
     * Endpoint: GET /api/auth/register/activate/{token}
     **/
-    public function activate(Step\Api\CommonTest $I)
+    public function activate(ApiTester $I)
     {
         // Prepare data: an unactivated user
         $activationToken = $this->quickRandom(60);
@@ -222,7 +222,7 @@ class AuthCest
     /**
     * Endpoint: POST /api/auth/password/token/create
     **/
-    public function createPasswordResetToken(Step\Api\CommonTest $I)
+    public function createPasswordResetToken(ApiTester $I)
     {
         /* Case: Empty email should return validation error */
         $I->sendPOST('/api/auth/password/token/create', [
@@ -257,7 +257,7 @@ class AuthCest
     /**
     * Endpoint: GET /api/auth/password/token/find/{token}
     **/
-    public function findPasswordResetToken(Step\Api\CommonTest $I)
+    public function findPasswordResetToken(ApiTester $I)
     {
         /* Case: non-existing token should return invalid password reset token error */
         $token = 'non_existing_token';
@@ -283,7 +283,7 @@ class AuthCest
     * Endpoint: PATCH /api/auth/password/reset
     * Depends on: login
     **/
-    public function resetPassword(Step\Api\CommonTest $I)
+    public function resetPassword(ApiTester $I)
     {
         // Prepare data
         $user = factory(User::class)->create([
@@ -405,7 +405,7 @@ class AuthCest
     * Endpoint: PATCH /api/auth/password/change
     * Depends on: login
     **/
-    public function changePassword(Step\Api\CommonTest $I)
+    public function changePassword(ApiTester $I)
     {
         // Prepare data
         $user = factory(User::class)->create([
@@ -488,7 +488,7 @@ class AuthCest
     * Endpoint: GET /api/auth/roles_permissions
     * Depends on: login
     **/
-    public function getRolesAndPermissions(Step\Api\CommonTest $I) {
+    public function getRolesAndPermissions(ApiTester $I) {
         // Prepare data
         $memberUser = $this->generateMemberUser();
 
@@ -536,7 +536,7 @@ class AuthCest
     * Endpoint: GET /api/auth/roles_w_permissions
     * Depends on: login
     **/
-    public function getRolesWithPermissions(Step\Api\CommonTest $I) {
+    public function getRolesWithPermissions(ApiTester $I) {
         // Prepare data
         $memberUser = $this->generateMemberUser();
 
@@ -586,7 +586,7 @@ class AuthCest
     * Endpoint: POST /api/auth/roles
     * Depends on: login
     **/
-    public function createRole(Step\Api\CommonTest $I) {
+    public function createRole(ApiTester $I) {
         // Prepare data
         $memberUser = $this->generateMemberUser();
 
@@ -641,7 +641,7 @@ class AuthCest
     * Endpoint: DELETE /api/auth/roles/{id}
     * Depends on: login
     **/
-    public function deleteRole(Step\Api\CommonTest $I) {
+    public function deleteRole(ApiTester $I) {
         // Prepare data
         $newRole = factory(Role::class)->create();
         $memberUser = $this->generateMemberUser();
@@ -678,7 +678,7 @@ class AuthCest
     * Endpoint: PUT /api/auth/update_roles_permissions_matrix
     * Depends on: login
     **/
-    public function updateRolesPermissionsMatrix(Step\Api\CommonTest $I) {
+    public function updateRolesPermissionsMatrix(ApiTester $I) {
         // Prepare data
         $memberUser = $this->generateMemberUser();
 
