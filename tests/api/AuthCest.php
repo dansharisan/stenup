@@ -1,6 +1,7 @@
 <?php
 use Symfony\Component\HttpFoundation\Response as Response;
 use App\Models\User;
+use App\Enums\UserStatus;
 use App\Models\PasswordReset;
 use Carbon\Carbon;
 use App\Http\Traits\UtilTrait;
@@ -44,6 +45,14 @@ class AuthCest
             'password' => 'password'
         ]);
         $I->seeUnverifiedEmailError();
+
+        /* Case: Banned account should not be able to login */
+        $bannedMemberUser = $I->generateMemberUser(UserStatus::Banned);
+        $I->sendPOST('/api/auth/login', [
+            'email' => $bannedMemberUser->email,
+            'password' => 'password'
+        ]);
+        $I->seeWrongCredentialOrInvalidAccountError();
 
         /* Case: Wrong credential should return unauthorized response */
         $verifiedUser = factory(User::class)->create([

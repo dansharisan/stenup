@@ -1,5 +1,6 @@
 <?php
 use Symfony\Component\HttpFoundation\Response as Response;
+use App\Enums\UserStatus;
 use App\Http\Traits\UtilTrait;
 use App\Enums\PermissionType;
 use App\Models\User;
@@ -86,5 +87,46 @@ class UserCest
             'password' => 'password'
         ]);
         $I->seeWrongCredentialOrInvalidAccountError();
+    }
+
+    /**
+    * Endpoint: PATCH /api/users/{id}/unban
+    * Depends on: login
+    **/
+    public function unban(ApiTester $I)
+    {
+        // Prepare data
+        $memberUser = $I->generateMemberUser();
+        $bannedMemberUser = $I->generateMemberUser(UserStatus::Banned);
+
+        /* Case: Calling the API while not logged in should return unauthorized error */
+        $I->sendPATCH('/api/users/' . $bannedMemberUser->id . '/unban');
+        $I->seeUnauthorizedRequestError();
+
+        /* Case: By default, member user, which normally don't have UPDATE_USERS permission, shouldn't be able to access this API */
+        $I->sendPOST('/api/auth/login', [
+            'email' => $memberUser->email,
+            'password' => 'password'
+        ]);
+        $I->sendPATCH('/api/users/' . $bannedMemberUser->id . '/unban');
+        $I->seeUnauthorizedRequestError();
+
+        // When that user is set to have UPDATE_USERS permission, he could get access to this API //
+        $memberUser->roles[0]->givePermissionTo(PermissionType::UPDATE_USERS);
+        /* Case: Non-existent user ID should return validation error */
+        $nonExistentUserId = 999;
+        $I->sendPATCH('/api/users/' . $nonExistentUserId . '/unban');
+        $I->seeInvalidUserError();
+
+        /* Case: Successfully unban the user */
+        $I->sendPATCH('/api/users/' . $bannedMemberUser->id . '/unban');
+        $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
+        // This user should now be able to login
+        $I->sendPOST('/api/auth/login', [
+            'email' => $bannedMemberUser->email,
+            'password' => 'password'
+        ]);
+        $I->seeResponseIsJson();
+        $I->seeResponseCodeIs(Response::HTTP_OK);
     }
 }
