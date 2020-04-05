@@ -129,4 +129,43 @@ class UserCest
         $I->seeResponseIsJson();
         $I->seeResponseCodeIs(Response::HTTP_OK);
     }
+
+    /**
+    * Endpoint: DELETE /api/users/{id}
+    * Depends on: login
+    **/
+    public function delete(ApiTester $I)
+    {
+        // Prepare data
+        $memberUser = $I->generateMemberUser();
+
+        /* Case: Calling the API while not logged in should return unauthorized error */
+        $I->sendDELETE('/api/users/' . $memberUser->id);
+        $I->seeUnauthorizedRequestError();
+
+        /* Case: By default, member user, which normally don't have DELETE_USERS permission, shouldn't be able to access this API */
+        $I->sendPOST('/api/auth/login', [
+            'email' => $memberUser->email,
+            'password' => 'password'
+        ]);
+        $I->sendDELETE('/api/users/' . $memberUser->id);
+        $I->seeUnauthorizedRequestError();
+
+        // When that user is set to have DELETE_USERS permission, he could get access to this API //
+        $memberUser->roles[0]->givePermissionTo(PermissionType::DELETE_USERS);
+        /* Case: Non-existent user ID should return validation error */
+        $nonExistentUserId = 999;
+        $I->sendDELETE('/api/users/' . $nonExistentUserId);
+        $I->seeInvalidUserError();
+
+        /* Case: Successfully delete the user */
+        $I->sendDELETE('/api/users/' . $memberUser->id);
+        $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
+        // This user should not be able to login anymore (because the account has already been deleted)
+        $I->sendPOST('/api/auth/login', [
+            'email' => $memberUser->email,
+            'password' => 'password'
+        ]);
+        $I->seeWrongCredentialOrInvalidAccountError();
+    }
 }
