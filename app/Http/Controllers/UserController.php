@@ -284,8 +284,8 @@ class UserController extends Controller
 
         // Check for data validity
         $ids = $request->input('ids');
-
-        if (empty($ids) || !is_array(explode(',', $ids)) || count(explode(',', $ids)) == 0) {
+        $idArr = explode(',', $ids);
+        if (empty($ids) || !is_array($idArr) || count($idArr) == 0 || $idArr != array_filter($idArr, 'is_numeric')) {
             return response()->json(
                 ['error' =>
                             [
@@ -297,7 +297,7 @@ class UserController extends Controller
         }
 
         // Delete selected users
-        User::whereIn('id', explode(',', $ids))->delete();
+        User::whereIn('id', $idArr)->delete();
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }

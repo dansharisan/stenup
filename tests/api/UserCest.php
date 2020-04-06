@@ -168,4 +168,63 @@ class UserCest
         ]);
         $I->seeWrongCredentialOrInvalidAccountError();
     }
+
+    /**
+    * Endpoint: POST /api/users/collection:batchDelete
+    * Depends on: login
+    **/
+    public function batchDelete(ApiTester $I)
+    {
+        // Prepare data
+        $memberUser1 = $I->generateMemberUser();
+        $memberUser2 = $I->generateMemberUser();
+
+        /* Case: Calling the API while not logged in should return unauthorized error */
+        $I->sendPOST('/api/users/collection:batchDelete', [
+            'ids' => "$memberUser1->id,$memberUser2->id"
+        ]);
+        $I->seeUnauthorizedRequestError();
+
+        /* Case: By default, member user, which normally don't have DELETE_USERS permission, shouldn't be able to access this API */
+        $I->sendPOST('/api/auth/login', [
+            'email' => $memberUser2->email,
+            'password' => 'password'
+        ]);
+        $I->sendPOST('/api/users/collection:batchDelete', [
+            'ids' => "$memberUser1->id,$memberUser2->id"
+        ]);
+        $I->seeUnauthorizedRequestError();
+
+        // When that user is set to have DELETE_USERS permission, he could get access to this API //
+        $memberUser1->roles[0]->givePermissionTo(PermissionType::DELETE_USERS);
+        /* Case: Empty IDs should return invalid user id string sequence error */
+        $I->sendPOST('/api/users/collection:batchDelete', [
+            'ids' => ""
+        ]);
+        $I->seeInvalidUserIDStringSequenceError();
+
+        /* Case: Invalid IDs string sequence should return invalid user id string sequence error */
+        $invalidStringSequence = '[,8';
+        $I->sendPOST('/api/users/collection:batchDelete', [
+            'ids' => $invalidStringSequence
+        ]);
+        $I->seeInvalidUserIDStringSequenceError();
+
+        /* Case: Successfully delete selected users */
+        $I->sendPOST('/api/users/collection:batchDelete', [
+            'ids' => "$memberUser1->id,$memberUser2->id"
+        ]);
+        $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
+        // These two users should not be able to login anymore (because the account has already been deleted)
+        $I->sendPOST('/api/auth/login', [
+            'email' => $memberUser1->email,
+            'password' => 'password'
+        ]);
+        $I->seeWrongCredentialOrInvalidAccountError();
+        $I->sendPOST('/api/auth/login', [
+            'email' => $memberUser2->email,
+            'password' => 'password'
+        ]);
+        $I->seeWrongCredentialOrInvalidAccountError();
+    }
 }
