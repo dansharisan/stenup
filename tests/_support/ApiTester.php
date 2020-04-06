@@ -21,6 +21,20 @@ class ApiTester extends \Codeception\Actor
 {
     use _generated\ApiTesterActions;
 
+    public function seeServerError()
+    {
+        $this->seeResponseIsJson();
+        $this->seeResponseContainsJson(['error' => ['code' => 'GENR0001']]);
+        $this->seeResponseCodeIs(Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
+
+    public function seeInvalidOrNoRoleSelectedError()
+    {
+        $this->seeResponseIsJson();
+        $this->seeResponseContainsJson(['error' => ['code' => 'USER0003']]);
+        $this->seeResponseCodeIs(Response::HTTP_BAD_REQUEST);
+    }
+
     public function seeInvalidUserIDStringSequenceError()
     {
         $this->seeResponseIsJson();

@@ -361,8 +361,9 @@ class UserController extends Controller
         }
 
         $roleIds = $request->input('role_ids');
+        $roleIdArr = explode(',', $roleIds);
         // Check for data validity
-        if (empty($roleIds) || !is_array(explode(',', $roleIds)) || count(explode(',', $roleIds)) == 0) {
+        if (empty($roleIds) || !is_array($roleIdArr) || count($roleIdArr) == 0 || $roleIdArr != array_filter($roleIdArr, 'is_numeric')) {
             return response()->json(
                 ['error' =>
                             [

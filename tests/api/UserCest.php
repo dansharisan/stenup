@@ -4,6 +4,8 @@ use App\Enums\UserStatus;
 use App\Http\Traits\UtilTrait;
 use App\Enums\PermissionType;
 use App\Models\User;
+use App\Enums\DefaultRoleType;
+use Spatie\Permission\Models\Role;
 
 class UserCest
 {
@@ -226,5 +228,81 @@ class UserCest
             'password' => 'password'
         ]);
         $I->seeWrongCredentialOrInvalidAccountError();
+    }
+
+    /**
+    * Endpoint: PATCH /api/users/{id}
+    * Depends on: login
+    **/
+    public function update(ApiTester $I)
+    {
+        // Prepare data
+        $memberUser = $I->generateMemberUser();
+        $roleMember = Role::where('name', DefaultRoleType::MEMBER)->first();
+        $roleAdministrator = Role::where('name', DefaultRoleType::ADMINISTRATOR)->first();
+
+        /* Case: Calling the API while not logged in should return unauthorized error */
+        $I->sendPATCH('/api/users/' . $memberUser->id, [
+            'status' => UserStatus::Banned,
+            'role_ids' => $roleMember->id . ',' . $roleAdministrator->id
+        ]);
+        $I->seeUnauthorizedRequestError();
+
+        /* Case: By default, member user, which normally don't have UPDATE_USERS permission, shouldn't be able to access this API */
+        $I->sendPOST('/api/auth/login', [
+            'email' => $memberUser->email,
+            'password' => 'password'
+        ]);
+        $I->sendPATCH('/api/users/' . $memberUser->id, [
+            'status' => UserStatus::Banned,
+            'role_ids' => $roleMember->id . ',' . $roleAdministrator->id
+        ]);
+        $I->seeUnauthorizedRequestError();
+
+        // When that user is set to have UPDATE_USERS permission, he could get access to this API //
+        $memberUser->roles[0]->givePermissionTo(PermissionType::UPDATE_USERS);
+        /* Case: Empty role IDs should return invalid or no role selected error */
+        $I->sendPATCH('/api/users/' . $memberUser->id, [
+            'status' => UserStatus::Banned,
+            'role_ids' => ''
+        ]);
+        $I->seeInvalidOrNoRoleSelectedError();
+
+        /* Case: Invalid role IDs string sequence should return invalid or no role selected error */
+        $invalidStringSequence = '[,8';
+        $I->sendPATCH('/api/users/' . $memberUser->id, [
+            'status' => UserStatus::Banned,
+            'role_ids' => $invalidStringSequence
+        ]);
+        $I->seeInvalidOrNoRoleSelectedError();
+
+        /* Case: Non-existent role should return invalid or no role selected error */
+        $nonExistentRoleIdArr = '9999,0';
+        $I->sendPATCH('/api/users/' . $memberUser->id, [
+            'status' => UserStatus::Banned,
+            'role_ids' => $nonExistentRoleIdArr
+        ]);
+        $I->seeServerError();
+
+        /* Case: Successfully update the user */
+        $I->sendPATCH('/api/users/' . $memberUser->id, [
+            'status' => UserStatus::Banned,
+            'role_ids' => $roleMember->id . ',' . $roleAdministrator->id
+        ]);
+        $I->seeResponseIsJson();
+        $I->seeResponseCodeIs(Response::HTTP_OK);
+        $I->seeResponseContainsJson([
+            'user' => [
+                'status' => UserStatus::Banned,
+                'roles' => [
+                              [
+                                  'name' => DefaultRoleType::ADMINISTRATOR
+                              ],
+                              [
+                                  'name' => DefaultRoleType::MEMBER
+                              ]
+                          ],
+                      ]
+        ]);
     }
 }
