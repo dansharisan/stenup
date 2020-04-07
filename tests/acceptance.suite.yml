@@ -9,5 +9,5 @@ modules:
     enabled:
         - PhpBrowser:
             url: nginx:80
-        - \Helper\Acceptance
+        - \Helper\AcceptanceHelper
     step_decorators: ~

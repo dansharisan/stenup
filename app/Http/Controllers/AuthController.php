@@ -103,7 +103,7 @@ class AuthController extends Controller
         ]);
         $user->save();
 
-        // Default role:
+        // Default role
         $user->assignRole(DefaultRoleType::MEMBER);
 
         // Send email with activation link
@@ -947,6 +947,15 @@ class AuthController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
+
+            return response()->json(
+                ['error' =>
+                            [
+                                'code' => Error::AUTH0013,
+                                'message' => Error::getDescription(Error::AUTH0013)
+                            ]
+                ], Response::HTTP_BAD_REQUEST
+            );
         }
 
         // Return roles with permissions after the update

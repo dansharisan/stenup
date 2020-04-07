@@ -5,10 +5,11 @@ actor: ApiTester
 path: .
 modules:
     enabled:
+        - \Helper\ApiHelper
         - REST:
             depends: Laravel5
         - Db:
-            dsn: 'mysql:host=db;dbname=stenup_test'
+            dsn: 'mysql:host=mysql;dbname=stenup_test'
             user: 'tester'
             password: 'p@ssw0rd'
             dump: 'tests/_data/dump.sql'

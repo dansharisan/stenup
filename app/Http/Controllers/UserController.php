@@ -284,8 +284,8 @@ class UserController extends Controller
 
         // Check for data validity
         $ids = $request->input('ids');
-
-        if (empty($ids) || !is_array(explode(',', $ids)) || count(explode(',', $ids)) == 0) {
+        $idArr = explode(',', $ids);
+        if (empty($ids) || !is_array($idArr) || count($idArr) == 0 || $idArr != array_filter($idArr, 'is_numeric')) {
             return response()->json(
                 ['error' =>
                             [
@@ -297,7 +297,7 @@ class UserController extends Controller
         }
 
         // Delete selected users
-        User::whereIn('id', explode(',', $ids))->delete();
+        User::whereIn('id', $idArr)->delete();
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }
@@ -361,8 +361,9 @@ class UserController extends Controller
         }
 
         $roleIds = $request->input('role_ids');
+        $roleIdArr = explode(',', $roleIds);
         // Check for data validity
-        if (empty($roleIds) || !is_array(explode(',', $roleIds)) || count(explode(',', $roleIds)) == 0) {
+        if (empty($roleIds) || !is_array($roleIdArr) || count($roleIdArr) == 0 || $roleIdArr != array_filter($roleIdArr, 'is_numeric')) {
             return response()->json(
                 ['error' =>
                             [
@@ -488,6 +489,7 @@ class UserController extends Controller
         }
 
         $roleIds = $request->input('role_ids');
+        $roleIdArr = explode(',', $roleIds);
 
         // Validate input data
         $validator = Validator::make($request->all(), [
@@ -506,6 +508,18 @@ class UserController extends Controller
                 'validation' => $validator->errors()
             ],
             Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        // Check for role Id array validity
+        if (!is_array($roleIdArr) || count($roleIdArr) == 0 || $roleIdArr != array_filter($roleIdArr, 'is_numeric')) {
+            return response()->json(
+                ['error' =>
+                            [
+                                'code' => Error::USER0003,
+                                'message' => Error::getDescription(Error::USER0003)
+                            ]
+                ], Response::HTTP_BAD_REQUEST
+            );
         }
 
         // Create user
