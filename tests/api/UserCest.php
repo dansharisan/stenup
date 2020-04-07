@@ -430,4 +430,40 @@ class UserCest
                       ]
         ]);
     }
+
+    /**
+    * Endpoint: GET /api/users/registered_user_stats
+    * Depends on: login
+    **/
+    public function registeredUserStats(ApiTester $I)
+    {
+        // Prepare data
+        $memberUser = $I->generateMemberUser();
+
+        /* Case: Calling the API while not logged in should return unauthorized error */
+        $I->sendGET('/api/users/registered_user_stats');
+        $I->seeUnauthorizedRequestError();
+
+        /* Case: By default, member user, which normally don't have VIEW_DASHBOARD permission, shouldn't be able to access this API */
+        $I->sendPOST('/api/auth/login', [
+            'email' => $memberUser->email,
+            'password' => 'password'
+        ]);
+        $I->sendGET('/api/users/registered_user_stats');
+        $I->seeUnauthorizedRequestError();
+
+        /* Case: When that user is set to have VIEW_DASHBOARD permission, he could get access to this API */
+        $memberUser->roles[0]->givePermissionTo(PermissionType::VIEW_DASHBOARD);
+        $I->sendGET('/api/users/registered_user_stats');
+        $I->seeResponseIsJson();
+        $I->seeResponseCodeIs(Response::HTTP_OK);
+        $I->seeResponseContainsJson(
+            [
+                'user_stats' => [
+                    // 'total' => ,
+                    'last_7_day_stats' => []
+                ],
+            ]
+        );
+    }
 }
