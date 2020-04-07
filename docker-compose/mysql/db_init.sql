@@ -1,0 +1,6 @@
+CREATE DATABASE IF NOT EXISTS `stenup`;
+DROP DATABASE IF EXISTS `stenup_test`;
+CREATE DATABASE `stenup_test`;
+CREATE USER 'tester'@'%' IDENTIFIED BY 'p@ssw0rd';
+GRANT ALL PRIVILEGES ON stenup_test . * TO 'tester'@'%';
+FLUSH PRIVILEGES;

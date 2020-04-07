@@ -19,7 +19,7 @@ class UserController extends Controller
     /**
     * @OA\Get(
     *         path="/api/users",
-    *         tags={"Users"},
+    *         tags={"User"},
     *         summary="Get users",
     *         description="Get list of users",
     *         operationId="user-list",
@@ -77,7 +77,7 @@ class UserController extends Controller
     /**
     * @OA\Patch(
     *         path="/api/users/{id}/ban",
-    *         tags={"Users"},
+    *         tags={"User"},
     *         summary="Ban an user",
     *         description="Ban an user",
     *         operationId="ban-user",
@@ -131,7 +131,7 @@ class UserController extends Controller
     /**
     * @OA\Patch(
     *         path="/api/users/{id}/unban",
-    *         tags={"Users"},
+    *         tags={"User"},
     *         summary="Unban an user",
     *         description="Unban an user",
     *         operationId="unban-user",
@@ -185,7 +185,7 @@ class UserController extends Controller
     /**
     * @OA\Delete(
     *         path="/api/users/{id}",
-    *         tags={"Users"},
+    *         tags={"User"},
     *         summary="Delete an user",
     *         description="Delete an user",
     *         operationId="delete-user",
@@ -238,7 +238,7 @@ class UserController extends Controller
     /**
     * @OA\Post(
     *         path="/api/users/collection:batchDelete",
-    *         tags={"Users"},
+    *         tags={"User"},
     *         summary="Delete selected users",
     *         description="Delete selected users",
     *         operationId="delete-user-batch",
@@ -284,8 +284,8 @@ class UserController extends Controller
 
         // Check for data validity
         $ids = $request->input('ids');
-
-        if (empty($ids) || !is_array(explode(',', $ids)) || count(explode(',', $ids)) == 0) {
+        $idArr = explode(',', $ids);
+        if (empty($ids) || !is_array($idArr) || count($idArr) == 0 || $idArr != array_filter($idArr, 'is_numeric')) {
             return response()->json(
                 ['error' =>
                             [
@@ -297,7 +297,7 @@ class UserController extends Controller
         }
 
         // Delete selected users
-        User::whereIn('id', explode(',', $ids))->delete();
+        User::whereIn('id', $idArr)->delete();
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }
@@ -305,7 +305,7 @@ class UserController extends Controller
     /**
     * @OA\Patch(
     *         path="/api/users/{id}",
-    *         tags={"Users"},
+    *         tags={"User"},
     *         summary="Edit an user",
     *         description="Edit an user",
     *         operationId="edit-user",
@@ -361,8 +361,9 @@ class UserController extends Controller
         }
 
         $roleIds = $request->input('role_ids');
+        $roleIdArr = explode(',', $roleIds);
         // Check for data validity
-        if (empty($roleIds) || !is_array(explode(',', $roleIds)) || count(explode(',', $roleIds)) == 0) {
+        if (empty($roleIds) || !is_array($roleIdArr) || count($roleIdArr) == 0 || $roleIdArr != array_filter($roleIdArr, 'is_numeric')) {
             return response()->json(
                 ['error' =>
                             [
@@ -426,7 +427,7 @@ class UserController extends Controller
     /**
     * @OA\Post(
     *         path="/api/users",
-    *         tags={"Users"},
+    *         tags={"User"},
     *         summary="Create an user",
     *         description="Create an user",
     *         operationId="create-user",
@@ -488,6 +489,7 @@ class UserController extends Controller
         }
 
         $roleIds = $request->input('role_ids');
+        $roleIdArr = explode(',', $roleIds);
 
         // Validate input data
         $validator = Validator::make($request->all(), [
@@ -506,6 +508,18 @@ class UserController extends Controller
                 'validation' => $validator->errors()
             ],
             Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        // Check for role Id array validity
+        if (!is_array($roleIdArr) || count($roleIdArr) == 0 || $roleIdArr != array_filter($roleIdArr, 'is_numeric')) {
+            return response()->json(
+                ['error' =>
+                            [
+                                'code' => Error::USER0003,
+                                'message' => Error::getDescription(Error::USER0003)
+                            ]
+                ], Response::HTTP_BAD_REQUEST
+            );
         }
 
         // Create user
@@ -551,7 +565,7 @@ class UserController extends Controller
     /**
     * @OA\Get(
     *         path="/api/users/registered_user_stats",
-    *         tags={"Users"},
+    *         tags={"User"},
     *         summary="Get registered user stats",
     *         description="Get registered user stats",
     *         operationId="registered-user-stats",

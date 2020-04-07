@@ -21,14 +21,16 @@ use App\Notifications\PasswordChangeSuccess;
 use Symfony\Component\HttpFoundation\Response as Response;
 use Illuminate\Support\Facades\DB;
 use App\Http\Traits\ResponseTrait;
+use App\Http\Traits\UtilTrait;
 
 class AuthController extends Controller
 {
-    use ResponseTrait;
+    const PASSWORD_RESET_TOKEN_TIME_VALIDITY_IN_MINUTE = 60;
+    use ResponseTrait, UtilTrait;
     /**
     * @OA\Post(
     *         path="/api/auth/register",
-    *         tags={"Authentication"},
+    *         tags={"Auth"},
     *         summary="Register",
     *         description="Register a new user and send notification mail",
     *         operationId="register",
@@ -101,7 +103,7 @@ class AuthController extends Controller
         ]);
         $user->save();
 
-        // Default role:
+        // Default role
         $user->assignRole(DefaultRoleType::MEMBER);
 
         // Send email with activation link
@@ -113,7 +115,7 @@ class AuthController extends Controller
     /**
     * @OA\Post(
     *         path="/api/auth/login",
-    *         tags={"Authentication"},
+    *         tags={"Auth"},
     *         summary="Login",
     *         description="Login an user",
     *         operationId="login",
@@ -214,7 +216,7 @@ class AuthController extends Controller
     /**
     * @OA\Get(
     *         path="/api/auth/logout",
-    *         tags={"Authentication"},
+    *         tags={"Auth"},
     *         summary="Logout",
     *         description="Logout an user",
     *         operationId="logout",
@@ -238,7 +240,7 @@ class AuthController extends Controller
     /**
     * @OA\Get(
     *         path="/api/auth/getUser",
-    *         tags={"Authentication"},
+    *         tags={"Auth"},
     *         summary="Get user",
     *         description="Retrieve information from current user",
     *         operationId="getUser",
@@ -266,7 +268,7 @@ class AuthController extends Controller
     /**
     * @OA\Get(
     *         path="/api/auth/register/activate/{token}",
-    *         tags={"Authentication"},
+    *         tags={"Auth"},
     *         summary="Activate user",
     *         description="Activate an registered user",
     *         operationId="activateUser",
@@ -318,7 +320,7 @@ class AuthController extends Controller
     /**
     * @OA\Post(
     *         path="/api/auth/password/token/create",
-    *         tags={"Authentication"},
+    *         tags={"Auth"},
     *         summary="Request resetting password",
     *         description="Generate password reset token and send that token to user through mail",
     *         operationId="createPasswordResetToken",
@@ -403,7 +405,7 @@ class AuthController extends Controller
     /**
     * @OA\Get(
     *         path="/api/auth/password/token/find/{token}",
-    *         tags={"Authentication"},
+    *         tags={"Auth"},
     *         summary="Verify reset password token",
     *         description="Verify the reset password token and make sure it is existing and still valid",
     *         operationId="findPasswordResetToken",
@@ -445,7 +447,7 @@ class AuthController extends Controller
             );
         }
 
-        if (Carbon::parse($passwordReset->updated_at)->addMinutes(720)->isPast()) {
+        if (Carbon::parse($passwordReset->updated_at)->addMinutes(PasswordReset::PASSWORD_RESET_TOKEN_TIME_VALIDITY_IN_MINUTE)->isPast()) {
             $passwordReset->delete();
             return response()->json(
                 ['error' =>
@@ -463,7 +465,7 @@ class AuthController extends Controller
     /**
     * @OA\Patch(
     *         path="/api/auth/password/reset",
-    *         tags={"Authentication"},
+    *         tags={"Auth"},
     *         summary="Reset password",
     *         description="Set new password for the user",
     *         operationId="resetPassword",
@@ -579,7 +581,7 @@ class AuthController extends Controller
     /**
     * @OA\Patch(
     *         path="/api/auth/password/change",
-    *         tags={"Authentication"},
+    *         tags={"Auth"},
     *         summary="Change password",
     *         description="Change an user's password (requires current password) and send notification mail",
     *         operationId="changePassword",
@@ -665,7 +667,7 @@ class AuthController extends Controller
                                 'code' => Error::AUTH0001,
                                 'message' => Error::getDescription(Error::AUTH0001)
                             ]
-                ], Response::HTTP_BAD_REQUEST
+                ], Response::HTTP_UNAUTHORIZED
             );
         }
 
@@ -682,7 +684,7 @@ class AuthController extends Controller
     /**
     * @OA\Get(
     *         path="/api/auth/roles_permissions",
-    *         tags={"Authorization"},
+    *         tags={"Auth"},
     *         summary="Get all roles and permissions",
     *         description="Get all roles and permissions",
     *         @OA\Response(
@@ -712,7 +714,7 @@ class AuthController extends Controller
     /**
     * @OA\Get(
     *         path="/api/auth/roles_w_permissions",
-    *         tags={"Authorization"},
+    *         tags={"Auth"},
     *         summary="Get all roles with associated permissions",
     *         description="Get all roles with associated permissions",
     *         @OA\Response(
@@ -741,7 +743,7 @@ class AuthController extends Controller
     /**
     * @OA\Post(
     *         path="/api/auth/roles",
-    *         tags={"Authorization"},
+    *         tags={"Auth"},
     *         summary="Create role",
     *         description="Create a new role",
     *         operationId="create-role",
@@ -810,7 +812,7 @@ class AuthController extends Controller
     /**
     * @OA\Delete(
     *         path="/api/auth/roles/{id}",
-    *         tags={"Authorization"},
+    *         tags={"Auth"},
     *         summary="Delete a role",
     *         description="Delete a role",
     *         operationId="delete-role",
@@ -863,7 +865,7 @@ class AuthController extends Controller
     /**
     * @OA\Put(
     *         path="/api/auth/update_roles_permissions_matrix",
-    *         tags={"Authorization"},
+    *         tags={"Auth"},
     *         summary="Update roles permissions matrix",
     *         description="Update roles permissions matrix",
     *         operationId="update-roles-permissions-matrix",
@@ -945,20 +947,19 @@ class AuthController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
+
+            return response()->json(
+                ['error' =>
+                            [
+                                'code' => Error::AUTH0013,
+                                'message' => Error::getDescription(Error::AUTH0013)
+                            ]
+                ], Response::HTTP_BAD_REQUEST
+            );
         }
 
         // Return roles with permissions after the update
         return $this->getRolesWithPermissions($request);
-    }
-
-    /*
-    *   Generate a random string combined with digit and alphabetical characters
-    **/
-    protected static function quickRandom($length = 16)
-    {
-        $pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-        return substr(str_shuffle(str_repeat($pool, 5)), 0, $length);
     }
 
     /*

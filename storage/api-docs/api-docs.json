@@ -6,7 +6,7 @@
     },
     "servers": [
         {
-            "url": "http://localhost",
+            "url": "http://localhost:8000",
             "description": "Default server"
         }
     ],
@@ -14,7 +14,7 @@
         "/api/auth/register": {
             "post": {
                 "tags": [
-                    "Authentication"
+                    "Auth"
                 ],
                 "summary": "Register",
                 "description": "Register a new user and send notification mail",
@@ -61,7 +61,7 @@
         "/api/auth/login": {
             "post": {
                 "tags": [
-                    "Authentication"
+                    "Auth"
                 ],
                 "summary": "Login",
                 "description": "Login an user",
@@ -106,7 +106,7 @@
         "/api/auth/logout": {
             "get": {
                 "tags": [
-                    "Authentication"
+                    "Auth"
                 ],
                 "summary": "Logout",
                 "description": "Logout an user",
@@ -124,7 +124,7 @@
         "/api/auth/getUser": {
             "get": {
                 "tags": [
-                    "Authentication"
+                    "Auth"
                 ],
                 "summary": "Get user",
                 "description": "Retrieve information from current user",
@@ -142,7 +142,7 @@
         "/api/auth/register/activate/{token}": {
             "get": {
                 "tags": [
-                    "Authentication"
+                    "Auth"
                 ],
                 "summary": "Activate user",
                 "description": "Activate an registered user",
@@ -174,7 +174,7 @@
         "/api/auth/password/token/create": {
             "post": {
                 "tags": [
-                    "Authentication"
+                    "Auth"
                 ],
                 "summary": "Request resetting password",
                 "description": "Generate password reset token and send that token to user through mail",
@@ -214,7 +214,7 @@
         "/api/auth/password/token/find/{token}": {
             "get": {
                 "tags": [
-                    "Authentication"
+                    "Auth"
                 ],
                 "summary": "Verify reset password token",
                 "description": "Verify the reset password token and make sure it is existing and still valid",
@@ -246,7 +246,7 @@
         "/api/auth/password/reset": {
             "patch": {
                 "tags": [
-                    "Authentication"
+                    "Auth"
                 ],
                 "summary": "Reset password",
                 "description": "Set new password for the user",
@@ -300,7 +300,7 @@
         "/api/auth/password/change": {
             "patch": {
                 "tags": [
-                    "Authentication"
+                    "Auth"
                 ],
                 "summary": "Change password",
                 "description": "Change an user's password (requires current password) and send notification mail",
@@ -351,7 +351,7 @@
         "/api/auth/roles_permissions": {
             "get": {
                 "tags": [
-                    "Authorization"
+                    "Auth"
                 ],
                 "summary": "Get all roles and permissions",
                 "description": "Get all roles and permissions",
@@ -369,7 +369,7 @@
         "/api/auth/roles_w_permissions": {
             "get": {
                 "tags": [
-                    "Authorization"
+                    "Auth"
                 ],
                 "summary": "Get all roles with associated permissions",
                 "description": "Get all roles with associated permissions",
@@ -387,7 +387,7 @@
         "/api/auth/roles": {
             "post": {
                 "tags": [
-                    "Authorization"
+                    "Auth"
                 ],
                 "summary": "Create role",
                 "description": "Create a new role",
@@ -424,7 +424,7 @@
         "/api/auth/roles/{id}": {
             "delete": {
                 "tags": [
-                    "Authorization"
+                    "Auth"
                 ],
                 "summary": "Delete a role",
                 "description": "Delete a role",
@@ -453,7 +453,7 @@
         "/api/auth/update_roles_permissions_matrix": {
             "put": {
                 "tags": [
-                    "Authorization"
+                    "Auth"
                 ],
                 "summary": "Update roles permissions matrix",
                 "description": "Update roles permissions matrix",
@@ -490,7 +490,7 @@
         "/api/users": {
             "get": {
                 "tags": [
-                    "Users"
+                    "User"
                 ],
                 "summary": "Get users",
                 "description": "Get list of users",
@@ -526,7 +526,7 @@
             },
             "post": {
                 "tags": [
-                    "Users"
+                    "User"
                 ],
                 "summary": "Create an user",
                 "description": "Create an user",
@@ -580,7 +580,7 @@
         "/api/users/{id}/ban": {
             "patch": {
                 "tags": [
-                    "Users"
+                    "User"
                 ],
                 "summary": "Ban an user",
                 "description": "Ban an user",
@@ -609,7 +609,7 @@
         "/api/users/{id}/unban": {
             "patch": {
                 "tags": [
-                    "Users"
+                    "User"
                 ],
                 "summary": "Unban an user",
                 "description": "Unban an user",
@@ -638,7 +638,7 @@
         "/api/users/{id}": {
             "delete": {
                 "tags": [
-                    "Users"
+                    "User"
                 ],
                 "summary": "Delete an user",
                 "description": "Delete an user",
@@ -665,7 +665,7 @@
             },
             "patch": {
                 "tags": [
-                    "Users"
+                    "User"
                 ],
                 "summary": "Edit an user",
                 "description": "Edit an user",
@@ -718,7 +718,7 @@
         "/api/users/collection:batchDelete": {
             "post": {
                 "tags": [
-                    "Users"
+                    "User"
                 ],
                 "summary": "Delete selected users",
                 "description": "Delete selected users",
@@ -758,7 +758,7 @@
         "/api/users/registered_user_stats": {
             "get": {
                 "tags": [
-                    "Users"
+                    "User"
                 ],
                 "summary": "Get registered user stats",
                 "description": "Get registered user stats",
