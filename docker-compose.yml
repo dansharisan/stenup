@@ -57,7 +57,7 @@ services:
     image: phpmyadmin/phpmyadmin:4.9
     container_name: stenup-phpmyadmin
     ports:
-      - "8080:8080"
+      - "8080:80"
 #    volumes:
 #      - ./phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
     environment:
