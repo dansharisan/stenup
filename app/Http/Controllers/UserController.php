@@ -489,6 +489,7 @@ class UserController extends Controller
         }
 
         $roleIds = $request->input('role_ids');
+        $roleIdArr = explode(',', $roleIds);
 
         // Validate input data
         $validator = Validator::make($request->all(), [
@@ -507,6 +508,18 @@ class UserController extends Controller
                 'validation' => $validator->errors()
             ],
             Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        // Check for role Id array validity
+        if (!is_array($roleIdArr) || count($roleIdArr) == 0 || $roleIdArr != array_filter($roleIdArr, 'is_numeric')) {
+            return response()->json(
+                ['error' =>
+                            [
+                                'code' => Error::USER0003,
+                                'message' => Error::getDescription(Error::USER0003)
+                            ]
+                ], Response::HTTP_BAD_REQUEST
+            );
         }
 
         // Create user

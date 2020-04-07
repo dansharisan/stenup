@@ -305,4 +305,129 @@ class UserCest
                       ]
         ]);
     }
+
+    /**
+    * Endpoint: POST /api/users
+    * Depends on: login
+    **/
+    public function store(ApiTester $I)
+    {
+        // Prepare data
+        $memberUser = $I->generateMemberUser();
+        $roleMember = Role::where('name', DefaultRoleType::MEMBER)->first();
+        $roleAdministrator = Role::where('name', DefaultRoleType::ADMINISTRATOR)->first();
+        $validEmail = 'my_valid_email@test.com';
+
+        /* Case: Calling the API while not logged in should return unauthorized error */
+        $I->sendPOST('/api/users', [
+            'email' => 'myemail@test.com',
+            'password' => '123456',
+            'status' => UserStatus::Active,
+            'role_ids' => $roleMember->id . ',' . $roleAdministrator->id
+        ]);
+        $I->seeUnauthorizedRequestError();
+
+        /* Case: By default, member user, which normally don't have CREATE_USERS permission, shouldn't be able to access this API */
+        $I->sendPOST('/api/auth/login', [
+            'email' => $memberUser->email,
+            'password' => 'password'
+        ]);
+        $I->sendPOST('/api/users', [
+            'email' => 'myemail@test.com',
+            'password' => '123456',
+            'status' => UserStatus::Active,
+            'role_ids' => $roleMember->id . ',' . $roleAdministrator->id
+        ]);
+        $I->seeUnauthorizedRequestError();
+
+        // When that user is set to have CREATE_USERS permission, he could get access to this API //
+        $memberUser->roles[0]->givePermissionTo(PermissionType::CREATE_USERS);
+        /* Case: Empty email should return validation error */
+        $I->sendPOST('/api/users', [
+            'email' => '',
+            'password' => '123456',
+            'status' => UserStatus::Active,
+            'role_ids' => $roleMember->id . ',' . $roleAdministrator->id
+        ]);
+        $I->seeValidationError();
+
+        /* Case: Invalid email should return validation error */
+        $I->sendPOST('/api/users', [
+            'email' => 'invalid_email',
+            'password' => '123456',
+            'status' => UserStatus::Active,
+            'role_ids' => $roleMember->id . ',' . $roleAdministrator->id
+        ]);
+        $I->seeValidationError();
+
+        /* Case: Existing email should return validation error */
+        $I->sendPOST('/api/users', [
+            'email' => $memberUser->email,
+            'password' => '123456',
+            'status' => UserStatus::Active,
+            'role_ids' => $roleMember->id . ',' . $roleAdministrator->id
+        ]);
+        $I->seeValidationError();
+
+        /* Case: Empty password should return validation error */
+        $I->sendPOST('/api/users', [
+            'email' => $validEmail,
+            'password' => '',
+            'status' => UserStatus::Active,
+            'role_ids' => $roleMember->id . ',' . $roleAdministrator->id
+        ]);
+        $I->seeValidationError();
+
+        /* Case: Empty role id string sequence should return validation error */
+        $I->sendPOST('/api/users', [
+            'email' => $validEmail,
+            'password' => '123456',
+            'status' => UserStatus::Active,
+            'role_ids' => ''
+        ]);
+        $I->seeValidationError();
+
+        /* Case: Invalid role IDs string sequence should return invalid or no role selected error */
+        $invalidStringSequence = '[,8';
+        $I->sendPOST('/api/users', [
+            'email' => $validEmail,
+            'password' => '123456',
+            'status' => UserStatus::Active,
+            'role_ids' => $invalidStringSequence
+        ]);
+        $I->seeInvalidOrNoRoleSelectedError();
+
+        /* Case: Non-existent role should return invalid or no role selected error */
+        $nonExistentRoleIdArr = '9999,0';
+        $I->sendPOST('/api/users', [
+            'email' => $validEmail,
+            'password' => '123456',
+            'status' => UserStatus::Active,
+            'role_ids' => $nonExistentRoleIdArr
+        ]);
+        $I->seeServerError();
+
+        /* Case: Successfully add the user */
+        $I->sendPOST('/api/users', [
+            'email' => $validEmail,
+            'password' => '123456',
+            'status' => UserStatus::Active,
+            'role_ids' => $roleMember->id . ',' . $roleAdministrator->id
+        ]);
+        $I->seeResponseIsJson();
+        $I->seeResponseCodeIs(Response::HTTP_OK);
+        $I->seeResponseContainsJson([
+            'user' => [
+                'email' => $validEmail,
+                'roles' => [
+                              [
+                                  'name' => DefaultRoleType::ADMINISTRATOR
+                              ],
+                              [
+                                  'name' => DefaultRoleType::MEMBER
+                              ]
+                          ],
+                      ]
+        ]);
+    }
 }
