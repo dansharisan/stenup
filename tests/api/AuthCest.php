@@ -17,6 +17,13 @@ class AuthCest
     **/
     public function login(ApiTester $I)
     {
+        // Prepare data
+        $unverifiedUser = factory(User::class)->create();
+        $bannedMemberUser = $I->generateMemberUser(UserStatus::Banned);
+        $verifiedUser = factory(User::class)->create([
+            'email_verified_at' => now()
+        ]);
+
         /* Case: Empty email should return validation error */
         $I->sendPOST('/api/auth/login', [
             'email' => '',
@@ -33,13 +40,12 @@ class AuthCest
 
         /* Case: Empty password should return validation error */
         $I->sendPOST('/api/auth/login', [
-            'email' => 'some_email@something.com',
+            'email' => $verifiedUser->email,
             'password' => ''
         ]);
         $I->seeValidationError();
 
         /* Case: Unverified account should not be able to login */
-        $unverifiedUser = factory(User::class)->create();
         $I->sendPOST('/api/auth/login', [
             'email' => $unverifiedUser->email,
             'password' => 'password'
@@ -47,7 +53,6 @@ class AuthCest
         $I->seeUnverifiedEmailError();
 
         /* Case: Banned account should not be able to login */
-        $bannedMemberUser = $I->generateMemberUser(UserStatus::Banned);
         $I->sendPOST('/api/auth/login', [
             'email' => $bannedMemberUser->email,
             'password' => 'password'
@@ -55,9 +60,6 @@ class AuthCest
         $I->seeWrongCredentialOrInvalidAccountError();
 
         /* Case: Wrong credential should return unauthorized response */
-        $verifiedUser = factory(User::class)->create([
-            'email_verified_at' => now()
-        ]);
         $I->sendPOST('/api/auth/login', [
             'email' => $verifiedUser->email,
             'password' => 'wrongpassword'
@@ -78,6 +80,10 @@ class AuthCest
     **/
     public function register(ApiTester $I)
     {
+        // Prepare data
+        $validEmail = 'email@example.com';
+        $existingUser = factory(User::class)->create();
+
         /* Case: Empty email should return validation error */
         $I->sendPOST('/api/auth/register', [
             'email' => '',
@@ -88,7 +94,7 @@ class AuthCest
 
         /* Case: Empty password should return validation error */
         $I->sendPOST('/api/auth/register', [
-            'email' => 'email@example.com',
+            'email' => $validEmail,
             'password' => '',
             'password_confirmation' => 'anything'
         ]);
@@ -96,7 +102,7 @@ class AuthCest
 
         /* Case: Empty password confirmation should return validation error */
         $I->sendPOST('/api/auth/register', [
-            'email' => 'email@example.com',
+            'email' => $validEmail,
             'password' => 'anything',
             'password_confirmation' => ''
         ]);
@@ -112,18 +118,15 @@ class AuthCest
 
         /* Case: Not matching Password and Password confirmation should return validation error */
         $I->sendPOST('/api/auth/register', [
-            'email' => 'email@example.com',
+            'email' => $validEmail,
             'password' => 'anything',
             'password_confirmation' => 'anything1'
         ]);
         $I->seeValidationError();
 
         /* Case: Existing email should return validation error */
-        $user = factory(User::class)->create([
-            'email' => 'myemail@example.com',
-        ]);
         $I->sendPOST('/api/auth/register', [
-            'email' => 'myemail@example.com',
+            'email' => $existingUser->email,
             'password' => 'anything',
             'password_confirmation' => 'anything'
         ]);
@@ -131,12 +134,19 @@ class AuthCest
 
         /* Case: Register successfully */
         $I->sendPOST('/api/auth/register', [
-            'email' => 'email@example.com',
+            'email' => $validEmail,
             'password' => 'anything',
             'password_confirmation' => 'anything'
         ]);
         $I->seeResponseIsJson();
         $I->seeResponseCodeIs(Response::HTTP_OK);
+        // Check if data is properly inserted into database
+        $I->seeInDatabase((new User)->getTable(), [
+                'email' => $validEmail,
+                'email_verified_at' => NULL, // Email is not verified on registration
+                'status' => UserStatus::Active // Status is Active on registration
+            ]
+        );
     }
 
     /**

@@ -15,8 +15,9 @@ modules:
             dump: 'tests/_data/dump.sql'
             populate: true
             cleanup: true
-            reconnect: true
+            reconnect: false
             waitlock: 0
         - Laravel5:
             environment_file: .env.test
-            # part: ORM
+            cleanup: false
+            part: ORM
