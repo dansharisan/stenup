@@ -1,20 +1,20 @@
-## Introduction
+# Introduction
 Boilerplate for API-based web app project, with basic admin panel and api documentation.
 
-## Tech stack
+# Tech stack
 - Laravel 6.x for the backend
 - VueJS 2.x for the frontend (admin site and user site)
 - Bootstrap Vue 4
 - Swagger with OpenAPI 3.0 for API documentation
 - Codeception for automation test
 
-## Used PHP Packages
+# Used PHP Packages
 - bensampo/laravel-enum: more features on enum data type
 - tymondesigns/jwt-auth: JWT Authentication from frontend (ui) to backend (api)
 - spatie/laravel-permission: one user can have multiple roles, and one role can have multiple permissions
 - darkaonline/l5-swagger: enable swagger, we can create API documentation as well as API execution page
 
-## Used Node Packages
+# Used Node Packages
 - bootstrap-vue: great bootstrap for vue
 - jquery: manipulate DOM easily
 - vue-snotify: Show toast notifications
@@ -25,15 +25,15 @@ Boilerplate for API-based web app project, with basic admin panel and api docume
 - vue-sweetalert2: Alert box for vue
 And of course unmissable common packages like vuex, vue-router...
 
-## Notes
+# Notes
 - Default roles and permissions will be added when running RolesAndPermissionsSeeder.
 - There are 3 default roles: ADMINISTRATOR, MODERATOR, and MEMBER
 - You can add new roles and adjust permissions in admin panel.
 - Use PermissionType when you want to create/edit permissions. Don't forget to build seeder to add then into database as well.
 - AccountSeeder can be used to create admin account. Password is hashed using bcrypt with 10 rounds. You can hash it here: https://bcrypt-generator.com/
 
-## Installation
-# Normal installation
+# Installation
+## Normal installation
 - Run "composer install"
 - Run "npm install"
 - Create a new database
@@ -48,7 +48,7 @@ And of course unmissable common packages like vuex, vue-router...
 - Run "php artisan storage:link" to create symbolic link to storage
 - Run "php artisan l5-swagger:generate" to generate API docs
 - Run "php artisan serve" to start the server then go to localhost:8000 and enjoy
-# With Docker
+## With Docker
 - Clone the .env.example file and rename it to .env
 - Open .env file, adjust Mail information
 - Adjust app timezone in app.php (currenly Asia/Tokyo)
@@ -65,7 +65,7 @@ And of course unmissable common packages like vuex, vue-router...
 - Run "php artisan l5-swagger:generate" to generate API docs
 - Go to localhost:8000 and enjoy
 
-## Testing (Only ready on Docker environment)
+# Testing (Only ready on Docker environment)
 - Clone the .env.test.example file and rename it to .env.test
 - Open .env.test file, adjust Mail information
 - Start containers if not started yet (see steps in Installation with Docker section)
@@ -74,7 +74,7 @@ And of course unmissable common packages like vuex, vue-router...
 - Run "php artisan jwt:secret --env=test"
 - Run "php vendor/bin/codecept run" to run the tests
 
-## URLs
+# URLs
 - User site: /
 - Admin site: /admin
 - API documentation: /api
