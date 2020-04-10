@@ -19,7 +19,7 @@
                                         <b-input-group-prepend is-text class="item-header-text">
                                             <i class="fas fa-at"></i>
                                         </b-input-group-prepend>
-                                        <b-input v-model="form.email" v-on:input="$v.form.email.$touch()" :state="$v.form.email.$dirty ? !$v.form.email.$error : null" type="text" class="form-control" placeholder="Email" v-on:keyup.enter="submit"/>
+                                        <b-input v-model="form.email" type="text" class="form-control" placeholder="Email" v-on:keyup.enter="submit"/>
                                         <div class="invalid-feedback d-block" v-if="validation && validation.email">
                                             {{ validation.email[0] }}
                                         </div>
@@ -29,7 +29,7 @@
                                         <b-input-group-prepend is-text class="item-header-text">
                                             <i class="fas fa-key"></i>
                                         </b-input-group-prepend>
-                                        <b-input v-model="form.password" v-on:input="$v.form.password.$touch()" :state="$v.form.password.$dirty ? !$v.form.password.$error : null" type="password" class="form-control" placeholder="Password" v-on:keyup.enter="submit"/>
+                                        <b-input v-model="form.password" type="password" class="form-control" placeholder="Password" v-on:keyup.enter="submit"/>
                                         <div class="invalid-feedback d-block" v-if="validation && validation.password">
                                             {{ validation.password[0] }}
                                         </div>
@@ -39,7 +39,7 @@
                                         <b-input-group-prepend is-text class="item-header-text">
                                             <i class="fas fa-key"></i>
                                         </b-input-group-prepend>
-                                        <b-input v-model="form.password_confirmation" v-on:input="$v.form.password_confirmation.$touch()" :state="$v.form.password_confirmation.$dirty ? !$v.form.password_confirmation.$error : null" type="password" class="form-control" placeholder="Confirm password" v-on:keyup.enter="submit"/>
+                                        <b-input v-model="form.password_confirmation" type="password" class="form-control" placeholder="Confirm password" v-on:keyup.enter="submit"/>
                                         <div class="invalid-feedback d-block" v-if="validation && validation.password_confirmation">
                                             {{ validation.password_confirmation[0] }}
                                         </div>
@@ -84,7 +84,6 @@
 </template>
 
 <script>
-import { required, email, sameAs } from 'vuelidate/lib/validators'
 import AuthAPI from '../../../api/auth.js'
 
 export default {
@@ -106,25 +105,11 @@ export default {
             },
         }
     },
-    validations () {
-        return {
-            form: {
-                email: { required, email },
-                password: { required },
-                password_confirmation: {
-                    required,
-                    sameAsPassword: sameAs('password')
-                },
-            },
-        }
-    },
     methods: {
         goToHome () {
             this.$router.push({ name: 'Home' })
         },
         submit () {
-            // Validation
-            this.$v.$touch()
             this.register(this.form.email, this.form.password, this.form.password_confirmation)
         },
 
@@ -151,12 +136,8 @@ export default {
                 vm.request.status = 3
                 vm.notification.type = 'danger'
                 if (error.response) {
-                    // Show error message
-                    if (error.response.data && error.response.data.validation && !vm.$v.$anyError) {
-                        vm.notification.message = error.response.data.validation[Object.keys(error.response.data.validation)[0]][0]
-                    } else {
-                        vm.notification.message = error.response.data.error ? error.response.data.error.message : error.response.data.message
-                    }
+                    // Show message error
+                    vm.notification.message = error.response.data.error ? error.response.data.error.message : error.response.data.message
                     vm.validation = error.response.data.validation
                 } else {
                     vm.notification.message = "Network error"

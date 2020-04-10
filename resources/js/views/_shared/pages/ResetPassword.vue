@@ -14,30 +14,32 @@
                                 <div :class="'alert alert-' + this.notification.type" id="message" v-if="this.notification.message" role="alert">
                                     {{ this.notification.message }}
                                 </div>
-                                <b-input-group class="mb-3" v-if="this.findTokenRequest.status == 2 && this.resetPasswordRequest.status != 2">
-                                    <b-input-group-prepend is-text class="item-header-text">
-                                        <i class="fas fa-at"></i>
-                                    </b-input-group-prepend>
-                                    <b-input type="text" class="form-control" placeholder:="Email" :value="form.email" disabled/>
-                                </b-input-group>
-                                <b-input-group class="mb-3" v-if="this.findTokenRequest.status == 2 && this.resetPasswordRequest.status != 2">
-                                    <b-input-group-prepend is-text class="item-header-text">
-                                        <i class="fas fa-key"></i>
-                                    </b-input-group-prepend>
-                                    <b-input type="password" class="form-control" v-model="form.password" v-on:input="$v.form.password.$touch()" :state="$v.form.password.$dirty ? !$v.form.password.$error : null" placeholder="Password" v-on:keyup.enter="submit"/>
-                                    <div class="invalid-feedback d-block" v-if="validation && validation.password">
-                                        {{ validation.password[0] }}
-                                    </div>
-                                </b-input-group>
-                                <b-input-group class="mb-3" v-if="this.findTokenRequest.status == 2 && this.resetPasswordRequest.status != 2">
-                                    <b-input-group-prepend is-text class="item-header-text">
-                                        <i class="fas fa-key"></i>
-                                    </b-input-group-prepend>
-                                    <b-input type="password" class="form-control" v-model="form.password_confirmation" v-on:input="$v.form.password_confirmation.$touch()" :state="$v.form.password_confirmation.$dirty ? !$v.form.password_confirmation.$error : null" placeholder="Confirm password" v-on:keyup.enter="submit"/>
-                                    <div class="invalid-feedback d-block" v-if="validation && validation.password_confirmation">
-                                        {{ validation.password_confirmation[0] }}
-                                    </div>
-                                </b-input-group>
+                                <template v-if="this.findTokenRequest.status == 2 && this.resetPasswordRequest.status != 2">
+                                    <b-input-group class="mb-3">
+                                        <b-input-group-prepend is-text class="item-header-text">
+                                            <i class="fas fa-at"></i>
+                                        </b-input-group-prepend>
+                                        <b-input type="text" class="form-control" placeholder:="Email" :value="form.email" disabled/>
+                                    </b-input-group>
+                                    <b-input-group class="mb-3">
+                                        <b-input-group-prepend is-text class="item-header-text">
+                                            <i class="fas fa-key"></i>
+                                        </b-input-group-prepend>
+                                        <b-input type="password" class="form-control" v-model="form.password" placeholder="Password" v-on:keyup.enter="submit"/>
+                                        <div class="invalid-feedback d-block" v-if="validation && validation.password">
+                                            {{ validation.password[0] }}
+                                        </div>
+                                    </b-input-group>
+                                    <b-input-group class="mb-3">
+                                        <b-input-group-prepend is-text class="item-header-text">
+                                            <i class="fas fa-key"></i>
+                                        </b-input-group-prepend>
+                                        <b-input type="password" class="form-control" v-model="form.password_confirmation" placeholder="Confirm password" v-on:keyup.enter="submit"/>
+                                        <div class="invalid-feedback d-block" v-if="validation && validation.password_confirmation">
+                                            {{ validation.password_confirmation[0] }}
+                                        </div>
+                                    </b-input-group>
+                                </template>
                                 <b-row>
                                     <b-col cols="6" class="text-left">
                                         <b-button variant="link" class="px-0" @click="$router.push({ name: 'Login' })">
@@ -65,7 +67,6 @@
 </template>
 
 <script>
-import { required, sameAs } from 'vuelidate/lib/validators'
 import AuthAPI from '../../../api/auth.js'
 
 export default {
@@ -93,17 +94,6 @@ export default {
             }
         }
     },
-    validations () {
-        return {
-            form: {
-                password: { required },
-                password_confirmation: {
-                    required,
-                    sameAsPassword: sameAs('password')
-                },
-            },
-        }
-    },
     created () {
         // Get token param from URL
         this.params.token = this.$route.params.token
@@ -121,8 +111,6 @@ export default {
         },
 
         submit () {
-            // Validation
-            this.$v.$touch()
             this.resetPassword(this.form.email, this.form.password, this.form.password_confirmation, this.params.token)
         },
 

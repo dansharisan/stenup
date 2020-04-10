@@ -14,11 +14,11 @@
                                 <div :class="'alert alert-' + this.notification.type" id="message" v-if="this.notification.message" role="alert">
                                     {{ this.notification.message }}
                                 </div>
-                                <b-input-group class="mb-3">
+                                <b-input-group class="mb-3" v-if="request.status != 2">
                                     <b-input-group-prepend is-text class="item-header-text">
                                         <i class="fas fa-at"></i>
                                     </b-input-group-prepend>
-                                    <b-input v-model="form.email" v-on:input="$v.form.email.$touch()" :state="$v.form.email.$dirty ? !$v.form.email.$error : null" type="text" class="form-control" placeholder="Email" v-on:keyup.enter="submit"/>
+                                    <b-input v-model="form.email" type="text" class="form-control" placeholder="Email" v-on:keyup.enter="submit"/>
                                     <div class="invalid-feedback d-block" v-if="validation && validation.email">
                                         {{ validation.email[0] }}
                                     </div>
@@ -32,7 +32,7 @@
                                             Back to Home
                                         </button>
                                     </b-col>
-                                    <b-col cols="6" class="text-right">
+                                    <b-col cols="6" class="text-right" v-if="request.status != 2">
                                         <b-button variant="success" class="px-4" @click="submit">
                                             Request
                                         </b-button>
@@ -48,7 +48,6 @@
 </template>
 
 <script>
-import { required, email } from 'vuelidate/lib/validators'
 import AuthAPI from '../../../api/auth.js'
 
 export default {
@@ -68,20 +67,11 @@ export default {
             },
         }
     },
-    validations () {
-        return {
-            form: {
-                email: { required, email }
-            },
-        }
-    },
     methods: {
         goToHome () {
             this.$router.push({ name: 'Home' })
         },
         submit () {
-            // Validation
-            this.$v.$touch()
             this.requestPasswordReset(this.form.email)
         },
 

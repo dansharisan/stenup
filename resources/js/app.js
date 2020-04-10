@@ -13,10 +13,6 @@ Vue.use(Sweetalert)
 import AuthPlugin from './plugins/auth.js'
 Vue.use(AuthPlugin)
 
-// Vuelidate
-import Vuelidate from 'vuelidate'
-Vue.use(Vuelidate)
-
 // Bootstrap vue
 import BootstrapVue from 'bootstrap-vue'
 Vue.use(BootstrapVue)

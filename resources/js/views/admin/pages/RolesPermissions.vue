@@ -8,7 +8,7 @@
                 </div>
                 <b-form-group>
                     <label for="company">Role name</label>
-                    <b-form-input type="text" placeholder="developer" v-model="crudRoleRequest.form.role_name" v-on:input="$v.crudRoleRequest.form.role_name.$touch()" :state="$v.crudRoleRequest.form.role_name.$dirty ? !$v.crudRoleRequest.form.role_name.$error : null" v-on:keyup.enter="createRole" />
+                    <b-form-input type="text" placeholder="developer" v-model="crudRoleRequest.form.role_name" v-on:keyup.enter="createRole" />
                 </b-form-group>
                 <div class="row">
                     <div class="col-12 invalid-feedback text-left d-block" v-if="crudRoleRequest.data.validation && crudRoleRequest.data.validation.role_name">
@@ -55,7 +55,7 @@
                                     </template>
                                 </p>
                             </div>
-                            <div class="grid-item" v-for="(permission, permissionIndex) in getRolesAndPermissionsRequest.data.permissions">
+                            <div class="grid-item" v-for="permission, permissionIndex) in getRolesAndPermissionsRequest.data.permissions">
                                 <div class="custom-control form-control-lg text-center">
                                     <input v-if="roleHasPermission(role.id, permission.id) && (1 == role.id || !hasPermission(user, PERMISSION_NAME.UPDATE_PERMISSIONS))" type="checkbox" checked disabled class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
                                     <input v-else-if="!roleHasPermission(role.id, permission.id) && (1 == role.id || !hasPermission(user, PERMISSION_NAME.UPDATE_PERMISSIONS))" type="checkbox" disabled class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
@@ -82,18 +82,8 @@
 
 <script>
 import AuthAPI from '../../../api/auth.js'
-import { required } from 'vuelidate/lib/validators'
 import { PERMISSION_NAME } from '../../../const.js'
 export default {
-    validations () {
-        return {
-            crudRoleRequest: {
-                form: {
-                    role_name: { required }
-                },
-            }
-        }
-    },
     data: function () {
         return {
             PERMISSION_NAME: PERMISSION_NAME,

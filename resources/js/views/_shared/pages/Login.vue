@@ -18,7 +18,7 @@
                                     <b-input-group-prepend is-text class="item-header-text">
                                         <i class="fas fa-at"></i>
                                     </b-input-group-prepend>
-                                    <b-input v-model="form.email" v-on:input="$v.form.email.$touch()" :state="$v.form.email.$dirty ? !$v.form.email.$error : null" type="text" class="form-control" placeholder="Email" v-on:keyup.enter="submit"/>
+                                    <b-input v-model="form.email" type="text" class="form-control" placeholder="Email" v-on:keyup.enter="submit"/>
                                     <div class="invalid-feedback d-block" v-if="validation && validation.email">
                                         {{ validation.email[0] }}
                                     </div>
@@ -27,7 +27,7 @@
                                     <b-input-group-prepend is-text class="item-header-text">
                                         <i class="fas fa-key"></i>
                                     </b-input-group-prepend>
-                                    <b-input v-model="form.password" v-on:input="$v.form.password.$touch()" :state="$v.form.password.$dirty ? !$v.form.password.$error : null" type="password" class="form-control" placeholder="Password" v-on:keyup.enter="submit"/>
+                                    <b-input v-model="form.password" type="password" class="form-control" placeholder="Password" v-on:keyup.enter="submit"/>
                                     <div class="invalid-feedback d-block" v-if="validation && validation.password">
                                         {{ validation.password[0] }}
                                     </div>
@@ -60,8 +60,6 @@
 </template>
 
 <script>
-import { required, email } from 'vuelidate/lib/validators'
-
 export default {
     name: 'Login',
     data () {
@@ -80,21 +78,11 @@ export default {
             },
         }
     },
-    validations () {
-        return {
-            form: {
-                email: { required, email },
-                password: { required },
-            },
-        }
-    },
     methods: {
         goToHome() {
             this.$router.push({ name: 'Home' })
         },
         submit () {
-            // Validation
-            this.$v.$touch()
             this.login(this.form.email, this.form.password)
         },
 
