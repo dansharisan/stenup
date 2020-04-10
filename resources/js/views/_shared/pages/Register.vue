@@ -14,35 +14,37 @@
                                 <div :class="'alert alert-' + this.notification.type" id="message" v-if="this.notification.message" role="alert">
                                     {{ this.notification.message }}
                                 </div>
-                                <b-input-group class="mb-3">
-                                    <b-input-group-prepend is-text class="item-header-text">
-                                        <i class="fas fa-at"></i>
-                                    </b-input-group-prepend>
-                                    <b-input v-model="form.email" v-on:input="$v.form.email.$touch()" :state="$v.form.email.$dirty ? !$v.form.email.$error : null" type="text" class="form-control" placeholder="Email" v-on:keyup.enter="submit"/>
-                                    <div class="invalid-feedback d-block" v-if="validation && validation.email">
-                                        {{ validation.email[0] }}
-                                    </div>
-                                </b-input-group>
+                                <template v-if="request.status != 2">
+                                    <b-input-group class="mb-3">
+                                        <b-input-group-prepend is-text class="item-header-text">
+                                            <i class="fas fa-at"></i>
+                                        </b-input-group-prepend>
+                                        <b-input v-model="form.email" v-on:input="$v.form.email.$touch()" :state="$v.form.email.$dirty ? !$v.form.email.$error : null" type="text" class="form-control" placeholder="Email" v-on:keyup.enter="submit"/>
+                                        <div class="invalid-feedback d-block" v-if="validation && validation.email">
+                                            {{ validation.email[0] }}
+                                        </div>
+                                    </b-input-group>
 
-                                <b-input-group class="mb-3">
-                                    <b-input-group-prepend is-text class="item-header-text">
-                                        <i class="fas fa-key"></i>
-                                    </b-input-group-prepend>
-                                    <b-input v-model="form.password" v-on:input="$v.form.password.$touch()" :state="$v.form.password.$dirty ? !$v.form.password.$error : null" type="password" class="form-control" placeholder="Password" v-on:keyup.enter="submit"/>
-                                    <div class="invalid-feedback d-block" v-if="validation && validation.password">
-                                        {{ validation.password[0] }}
-                                    </div>
-                                </b-input-group>
+                                    <b-input-group class="mb-3">
+                                        <b-input-group-prepend is-text class="item-header-text">
+                                            <i class="fas fa-key"></i>
+                                        </b-input-group-prepend>
+                                        <b-input v-model="form.password" v-on:input="$v.form.password.$touch()" :state="$v.form.password.$dirty ? !$v.form.password.$error : null" type="password" class="form-control" placeholder="Password" v-on:keyup.enter="submit"/>
+                                        <div class="invalid-feedback d-block" v-if="validation && validation.password">
+                                            {{ validation.password[0] }}
+                                        </div>
+                                    </b-input-group>
 
-                                <b-input-group class="mb-3">
-                                    <b-input-group-prepend is-text class="item-header-text">
-                                        <i class="fas fa-key"></i>
-                                    </b-input-group-prepend>
-                                    <b-input v-model="form.password_confirmation" v-on:input="$v.form.password_confirmation.$touch()" :state="$v.form.password_confirmation.$dirty ? !$v.form.password_confirmation.$error : null" type="password" class="form-control" placeholder="Confirm password" v-on:keyup.enter="submit"/>
-                                    <div class="invalid-feedback d-block" v-if="validation && validation.password_confirmation">
-                                        {{ validation.password_confirmation[0] }}
-                                    </div>
-                                </b-input-group>
+                                    <b-input-group class="mb-3">
+                                        <b-input-group-prepend is-text class="item-header-text">
+                                            <i class="fas fa-key"></i>
+                                        </b-input-group-prepend>
+                                        <b-input v-model="form.password_confirmation" v-on:input="$v.form.password_confirmation.$touch()" :state="$v.form.password_confirmation.$dirty ? !$v.form.password_confirmation.$error : null" type="password" class="form-control" placeholder="Confirm password" v-on:keyup.enter="submit"/>
+                                        <div class="invalid-feedback d-block" v-if="validation && validation.password_confirmation">
+                                            {{ validation.password_confirmation[0] }}
+                                        </div>
+                                    </b-input-group>
+                                </template>
                                 <b-row>
                                     <b-col cols="6" class="text-left">
                                         <b-button variant="link" class="px-0" @click="$router.push({ name: 'Login' })">
@@ -52,7 +54,7 @@
                                             Back to Home
                                         </button>
                                     </b-col>
-                                    <b-col cols="6" class="text-right">
+                                    <b-col cols="6" class="text-right" v-if="request.status != 2">
                                         <b-button variant="success" class="px-4" @click="submit">
                                             Register
                                         </b-button>
@@ -142,7 +144,7 @@ export default {
                 vm.request.status = 2
                 // Show success message
                 vm.notification.type = 'success'
-                vm.notification.message = "We have sent an email to your email addres. Please follow the instruction to activate your account before you can login."
+                vm.notification.message = "We have sent an email to your email address. Please follow the instruction to activate your account before you can login."
             })
             .catch(error => {
                 // Mark request status as failed to load
