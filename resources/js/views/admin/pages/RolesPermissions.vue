@@ -38,24 +38,22 @@
                             <div class="grid-item grid-item--role-name">
                                 <p class="m-0 ml-1 mr-1 text-center" style="line-height: 2.5em; font-size: large"><sub>permission</sub>\<sup>role</sup></p>
                             </div>
-                            <template v-for="(permission, permissionIndex) in getRolesAndPermissionsRequest.data.permissions">
-                                <div class="grid-item grid-item--permission-name">
-                                    <abbr :title="permission.name"><p class="m-0 ml-1 mr-1" style="line-height: 3em">{{ permission.name }}</p></abbr>
-                                </div>
-                            </template>
+                            <div class="grid-item grid-item--permission-name" v-for="permission in getRolesAndPermissionsRequest.data.permissions" :key="permission.id">
+                                <abbr :title="permission.name"><p class="m-0 ml-1 mr-1" style="line-height: 3em">{{ permission.name }}</p></abbr>
+                            </div>
                         </div>
-                        <div class="grid-col" v-for="(role, roleIndex) in getRolesAndPermissionsRequest.data.roles">
+                        <div class="grid-col" v-for="role in getRolesAndPermissionsRequest.data.roles" :key="role.id">
                             <div class="grid-item grid-item--role-name">
                                 <p class="m-0 ml-1 mr-1 text-center" style="line-height: 3em">
                                     {{ role.name }}
                                     <template v-if="1 != role.id && hasPermission(user, PERMISSION_NAME.DELETE_ROLES)">
                                         <b-button size="sm" class="btn btn-action" variant="danger" @click="deleteRole(role.id)">
-                                            <i class="fas fa-trash text-white" aria-hidden="true"></i></span>
+                                            <i class="fas fa-trash text-white" aria-hidden="true"></i>
                                         </b-button>
                                     </template>
                                 </p>
                             </div>
-                            <div class="grid-item" v-for="permission, permissionIndex) in getRolesAndPermissionsRequest.data.permissions">
+                            <div class="grid-item" v-for="permission in getRolesAndPermissionsRequest.data.permissions" :key="permission.id">
                                 <div class="custom-control form-control-lg text-center">
                                     <input v-if="roleHasPermission(role.id, permission.id) && (1 == role.id || !hasPermission(user, PERMISSION_NAME.UPDATE_PERMISSIONS))" type="checkbox" checked disabled class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
                                     <input v-else-if="!roleHasPermission(role.id, permission.id) && (1 == role.id || !hasPermission(user, PERMISSION_NAME.UPDATE_PERMISSIONS))" type="checkbox" disabled class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
