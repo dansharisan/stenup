@@ -3,7 +3,7 @@
         <div class="container">
             <b-row class="justify-content-center">
                 <b-col md="4" class="mr-2 ml-2 pr-0 pl-0">
-                    <loading v-if="findTokenRequest.status == 2 && this.resetPasswordRequest.status != 2" :active="resetPasswordRequest.status == 1"></loading>
+                    <loading :active="resetPasswordRequest.status == 1 || findTokenRequest.status == 1"></loading>
                     <b-card-group>
                         <b-card no-body class="mb-0">
                             <b-card-header><h2 class="m-0">Reset password</h2></b-card-header>
