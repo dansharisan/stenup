@@ -20455,20 +20455,6 @@ base-chart.chart {
   width: 250px;
 }
 
-.app-header .navbar-nav .dropdown-menu {
-  position: absolute;
-}
-
-.app-header .navbar-nav .dropdown-menu-right {
-  left: auto;
-  right: 0;
-}
-
-.app-header .navbar-nav .dropdown-menu-left {
-  left: 0;
-  right: auto;
-}
-
 .app-footer {
   margin-top: 1.5rem;
   border-top: 1px solid #a4b7c1;

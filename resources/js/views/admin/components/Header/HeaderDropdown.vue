@@ -7,7 +7,7 @@
                 </button>
             </abbr>
         </template>
-        <b-dropdown-header tag="div" class="text-center">
+        <b-dropdown-header class="text-center">
             <strong>{{ user.email }}</strong>
         </b-dropdown-header>
         <b-dropdown-item @click="doLogout()">
