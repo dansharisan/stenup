@@ -82,7 +82,7 @@ export default {
             // Get the access token
             AuthAPI.createPasswordResetToken(email)
             .then(response => {
-                vm.notification.type = 'success'
+                vm.notification.type = 'info'
                 vm.notification.message = "An email has been sent to your email address. Please check for further instructions about resetting password."
                 // Mark request status as loaded succesully
                 vm.request.status = 2

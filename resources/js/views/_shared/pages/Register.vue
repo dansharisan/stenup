@@ -128,7 +128,7 @@ export default {
                 // Mark request status as loaded succesully
                 vm.request.status = 2
                 // Show success message
-                vm.notification.type = 'success'
+                vm.notification.type = 'info'
                 vm.notification.message = "We have sent an email to your email address. Please follow the instruction to activate your account before you can login."
             })
             .catch(error => {

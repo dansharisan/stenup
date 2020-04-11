@@ -83,7 +83,7 @@ export default {
             AuthAPI.activateAccount(token)
             .then(response => {
                 vm.notification.type = 'success'
-                vm.notification.message = "Your account has been activated successfully. Now you can login."
+                vm.notification.message = "Your account has been activated successfully. You can now login."
                 // Mark request status as loaded succesully
                 vm.activateAccountRequest.status = 2
                 vm.form.email = response.data.user.email

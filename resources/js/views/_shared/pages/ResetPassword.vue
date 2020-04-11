@@ -148,7 +148,7 @@ export default {
                 vm.notification.type = 'success'
                 // Mark request status as loaded succesully
                 vm.resetPasswordRequest.status = 2
-                vm.notification.message = "Your password has been reset successfully"
+                vm.notification.message = "Your password has been reset successfully."
             })
             .catch(error => {
                 // Mark request status as failed to load
