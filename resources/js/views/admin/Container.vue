@@ -1,6 +1,5 @@
 <template>
     <div class="app">
-        <vue-snotify></vue-snotify>
         <app-header :fixed="fixedHeader || fixedSidebar" />
         <div class="app-body">
             <sidebar

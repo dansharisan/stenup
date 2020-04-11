@@ -1,6 +1,5 @@
 <template>
     <header class="app-header navbar">
-        <vue-snotify></vue-snotify>
         <button class="navbar-toggler mobile-sidebar-toggler d-lg-none" type="button" @click="mobileSidebarToggle">
             <span class="navbar-toggler-icon" />
         </button>

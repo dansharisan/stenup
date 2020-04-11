@@ -153,7 +153,7 @@ export default {
                         vm.getRolesWithPermissionsRequest.data = response.data
                         vm.getRolesWithPermissionsRequest.loadStatus = 2
                         // Fire notification
-                        vm.$snotify.success("Applied successfully")
+                        vm.$snotify.success("Applied roles-permissions matrix successfully")
                     })
                     .catch( function(error) {
                         // Handle unauthorized error
@@ -164,7 +164,7 @@ export default {
                         // vm.getRolesWithPermissionsRequest.loadStatus = 3
                         vm.loadRolesWithPermissions()
                         // Fire notification
-                        vm.$snotify.error("Failed to applied roles-permissions matrix")
+                        vm.$snotify.error("Failed to apply roles-permissions matrix")
                     })
                 }
             })
@@ -185,7 +185,7 @@ export default {
                 // Close the modal
                 vm.$refs['create-role-modal'].hide()
                 // Fire notification
-                vm.$snotify.success("Created successfully")
+                vm.$snotify.success("Created role successfully")
             })
             .catch( function(error) {
                 // Handle unauthorized error
@@ -195,8 +195,7 @@ export default {
                     vm.crudRoleRequest.loadStatus = 3
                     if (error && error.response) {
                         vm.crudRoleRequest.data = error.response.data
-                        let msg = error.response.data.error ? error.response.data.error.message : error.response.data.message;
-                        vm.$snotify.error("Failed to create this role: " + msg)
+                        vm.$snotify.error(error.response.data.error ? error.response.data.error.message : error.response.data.message)
                     } else {
                         vm.$snotify.error("Network error")
                     }
@@ -226,7 +225,7 @@ export default {
                         vm.crudRoleRequest.data = response.data
                         vm.crudRoleRequest.loadStatus = 2
                         // Fire notification
-                        vm.$snotify.success("Deleted successfully")
+                        vm.$snotify.success("Deleted role successfully")
                     })
                     .catch( function(error) {
                         // Handle unauthorized error
@@ -236,8 +235,7 @@ export default {
                             vm.crudRoleRequest.loadStatus = 3
                             if (error && error.response) {
                                 vm.crudRoleRequest.data = error.response.data
-                                let msg = error.response.data.error ? error.response.data.error.message : error.response.data.message;
-                                vm.$snotify.error("Failed to delete this role: " + msg)
+                                vm.$snotify.error(error.response.data.error ? error.response.data.error.message : error.response.data.message)
                             } else {
                                 vm.$snotify.error("Network error")
                             }

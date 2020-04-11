@@ -11,9 +11,9 @@
                                 <p class="text-muted">
                                     Reset your password
                                 </p>
-                                <div :class="'alert alert-' + this.notification.type" id="message" v-if="this.notification.message" role="alert">
-                                    {{ this.notification.message }}
-                                </div>
+                                <b-alert :variant="notification.type" :show="notification.message != null">
+                                    {{ notification.message }}
+                                </b-alert>
                                 <template v-if="this.findTokenRequest.status == 2 && this.resetPasswordRequest.status != 2">
                                     <b-input-group class="mb-3">
                                         <b-input-group-prepend is-text class="item-header-text">
@@ -80,7 +80,7 @@ export default {
             },
             notification: {
                 type: 'danger',
-                message: ''
+                message: null
             },
             validation: null,
             findTokenRequest: {
@@ -148,18 +148,19 @@ export default {
                 vm.notification.type = 'success'
                 // Mark request status as loaded succesully
                 vm.resetPasswordRequest.status = 2
-                vm.notification.message = "Your password has been reset successfully."
+                vm.notification.message = "Your password has been reset successfully. Now you can login with your new password."
+                // Show success message
+                vm.$snotify.success("Password reset successfully")
             })
             .catch(error => {
                 // Mark request status as failed to load
                 vm.resetPasswordRequest.status = 3
-                vm.notification.type = 'danger'
+                // Show error message
                 if (error.response) {
-                    // Show message error
-                    vm.notification.message = error.response.data.error ? error.response.data.error.message : error.response.data.message
                     vm.validation = error.response.data.validation
+                    vm.$snotify.error(error.response.data.error ? error.response.data.error.message : error.response.data.message)
                 } else {
-                    vm.notification.message = "Network error"
+                    vm.$snotify.error("Network error")
                 }
             })
         }

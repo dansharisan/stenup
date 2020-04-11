@@ -1,6 +1,5 @@
 <template>
     <div class="app">
-        <vue-snotify></vue-snotify>
         <br />
         <h1><center>User site container</center></h1>
         <br />

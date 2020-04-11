@@ -11,9 +11,9 @@
                                 <p class="text-muted">
                                     Sign In to your account
                                 </p>
-                                <div :class="'alert alert-' + this.notification.type" id="message" v-if="this.notification.message" role="alert">
-                                    {{ this.notification.message }}
-                                </div>
+                                <b-alert :variant="notification.type" :show="notification.message != null">
+                                    {{ notification.message }}
+                                </b-alert>
                                 <b-input-group class="mb-3">
                                     <b-input-group-prepend is-text class="item-header-text">
                                         <i class="fas fa-at"></i>
@@ -70,7 +70,7 @@ export default {
             },
             notification: {
                 type: 'danger',
-                message: ''
+                message: null
             },
             validation: null,
             request: {
@@ -98,19 +98,20 @@ export default {
             .then(res => {
                 // Mark request status as loaded succesully
                 vm.request.status = 2
+                // Show success message
+                vm.$snotify.success("Register successfully")
                 // Move to UserInfo page
                 vm.$router.push({ name: 'UserInfo' })
             })
             .catch(error => {
                 // Mark request status as failed to load
                 vm.request.status = 3
-                vm.notification.type = 'danger'
+                // Show error message
                 if (error.response) {
-                    // Show message error
-                    vm.notification.message = error.response.data.error ? error.response.data.error.message : error.response.data.message
                     vm.validation = error.response.data.validation
+                    vm.$snotify.error(error.response.data.error ? error.response.data.error.message : error.response.data.message)
                 } else {
-                    vm.notification.message = "Network error"
+                    vm.$snotify.error("Network error")
                 }
             })
         }
