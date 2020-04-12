@@ -11,8 +11,7 @@
                                 <p class="text-muted">
                                     Create your account
                                 </p>
-                                <b-alert :variant="notification.type" :show="notification.message != null">
-                                    {{ notification.message }}
+                                <b-alert :variant="notification.type" :show="notification.message != null" v-html="notification.message">
                                 </b-alert>
                                 <template v-if="request.status != 2">
                                     <b-input-group class="mb-3">
@@ -130,7 +129,7 @@ export default {
                 // Show success message
                 vm.$snotify.success("Register successfully")
                 vm.notification.type = 'info'
-                vm.notification.message = "We have sent an email to " + vm.form.email + ". Please follow the instruction to activate your account before you can login."
+                vm.notification.message = "We have sent an email to <strong>" + vm.form.email + "</strong>. Please follow the instruction to activate your account before you can login."
             })
             .catch(error => {
                 // Mark request status as failed to load

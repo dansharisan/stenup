@@ -3,9 +3,6 @@
         <b-modal id="create-role-modal" modal-class="text-left" centered title="Create new role" @ok="createRole" ok-variant="success" ref="create-role-modal">
             <loading :active="crudRoleRequest.loadStatus == 1"></loading>
             <template>
-                <div class="invalid-feedback d-block" v-if="crudRoleRequest.message">
-                    {{ crudRoleRequest.message }}
-                </div>
                 <b-form-group>
                     <label for="company">Role name</label>
                     <b-form-input type="text" placeholder="developer" :class="{'border-danger' : (crudRoleRequest.data.validation && crudRoleRequest.data.validation.role_name)}" v-model="crudRoleRequest.form.role_name" v-on:keyup.enter="createRole" />
@@ -98,8 +95,7 @@ export default {
                 data: {},
                 form: {
                     role_name: ''
-                },
-                message: ''
+                }
             }
         }
     },

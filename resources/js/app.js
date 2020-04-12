@@ -68,7 +68,7 @@ const snotifyOptions = {
     toast: {
         position: SnotifyPosition.rightBottom,
         timeout: 1000,
-        showProgressBar: true,
+        showProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true
     }

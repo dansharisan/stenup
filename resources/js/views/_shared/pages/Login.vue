@@ -11,9 +11,6 @@
                                 <p class="text-muted">
                                     Sign In to your account
                                 </p>
-                                <b-alert :variant="notification.type" :show="notification.message != null">
-                                    {{ notification.message }}
-                                </b-alert>
                                 <b-input-group class="mb-3">
                                     <b-input-group-prepend is-text class="item-header-text">
                                         <i class="fas fa-at"></i>
@@ -67,10 +64,6 @@ export default {
             form: {
                 email: '',
                 password: '',
-            },
-            notification: {
-                type: 'danger',
-                message: null
             },
             validation: null,
             request: {

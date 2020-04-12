@@ -11,10 +11,9 @@
                                 <p class="text-muted">
                                     Reset your password
                                 </p>
-                                <b-alert :variant="notification.type" :show="notification.message != null">
-                                    {{ notification.message }}
+                                <b-alert :variant="notification.type" :show="notification.message != null" v-html="notification.message">
                                 </b-alert>
-                                <template v-if="this.findTokenRequest.status == 2 && this.resetPasswordRequest.status != 2">
+                                <template v-if="findTokenRequest.status == 2 && resetPasswordRequest.status != 2">
                                     <b-input-group class="mb-3">
                                         <b-input-group-prepend is-text class="item-header-text">
                                             <i class="fas fa-at"></i>
@@ -119,7 +118,6 @@ export default {
             this.findTokenRequest.status = 1
             AuthAPI.findPasswordResetToken(token)
             .then(response => {
-                vm.notification.type = 'success'
                 // Mark request status as loaded succesully
                 vm.findTokenRequest.status = 2
                 vm.form.email = response.data.password_reset.email

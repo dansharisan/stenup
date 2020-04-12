@@ -11,8 +11,7 @@
                                 <p class="text-muted">
                                     Request to reset password
                                 </p>
-                                <b-alert :variant="notification.type" :show="notification.message != null">
-                                    {{ notification.message }}
+                                <b-alert :variant="notification.type" :show="notification.message != null" v-html="notification.message">
                                 </b-alert>
                                 <b-input-group class="mb-3" v-if="request.status != 2">
                                     <b-input-group-prepend is-text class="item-header-text">
@@ -83,7 +82,7 @@ export default {
             AuthAPI.createPasswordResetToken(email)
             .then(response => {
                 vm.notification.type = 'info'
-                vm.notification.message = "An email has been sent to " + vm.form.email + ". Please check that email for further instructions about resetting password."
+                vm.notification.message = "An email has been sent to <strong>" + vm.form.email + "</strong>. Please check that email for further instructions about resetting password."
                 // Mark request status as loaded succesully
                 vm.request.status = 2
                 // Show success message

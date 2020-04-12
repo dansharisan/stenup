@@ -11,10 +11,9 @@
                                 <p class="text-muted">
                                     Activating your account
                                 </p>
-                                <div :class="'alert alert-' + this.notification.type" id="message" v-if="this.notification.message" role="alert">
-                                    {{ this.notification.message }}
+                                <div :class="'alert alert-' + notification.type" id="message" v-if="notification.message" v-html="notification.message" role="alert">
                                 </div>
-                                <b-input-group class="mb-3" v-if="this.form.email">
+                                <b-input-group class="mb-3" v-if="form.email">
                                     <b-input-group-prepend is-text class="item-header-text">
                                         <span>Email</span>
                                     </b-input-group-prepend>
