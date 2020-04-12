@@ -18,7 +18,7 @@
                                     <b-input-group-prepend is-text class="item-header-text">
                                         <i class="fas fa-at"></i>
                                     </b-input-group-prepend>
-                                    <b-input v-model="form.email" type="text" class="form-control" placeholder="Email" v-on:keyup.enter="submit"/>
+                                    <b-input v-model="form.email" type="text" :class="{'border-danger' : (validation && validation.email)}" placeholder="Email" v-on:keyup.enter="submit"/>
                                     <div class="invalid-feedback d-block" v-if="validation && validation.email">
                                         {{ validation.email[0] }}
                                     </div>
@@ -83,7 +83,7 @@ export default {
             AuthAPI.createPasswordResetToken(email)
             .then(response => {
                 vm.notification.type = 'info'
-                vm.notification.message = "An email has been sent to your email address. Please check for further instructions about resetting password."
+                vm.notification.message = "An email has been sent to " + vm.form.email + ". Please check that email for further instructions about resetting password."
                 // Mark request status as loaded succesully
                 vm.request.status = 2
                 // Show success message

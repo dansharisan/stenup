@@ -19,13 +19,13 @@
                                         <b-input-group-prepend is-text class="item-header-text">
                                             <i class="fas fa-at"></i>
                                         </b-input-group-prepend>
-                                        <b-input type="text" class="form-control" placeholder:="Email" :value="form.email" disabled/>
+                                        <b-input type="text" placeholder:="Email" :value="form.email" disabled/>
                                     </b-input-group>
                                     <b-input-group class="mb-3">
                                         <b-input-group-prepend is-text class="item-header-text">
                                             <i class="fas fa-key"></i>
                                         </b-input-group-prepend>
-                                        <b-input type="password" class="form-control" v-model="form.password" placeholder="Password" v-on:keyup.enter="submit"/>
+                                        <b-input type="password" :class="{'border-danger' : (validation && validation.password)}" v-model="form.password" placeholder="Password" v-on:keyup.enter="submit"/>
                                         <div class="invalid-feedback d-block" v-if="validation && validation.password">
                                             {{ validation.password[0] }}
                                         </div>
@@ -34,7 +34,7 @@
                                         <b-input-group-prepend is-text class="item-header-text">
                                             <i class="fas fa-key"></i>
                                         </b-input-group-prepend>
-                                        <b-input type="password" class="form-control" v-model="form.password_confirmation" placeholder="Confirm password" v-on:keyup.enter="submit"/>
+                                        <b-input type="password" :class="{'border-danger' : (validation && validation.password_confirmation)}" v-model="form.password_confirmation" placeholder="Confirm password" v-on:keyup.enter="submit"/>
                                         <div class="invalid-feedback d-block" v-if="validation && validation.password_confirmation">
                                             {{ validation.password_confirmation[0] }}
                                         </div>

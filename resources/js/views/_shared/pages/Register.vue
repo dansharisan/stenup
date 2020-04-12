@@ -19,7 +19,7 @@
                                         <b-input-group-prepend is-text class="item-header-text">
                                             <i class="fas fa-at"></i>
                                         </b-input-group-prepend>
-                                        <b-input v-model="form.email" type="text" class="form-control" placeholder="Email" v-on:keyup.enter="submit"/>
+                                        <b-input v-model="form.email" type="text" :class="{'border-danger' : (validation && validation.email)}" placeholder="Email" v-on:keyup.enter="submit"/>
                                         <div class="invalid-feedback d-block" v-if="validation && validation.email">
                                             {{ validation.email[0] }}
                                         </div>
@@ -29,7 +29,7 @@
                                         <b-input-group-prepend is-text class="item-header-text">
                                             <i class="fas fa-key"></i>
                                         </b-input-group-prepend>
-                                        <b-input v-model="form.password" type="password" class="form-control" placeholder="Password" v-on:keyup.enter="submit"/>
+                                        <b-input v-model="form.password" type="password" :class="{'border-danger' : (validation && validation.password)}" placeholder="Password" v-on:keyup.enter="submit"/>
                                         <div class="invalid-feedback d-block" v-if="validation && validation.password">
                                             {{ validation.password[0] }}
                                         </div>
@@ -39,7 +39,7 @@
                                         <b-input-group-prepend is-text class="item-header-text">
                                             <i class="fas fa-key"></i>
                                         </b-input-group-prepend>
-                                        <b-input v-model="form.password_confirmation" type="password" class="form-control" placeholder="Confirm password" v-on:keyup.enter="submit"/>
+                                        <b-input v-model="form.password_confirmation" type="password" :class="{'border-danger' : (validation && validation.password_confirmation)}" placeholder="Confirm password" v-on:keyup.enter="submit"/>
                                         <div class="invalid-feedback d-block" v-if="validation && validation.password_confirmation">
                                             {{ validation.password_confirmation[0] }}
                                         </div>
@@ -130,7 +130,7 @@ export default {
                 // Show success message
                 vm.$snotify.success("Register successfully")
                 vm.notification.type = 'info'
-                vm.notification.message = "We have sent an email to your email address. Please follow the instruction to activate your account before you can login."
+                vm.notification.message = "We have sent an email to " + vm.form.email + ". Please follow the instruction to activate your account before you can login."
             })
             .catch(error => {
                 // Mark request status as failed to load

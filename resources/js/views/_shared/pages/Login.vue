@@ -18,7 +18,7 @@
                                     <b-input-group-prepend is-text class="item-header-text">
                                         <i class="fas fa-at"></i>
                                     </b-input-group-prepend>
-                                    <b-input v-model="form.email" type="text" class="form-control" placeholder="Email" v-on:keyup.enter="submit"/>
+                                    <b-input v-model="form.email" type="text" :class="{'border-danger' : (validation && validation.email)}" placeholder="Email" v-on:keyup.enter="submit"/>
                                     <div class="invalid-feedback d-block" v-if="validation && validation.email">
                                         {{ validation.email[0] }}
                                     </div>
@@ -27,7 +27,7 @@
                                     <b-input-group-prepend is-text class="item-header-text">
                                         <i class="fas fa-key"></i>
                                     </b-input-group-prepend>
-                                    <b-input v-model="form.password" type="password" class="form-control" placeholder="Password" v-on:keyup.enter="submit"/>
+                                    <b-input v-model="form.password" type="password" :class="{'border-danger' : (validation && validation.password)}" placeholder="Password" v-on:keyup.enter="submit"/>
                                     <div class="invalid-feedback d-block" v-if="validation && validation.password">
                                         {{ validation.password[0] }}
                                     </div>

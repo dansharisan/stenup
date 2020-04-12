@@ -8,7 +8,7 @@
                 </div>
                 <b-form-group>
                     <label for="company">Role name</label>
-                    <b-form-input type="text" placeholder="developer" v-model="crudRoleRequest.form.role_name" v-on:keyup.enter="createRole" />
+                    <b-form-input type="text" placeholder="developer" :class="{'border-danger' : (crudRoleRequest.data.validation && crudRoleRequest.data.validation.role_name)}" v-model="crudRoleRequest.form.role_name" v-on:keyup.enter="createRole" />
                 </b-form-group>
                 <div class="row">
                     <div class="col-12 invalid-feedback text-left d-block" v-if="crudRoleRequest.data.validation && crudRoleRequest.data.validation.role_name">

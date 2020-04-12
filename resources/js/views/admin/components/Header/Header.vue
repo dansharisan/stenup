@@ -14,6 +14,9 @@
             <b-nav-item class="px-3" @click="goTo('/api')">
                 API
             </b-nav-item>
+            <b-nav-item class="px-3" @click="goTo('/telescope')">
+                Telescope
+            </b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
             <header-dropdown />
