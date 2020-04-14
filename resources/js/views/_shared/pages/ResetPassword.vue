@@ -18,7 +18,7 @@
                                         <b-input-group-prepend is-text class="item-header-text">
                                             <i class="fas fa-at"></i>
                                         </b-input-group-prepend>
-                                        <b-input type="text" placeholder:="Email" :value="form.email" disabled/>
+                                        <b-input type="text" :class="{'border-danger' : (validation && validation.email)}" v-model="form.email" placeholder="Email" v-on:keyup.enter="submit"/>
                                     </b-input-group>
                                     <b-input-group class="mb-3">
                                         <b-input-group-prepend is-text class="item-header-text">
@@ -120,7 +120,6 @@ export default {
             .then(response => {
                 // Mark request status as loaded succesully
                 vm.findTokenRequest.status = 2
-                vm.form.email = response.data.password_reset.email
             })
             .catch(error => {
                 // Mark request status as failed to load

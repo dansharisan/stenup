@@ -255,11 +255,11 @@ class AuthCest
         ]);
         $I->seeValidationError();
 
-        /* Case: Non-existing email should return bad request error */
+        /* Case: Non-existing email should return a success response */
         $I->sendPOST('/api/auth/password/token/create', [
             'email' => 'non_existing_email@example.com'
         ]);
-        $I->seeEmailNotFoundError();
+        $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
 
         /* Case: Existing email return a success response */
         $email = 'real_email@example.com';
@@ -295,7 +295,7 @@ class AuthCest
             'updated_at' => now()
         ]);
         $I->sendGET('/api/auth/password/token/find/' . $passwordReset->token);
-        $I->seeResponseCodeIs(Response::HTTP_OK);
+        $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
     }
 
     /**

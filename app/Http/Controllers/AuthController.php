@@ -376,16 +376,9 @@ class AuthController extends Controller
         }
 
         $user = User::where('email', $request->email)->first();
-        // If the email is not existing, throw error
+        // If the email is not existing, pretends it's a successful request, but do nothing (for security concern)
         if (!$user) {
-            return response()->json(
-                ['error' =>
-                            [
-                                'code' => Error::AUTH0003,
-                                'message' => Error::getDescription(Error::AUTH0003)
-                            ]
-                ], Response::HTTP_BAD_REQUEST
-            );
+            return response()->json(null, Response::HTTP_NO_CONTENT);
         }
         // Create or update token
         $passwordReset = PasswordReset::updateOrCreate(
@@ -459,7 +452,7 @@ class AuthController extends Controller
             );
         }
 
-        return response()->json(['password_reset' => $passwordReset], Response::HTTP_OK);
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
