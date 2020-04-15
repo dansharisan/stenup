@@ -6,6 +6,7 @@ path: .
 modules:
     enabled:
         - \Helper\ApiHelper
+        - Asserts
         - REST:
             depends: Laravel5
         - Db:

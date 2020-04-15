@@ -27,7 +27,7 @@
         "es6-promise": "^4.2.8",
         "jquery": "^3.5.0",
         "simple-line-icons": "^2.4.1",
-        "sweetalert2": "^9.10.10",
+        "sweetalert2": "^9.10.12",
         "vue": "^2.6.10",
         "vue-chartjs": "^3.4.2",
         "vue-loading-overlay": "^3.3.2",

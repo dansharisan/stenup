@@ -236,6 +236,9 @@ class AuthCest
               'email' => $verifiedUser->email
             ]
         ]);
+        // Check if email_verified_at is no longer null
+        $user = User::firstWhere('email', $verifiedUser->email);
+        $I->assertNotNull($user->email_verified_at);
     }
 
     /**
