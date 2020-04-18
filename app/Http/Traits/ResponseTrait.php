@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Traits;
 
 use App\Enums\Error;

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Validator;
@@ -386,7 +387,7 @@ class AuthController extends Controller
             [
                 'email' => $user->email,
                 'token' => $this->quickRandom(60)
-             ]
+            ]
         );
         if ($user && $passwordReset) {
             $user->notify(new PasswordResetRequest($passwordReset->token));

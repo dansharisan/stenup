@@ -1,11 +1,10 @@
 <?php
+
 use Symfony\Component\HttpFoundation\Response as Response;
-use App\Enums\UserStatus;
 use App\Http\Traits\UtilTrait;
-use App\Enums\PermissionType;
-use App\Models\User;
-use App\Enums\DefaultRoleType;
-use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models as AuthModels;
+use App\Models as Models;
+use App\Enums as Enums;
 
 class UserCest
 {
@@ -33,7 +32,7 @@ class UserCest
         $I->seeUnauthorizedRequestError();
 
         /* Case: When that user is set to have VIEW_ROLES_PERMISSIONS permission, he could get access to this API */
-        $memberUser1->roles[0]->givePermissionTo(PermissionType::VIEW_USERS);
+        $memberUser1->roles[0]->givePermissionTo(Enums\PermissionType::VIEW_USERS);
         $I->sendGET('/api/users');
         $I->seeResponseIsJson();
         $I->seeResponseCodeIs(Response::HTTP_OK);
@@ -74,7 +73,7 @@ class UserCest
         $I->seeUnauthorizedRequestError();
 
         // When that user is set to have UPDATE_USERS permission, he could get access to this API //
-        $memberUser->roles[0]->givePermissionTo(PermissionType::UPDATE_USERS);
+        $memberUser->roles[0]->givePermissionTo(Enums\PermissionType::UPDATE_USERS);
         /* Case: Non-existent user ID should return validation error */
         $nonExistentUserId = 999;
         $I->sendPATCH('/api/users/' . $nonExistentUserId . '/ban');
@@ -99,7 +98,7 @@ class UserCest
     {
         // Prepare data
         $memberUser = $I->generateMemberUser();
-        $bannedMemberUser = $I->generateMemberUser(UserStatus::Banned);
+        $bannedMemberUser = $I->generateMemberUser(Enums\UserStatus::Banned);
 
         /* Case: Calling the API while not logged in should return unauthorized error */
         $I->sendPATCH('/api/users/' . $bannedMemberUser->id . '/unban');
@@ -114,7 +113,7 @@ class UserCest
         $I->seeUnauthorizedRequestError();
 
         // When that user is set to have UPDATE_USERS permission, he could get access to this API //
-        $memberUser->roles[0]->givePermissionTo(PermissionType::UPDATE_USERS);
+        $memberUser->roles[0]->givePermissionTo(Enums\PermissionType::UPDATE_USERS);
         /* Case: Non-existent user ID should return validation error */
         $nonExistentUserId = 999;
         $I->sendPATCH('/api/users/' . $nonExistentUserId . '/unban');
@@ -154,7 +153,7 @@ class UserCest
         $I->seeUnauthorizedRequestError();
 
         // When that user is set to have DELETE_USERS permission, he could get access to this API //
-        $memberUser->roles[0]->givePermissionTo(PermissionType::DELETE_USERS);
+        $memberUser->roles[0]->givePermissionTo(Enums\PermissionType::DELETE_USERS);
         /* Case: Non-existent user ID should return validation error */
         $nonExistentUserId = 999;
         $I->sendDELETE('/api/users/' . $nonExistentUserId);
@@ -198,7 +197,7 @@ class UserCest
         $I->seeUnauthorizedRequestError();
 
         // When that user is set to have DELETE_USERS permission, he could get access to this API //
-        $memberUser1->roles[0]->givePermissionTo(PermissionType::DELETE_USERS);
+        $memberUser1->roles[0]->givePermissionTo(Enums\PermissionType::DELETE_USERS);
         /* Case: Empty IDs should return invalid user id string sequence error */
         $I->sendPOST('/api/users/collection:batchDelete', [
             'ids' => ""
@@ -238,12 +237,12 @@ class UserCest
     {
         // Prepare data
         $memberUser = $I->generateMemberUser();
-        $roleMember = Role::where('name', DefaultRoleType::MEMBER)->first();
-        $roleAdministrator = Role::where('name', DefaultRoleType::ADMINISTRATOR)->first();
+        $roleMember = AuthModels\Role::where('name', Enums\DefaultRoleType::MEMBER)->first();
+        $roleAdministrator = AuthModels\Role::where('name', Enums\DefaultRoleType::ADMINISTRATOR)->first();
 
         /* Case: Calling the API while not logged in should return unauthorized error */
         $I->sendPATCH('/api/users/' . $memberUser->id, [
-            'status' => UserStatus::Banned,
+            'status' => Enums\UserStatus::Banned,
             'role_ids' => $roleMember->id . ',' . $roleAdministrator->id
         ]);
         $I->seeUnauthorizedRequestError();
@@ -254,16 +253,16 @@ class UserCest
             'password' => 'password'
         ]);
         $I->sendPATCH('/api/users/' . $memberUser->id, [
-            'status' => UserStatus::Banned,
+            'status' => Enums\UserStatus::Banned,
             'role_ids' => $roleMember->id . ',' . $roleAdministrator->id
         ]);
         $I->seeUnauthorizedRequestError();
 
         // When that user is set to have UPDATE_USERS permission, he could get access to this API //
-        $memberUser->roles[0]->givePermissionTo(PermissionType::UPDATE_USERS);
+        $memberUser->roles[0]->givePermissionTo(Enums\PermissionType::UPDATE_USERS);
         /* Case: Empty role IDs should return invalid or no role selected error */
         $I->sendPATCH('/api/users/' . $memberUser->id, [
-            'status' => UserStatus::Banned,
+            'status' => Enums\UserStatus::Banned,
             'role_ids' => ''
         ]);
         $I->seeInvalidOrNoRoleSelectedError();
@@ -271,7 +270,7 @@ class UserCest
         /* Case: Invalid role IDs string sequence should return invalid or no role selected error */
         $invalidStringSequence = '[,8';
         $I->sendPATCH('/api/users/' . $memberUser->id, [
-            'status' => UserStatus::Banned,
+            'status' => Enums\UserStatus::Banned,
             'role_ids' => $invalidStringSequence
         ]);
         $I->seeInvalidOrNoRoleSelectedError();
@@ -279,27 +278,27 @@ class UserCest
         /* Case: Non-existent role should return invalid or no role selected error */
         $nonExistentRoleIdArr = '9999,0';
         $I->sendPATCH('/api/users/' . $memberUser->id, [
-            'status' => UserStatus::Banned,
+            'status' => Enums\UserStatus::Banned,
             'role_ids' => $nonExistentRoleIdArr
         ]);
         $I->seeServerError();
 
         /* Case: Successfully update the user */
         $I->sendPATCH('/api/users/' . $memberUser->id, [
-            'status' => UserStatus::Banned,
+            'status' => Enums\UserStatus::Banned,
             'role_ids' => $roleMember->id . ',' . $roleAdministrator->id
         ]);
         $I->seeResponseIsJson();
         $I->seeResponseCodeIs(Response::HTTP_OK);
         $I->seeResponseContainsJson([
             'user' => [
-                'status' => UserStatus::Banned,
+                'status' => Enums\UserStatus::Banned,
                 'roles' => [
                               [
-                                  'name' => DefaultRoleType::ADMINISTRATOR
+                                  'name' => Enums\DefaultRoleType::ADMINISTRATOR
                               ],
                               [
-                                  'name' => DefaultRoleType::MEMBER
+                                  'name' => Enums\DefaultRoleType::MEMBER
                               ]
                           ],
                       ]
@@ -314,15 +313,15 @@ class UserCest
     {
         // Prepare data
         $memberUser = $I->generateMemberUser();
-        $roleMember = Role::where('name', DefaultRoleType::MEMBER)->first();
-        $roleAdministrator = Role::where('name', DefaultRoleType::ADMINISTRATOR)->first();
+        $roleMember = AuthModels\Role::where('name', Enums\DefaultRoleType::MEMBER)->first();
+        $roleAdministrator = AuthModels\Role::where('name', Enums\DefaultRoleType::ADMINISTRATOR)->first();
         $validEmail = 'my_valid_email@test.com';
 
         /* Case: Calling the API while not logged in should return unauthorized error */
         $I->sendPOST('/api/users', [
             'email' => 'myemail@test.com',
             'password' => '123456',
-            'status' => UserStatus::Active,
+            'status' => Enums\UserStatus::Active,
             'role_ids' => $roleMember->id . ',' . $roleAdministrator->id
         ]);
         $I->seeUnauthorizedRequestError();
@@ -335,18 +334,18 @@ class UserCest
         $I->sendPOST('/api/users', [
             'email' => 'myemail@test.com',
             'password' => '123456',
-            'status' => UserStatus::Active,
+            'status' => Enums\UserStatus::Active,
             'role_ids' => $roleMember->id . ',' . $roleAdministrator->id
         ]);
         $I->seeUnauthorizedRequestError();
 
         // When that user is set to have CREATE_USERS permission, he could get access to this API //
-        $memberUser->roles[0]->givePermissionTo(PermissionType::CREATE_USERS);
+        $memberUser->roles[0]->givePermissionTo(Enums\PermissionType::CREATE_USERS);
         /* Case: Empty email should return validation error */
         $I->sendPOST('/api/users', [
             'email' => '',
             'password' => '123456',
-            'status' => UserStatus::Active,
+            'status' => Enums\UserStatus::Active,
             'role_ids' => $roleMember->id . ',' . $roleAdministrator->id
         ]);
         $I->seeValidationError();
@@ -355,7 +354,7 @@ class UserCest
         $I->sendPOST('/api/users', [
             'email' => 'invalid_email',
             'password' => '123456',
-            'status' => UserStatus::Active,
+            'status' => Enums\UserStatus::Active,
             'role_ids' => $roleMember->id . ',' . $roleAdministrator->id
         ]);
         $I->seeValidationError();
@@ -364,7 +363,7 @@ class UserCest
         $I->sendPOST('/api/users', [
             'email' => $memberUser->email,
             'password' => '123456',
-            'status' => UserStatus::Active,
+            'status' => Enums\UserStatus::Active,
             'role_ids' => $roleMember->id . ',' . $roleAdministrator->id
         ]);
         $I->seeValidationError();
@@ -373,7 +372,7 @@ class UserCest
         $I->sendPOST('/api/users', [
             'email' => $validEmail,
             'password' => '',
-            'status' => UserStatus::Active,
+            'status' => Enums\UserStatus::Active,
             'role_ids' => $roleMember->id . ',' . $roleAdministrator->id
         ]);
         $I->seeValidationError();
@@ -382,7 +381,7 @@ class UserCest
         $I->sendPOST('/api/users', [
             'email' => $validEmail,
             'password' => '123456',
-            'status' => UserStatus::Active,
+            'status' => Enums\UserStatus::Active,
             'role_ids' => ''
         ]);
         $I->seeValidationError();
@@ -392,7 +391,7 @@ class UserCest
         $I->sendPOST('/api/users', [
             'email' => $validEmail,
             'password' => '123456',
-            'status' => UserStatus::Active,
+            'status' => Enums\UserStatus::Active,
             'role_ids' => $invalidStringSequence
         ]);
         $I->seeInvalidOrNoRoleSelectedError();
@@ -402,7 +401,7 @@ class UserCest
         $I->sendPOST('/api/users', [
             'email' => $validEmail,
             'password' => '123456',
-            'status' => UserStatus::Active,
+            'status' => Enums\UserStatus::Active,
             'role_ids' => $nonExistentRoleIdArr
         ]);
         $I->seeServerError();
@@ -411,7 +410,7 @@ class UserCest
         $I->sendPOST('/api/users', [
             'email' => $validEmail,
             'password' => '123456',
-            'status' => UserStatus::Active,
+            'status' => Enums\UserStatus::Active,
             'role_ids' => $roleMember->id . ',' . $roleAdministrator->id
         ]);
         $I->seeResponseIsJson();
@@ -421,10 +420,10 @@ class UserCest
                 'email' => $validEmail,
                 'roles' => [
                               [
-                                  'name' => DefaultRoleType::ADMINISTRATOR
+                                  'name' => Enums\DefaultRoleType::ADMINISTRATOR
                               ],
                               [
-                                  'name' => DefaultRoleType::MEMBER
+                                  'name' => Enums\DefaultRoleType::MEMBER
                               ]
                           ],
                       ]
@@ -453,7 +452,7 @@ class UserCest
         $I->seeUnauthorizedRequestError();
 
         /* Case: When that user is set to have VIEW_DASHBOARD permission, he could get access to this API */
-        $memberUser->roles[0]->givePermissionTo(PermissionType::VIEW_DASHBOARD);
+        $memberUser->roles[0]->givePermissionTo(Enums\PermissionType::VIEW_DASHBOARD);
         $I->sendGET('/api/users/registered_user_stats');
         $I->seeResponseIsJson();
         $I->seeResponseCodeIs(Response::HTTP_OK);
