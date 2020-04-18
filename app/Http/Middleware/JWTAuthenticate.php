@@ -6,9 +6,6 @@ use Closure;
 use Illuminate\Support\Facades\Auth;
 use JWTAuth;
 use Tymon\JWTAuth\Token;
-use Tymon\JWTAuth\Exceptions\TokenExpiredException;
-use Illuminate\Session\TokenMismatchException;
-use App\Http\AppResponse;
 
 class JWTAuthenticate
 {

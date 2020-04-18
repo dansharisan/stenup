@@ -1,10 +1,8 @@
 <?php
 
-use App\Enums\PermissionEnum;
-use App\Enums\DefaultRoleEnum;
+use App\Enums as Enums;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models as SpatiePermissionModels;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
@@ -20,35 +18,36 @@ class RolesAndPermissionsSeeder extends Seeder
 
         /* Permissions */
         // Dashboard
-        Permission::create(['name' => PermissionEnum::VIEW_DASHBOARD]);
+        SpatiePermissionModels\Permission::create(['name' => Enums\PermissionEnum::VIEW_DASHBOARD]);
         // Users
-        Permission::create(['name' => PermissionEnum::VIEW_USERS]);
-        Permission::create(['name' => PermissionEnum::CREATE_USERS]);
-        Permission::create(['name' => PermissionEnum::UPDATE_USERS]);
-        Permission::create(['name' => PermissionEnum::DELETE_USERS]);
-        // Roles & Permission
-        Permission::create(['name' => PermissionEnum::VIEW_ROLES_PERMISSIONS]);
-        Permission::create(['name' => PermissionEnum::CREATE_ROLES]);
-        Permission::create(['name' => PermissionEnum::UPDATE_ROLES]);
-        Permission::create(['name' => PermissionEnum::DELETE_ROLES]);
-        Permission::create(['name' => PermissionEnum::UPDATE_PERMISSIONS]);
+        SpatiePermissionModels\Permission::create(['name' => Enums\PermissionEnum::VIEW_USERS]);
+        SpatiePermissionModels\Permission::create(['name' => Enums\PermissionEnum::CREATE_USERS]);
+        SpatiePermissionModels\Permission::create(['name' => Enums\PermissionEnum::UPDATE_USERS]);
+        SpatiePermissionModels\Permission::create(['name' => Enums\PermissionEnum::DELETE_USERS]);
+        // Roles & Permissions
+        SpatiePermissionModels\Permission::create(['name' => Enums\PermissionEnum::VIEW_ROLES_PERMISSIONS]);
+        SpatiePermissionModels\Permission::create(['name' => Enums\PermissionEnum::CREATE_ROLES]);
+        SpatiePermissionModels\Permission::create(['name' => Enums\PermissionEnum::UPDATE_ROLES]);
+        SpatiePermissionModels\Permission::create(['name' => Enums\PermissionEnum::DELETE_ROLES]);
+        SpatiePermissionModels\Permission::create(['name' => Enums\PermissionEnum::UPDATE_PERMISSIONS]);
 
         /* Roles */
-        $adminRole = Role::create(['name' => DefaultRoleEnum::ADMINISTRATOR]); // Highest role should be the first role
-        $modRole = Role::create(['name' => DefaultRoleEnum::MODERATOR]);
-        $userRole = Role::create(['name' => DefaultRoleEnum::MEMBER]);
+        $adminRole = SpatiePermissionModels\Role::create(['name' => Enums\DefaultRoleEnum::ADMINISTRATOR]); // Highest role should be the first role
+        $modRole = SpatiePermissionModels\Role::create(['name' => Enums\DefaultRoleEnum::MODERATOR]);
+        $memberRole = SpatiePermissionModels\Role::create(['name' => Enums\DefaultRoleEnum::MEMBER]);
 
         /* Permissions */
-        // Moderators have some limited permissions
-        $modRole->givePermissionTo([
-            PermissionEnum::VIEW_USERS,
-            PermissionEnum::VIEW_DASHBOARD,
-        ]);
-        $permissionRefl = new ReflectionClass(PermissionEnum::class);
+        $permissionRefl = new ReflectionClass(Enums\PermissionEnum::class);
         $allDefaultPermissions = array_values((array)$permissionRefl->getConstants());
         // Admin has all the default permissions by default
         $adminRole->givePermissionTo([
             $allDefaultPermissions
         ]);
+         // Moderators have some limited permissions
+         $modRole->givePermissionTo([
+            Enums\PermissionEnum::VIEW_USERS,
+            Enums\PermissionEnum::VIEW_DASHBOARD,
+        ]);
+        // Attach permissions to Member here if necessary
     }
 }

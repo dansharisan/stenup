@@ -3,7 +3,7 @@
 use Symfony\Component\HttpFoundation\Response as Response;
 use App\Enums as Enums;
 use App\Models as Models;
-use Spatie\Permission\Models as AuthorizationModels;
+use Spatie\Permission\Models as SpatiePermissionModels;
 use App\Http\Traits as Traits;
 use Carbon\Carbon;
 
@@ -671,7 +671,7 @@ class AuthCest
     **/
     public function deleteRole(ApiTester $I) {
         // Prepare data
-        $newRole = factory(AuthorizationModels\Role::class)->create();
+        $newRole = factory(SpatiePermissionModels\Role::class)->create();
         $memberUser = $I->generateMemberUser();
 
         /* Case: Calling the API while not logged in should return unauthorized error */

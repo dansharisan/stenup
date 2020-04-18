@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
 Route::group([
     // Prefixed with /auth
     'prefix' => 'auth',

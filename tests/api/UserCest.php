@@ -2,8 +2,7 @@
 
 use Symfony\Component\HttpFoundation\Response as Response;
 use App\Http\Traits as Traits;
-use Spatie\Permission\Models as AuthorizationModels;
-use App\Models as Models;
+use Spatie\Permission\Models as SpatiePermissionModels;
 use App\Enums as Enums;
 
 class UserCest
@@ -237,8 +236,8 @@ class UserCest
     {
         // Prepare data
         $memberUser = $I->generateMemberUser();
-        $roleMember = AuthorizationModels\Role::where('name', Enums\DefaultRoleEnum::MEMBER)->first();
-        $roleAdministrator = AuthorizationModels\Role::where('name', Enums\DefaultRoleEnum::ADMINISTRATOR)->first();
+        $roleMember = SpatiePermissionModels\Role::where('name', Enums\DefaultRoleEnum::MEMBER)->first();
+        $roleAdministrator = SpatiePermissionModels\Role::where('name', Enums\DefaultRoleEnum::ADMINISTRATOR)->first();
 
         /* Case: Calling the API while not logged in should return unauthorized error */
         $I->sendPATCH('/api/users/' . $memberUser->id, [
@@ -313,8 +312,8 @@ class UserCest
     {
         // Prepare data
         $memberUser = $I->generateMemberUser();
-        $roleMember = AuthorizationModels\Role::where('name', Enums\DefaultRoleEnum::MEMBER)->first();
-        $roleAdministrator = AuthorizationModels\Role::where('name', Enums\DefaultRoleEnum::ADMINISTRATOR)->first();
+        $roleMember = SpatiePermissionModels\Role::where('name', Enums\DefaultRoleEnum::MEMBER)->first();
+        $roleAdministrator = SpatiePermissionModels\Role::where('name', Enums\DefaultRoleEnum::ADMINISTRATOR)->first();
         $validEmail = 'my_valid_email@test.com';
 
         /* Case: Calling the API while not logged in should return unauthorized error */

@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response as Response;
 use Illuminate\Support\Facades\DB;
 use App\Http\Traits as Traits;
 use App\Notifications as Notifications;
-use Spatie\Permission\Models as AuthorizationModels;
+use Spatie\Permission\Models as SpatiePermissionModels;
 use App\Enums as Enums;
 use App\Models as Models;
 
@@ -99,7 +99,7 @@ class AuthController extends Controller
         $user->assignRole(Enums\DefaultRoleEnum::MEMBER);
 
         // Send email with activation link
-        $user->notify(new Notifications\RegisterActivate($user));
+        $user->notify(new Notifications\RegisterActivateNotification($user));
 
         return response()->json(['user' => $user], Response::HTTP_OK);
     }
@@ -381,7 +381,7 @@ class AuthController extends Controller
             ]
         );
         if ($user && $passwordReset) {
-            $user->notify(new Notifications\PasswordResetRequest($passwordReset->token));
+            $user->notify(new Notifications\PasswordResetRequestNotification($passwordReset->token));
         }
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
@@ -558,7 +558,7 @@ class AuthController extends Controller
         // Delete password reset token
         $passwordReset->delete();
         // Send notification email
-        $user->notify(new Notifications\PasswordResetSuccess($passwordReset));
+        $user->notify(new Notifications\PasswordResetSuccessNotification($passwordReset));
 
         return response()->json(['user' => $user], Response::HTTP_OK);
     }
@@ -661,7 +661,7 @@ class AuthController extends Controller
         $user->save();
 
         // Send notification email
-        $user->notify(new Notifications\PasswordChangeSuccess());
+        $user->notify(new Notifications\PasswordChangeSuccessNotification());
 
         return response()->json(['user' => $user], Response::HTTP_OK);
     }
@@ -690,8 +690,8 @@ class AuthController extends Controller
             return $this->returnUnauthorizedResponse();
         }
 
-        $roles = AuthorizationModels\Role::get();
-        $permissions = AuthorizationModels\Permission::get();
+        $roles = SpatiePermissionModels\Role::get();
+        $permissions = SpatiePermissionModels\Permission::get();
 
         return response()->json(['roles' => $roles, 'permissions' => $permissions], Response::HTTP_OK);
     }
@@ -720,7 +720,7 @@ class AuthController extends Controller
             return $this->returnUnauthorizedResponse();
         }
 
-        $roles = AuthorizationModels\Role::with('permissions')->get();
+        $roles = SpatiePermissionModels\Role::with('permissions')->get();
 
         return response()->json(['roles' => $roles], Response::HTTP_OK);
     }
@@ -789,7 +789,7 @@ class AuthController extends Controller
         }
 
         // Create the role
-        $role = AuthorizationModels\Role::create(['name' => $request->input('role_name')]);
+        $role = SpatiePermissionModels\Role::create(['name' => $request->input('role_name')]);
 
         return response()->json(['role' => $role], Response::HTTP_OK);
     }
@@ -830,7 +830,7 @@ class AuthController extends Controller
         }
 
         // Check for data validity
-        $role = AuthorizationModels\Role::find($id);
+        $role = SpatiePermissionModels\Role::find($id);
         if (!$id || empty($role)) {
             return response()->json(
                 ['error' =>
@@ -914,8 +914,8 @@ class AuthController extends Controller
         $matrix = json_decode($request->input('matrix'));
 
         // Update permissions
-        $roles = AuthorizationModels\Role::get();
-        $permissions = AuthorizationModels\Permission::get();
+        $roles = SpatiePermissionModels\Role::get();
+        $permissions = SpatiePermissionModels\Permission::get();
         DB::beginTransaction();
         try {
             foreach ($matrix as $roleName => $associatedPermissions) {

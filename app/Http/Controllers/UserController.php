@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response as Response;
 use App\Http\Traits as Traits;
-use Spatie\Permission\Models as AuthorizationModels;
+use Spatie\Permission\Models as SpatiePermissionModels;
 use App\Enums as Enums;
 use App\Models as Models;
 
@@ -400,7 +400,7 @@ class UserController extends Controller
             $roleIdArr = preg_split('/,/', $roleIds, null, PREG_SPLIT_NO_EMPTY);
             if ($roleIdArr && is_array($roleIdArr) && !empty($roleIdArr[0]) && count($roleIdArr) > 0) {
                 foreach ($roleIdArr as $roleId) {
-                    $role = AuthorizationModels\Role::find($roleId);
+                    $role = SpatiePermissionModels\Role::find($roleId);
                     $user->assignRole($role->name);
                 }
             }
@@ -539,7 +539,7 @@ class UserController extends Controller
             $roleIdArr = preg_split('/,/', $roleIds, null, PREG_SPLIT_NO_EMPTY);
             if ($roleIdArr && is_array($roleIdArr) && !empty($roleIdArr[0]) && count($roleIdArr) > 0) {
                 foreach ($roleIdArr as $roleId) {
-                    $role = AuthorizationModels\Role::find($roleId);
+                    $role = SpatiePermissionModels\Role::find($roleId);
                     $user->assignRole($role->name);
                 }
             }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Traits;
 
-use App\Enums\ErrorEnum;
+use App\Enums as Enums;
 use Symfony\Component\HttpFoundation\Response as Response;
 
 trait ResponseTrait {
@@ -11,8 +11,8 @@ trait ResponseTrait {
         return response()->json(
             ['error' =>
                         [
-                            'code' => ErrorEnum::AUTH0010,
-                            'message' => ErrorEnum::getDescription(ErrorEnum::AUTH0010)
+                            'code' => Enums\ErrorEnum::AUTH0010,
+                            'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::AUTH0010)
                         ]
             ], Response::HTTP_UNAUTHORIZED
         );
