@@ -13,12 +13,6 @@
                                 </p>
                                 <div :class="'alert alert-' + notification.type" id="message" v-if="notification.message" v-html="notification.message" role="alert">
                                 </div>
-                                <b-input-group class="mb-3" v-if="form.email">
-                                    <b-input-group-prepend is-text class="item-header-text">
-                                        <span>Email</span>
-                                    </b-input-group-prepend>
-                                    <b-input type="text" class="form-control" :value="form.email" disabled/>
-                                </b-input-group>
                                 <b-row>
                                     <b-col cols="6" class="text-left">
                                         <b-button variant="link" class="px-0" @click="$router.push({ name: 'Login' })">
@@ -55,9 +49,6 @@ export default {
             params:  {
                 token: ''
             },
-            form: {
-                email: null,
-            },
         }
     },
     created () {
@@ -85,7 +76,6 @@ export default {
                 vm.notification.message = "Your account has been activated successfully. You can now login."
                 // Mark request status as loaded succesully
                 vm.activateAccountRequest.status = 2
-                vm.form.email = response.data.user.email
             })
             .catch(error => {
                 // Mark request status as failed to load

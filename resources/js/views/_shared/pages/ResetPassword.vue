@@ -19,6 +19,9 @@
                                             <i class="fas fa-at"></i>
                                         </b-input-group-prepend>
                                         <b-input type="text" :class="{'border-danger' : (validation && validation.email)}" v-model="form.email" placeholder="Email" v-on:keyup.enter="submit"/>
+                                        <div class="invalid-feedback d-block" v-if="validation && validation.email">
+                                            {{ validation.email[0] }}
+                                        </div>
                                     </b-input-group>
                                     <b-input-group class="mb-3">
                                         <b-input-group-prepend is-text class="item-header-text">

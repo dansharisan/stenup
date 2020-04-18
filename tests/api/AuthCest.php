@@ -226,16 +226,12 @@ class AuthCest
 
         /* Case: With correct token, activate user successfully */
         $I->sendGET('/api/auth/register/activate/' . $activationToken);
-        $I->seeResponseIsJson();
-        $I->seeResponseCodeIs(Response::HTTP_OK);
-        $I->seeResponseContainsJson([
-            'user' => [
-              'email' => $verifiedUser->email
-            ]
-        ]);
+        $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
         // Check if email_verified_at is no longer null
         $user = Models\User::firstWhere('email', $verifiedUser->email);
         $I->assertNotNull($user->email_verified_at);
+        // And activation_token should be null
+        $I->assertNull($user->activation_token);
     }
 
     /**

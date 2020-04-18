@@ -306,7 +306,7 @@ class AuthController extends Controller
         $user->email_verified_at = Carbon::now();
         $user->save();
 
-        return response()->json(['user' => $user], Response::HTTP_OK);
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
