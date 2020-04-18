@@ -5,7 +5,7 @@ namespace App\Enums;
 use BenSampo\Enum\Enum;
 use BenSampo\Enum\Contracts\LocalizedEnum;
 
-final class Error extends Enum implements LocalizedEnum
+final class ErrorEnum extends Enum implements LocalizedEnum
 {
     const AUTH0001 = "AUTH0001";
     const AUTH0002 = "AUTH0002";

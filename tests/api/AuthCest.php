@@ -3,13 +3,13 @@
 use Symfony\Component\HttpFoundation\Response as Response;
 use App\Enums as Enums;
 use App\Models as Models;
-use Spatie\Permission\Models as AuthModels;
-use App\Http\Traits\UtilTrait;
+use Spatie\Permission\Models as AuthorizationModels;
+use App\Http\Traits as Traits;
 use Carbon\Carbon;
 
 class AuthCest
 {
-    use UtilTrait;
+    use Traits\UtilTrait;
     /**
     * Endpoint: POST /api/auth/login
     **/
@@ -17,7 +17,7 @@ class AuthCest
     {
         // Prepare data
         $unverifiedUser = factory(Models\User::class)->create();
-        $bannedMemberUser = $I->generateMemberUser(Enums\UserStatus::Banned);
+        $bannedMemberUser = $I->generateMemberUser(Enums\UserStatusEnum::Banned);
         $verifiedUser = factory(Models\User::class)->create([
             'email_verified_at' => now()
         ]);
@@ -142,7 +142,7 @@ class AuthCest
         $I->seeInDatabase((new Models\User)->getTable(), [
             'email' => $validEmail,
             'email_verified_at' => NULL, // Email is not verified on registration
-            'status' => Enums\UserStatus::Active // Status is Active on registration
+            'status' => Enums\UserStatusEnum::Active // Status is Active on registration
         ]);
     }
 
@@ -533,7 +533,7 @@ class AuthCest
         $I->seeUnauthorizedRequestError();
 
         /* Case: When that user is set to have VIEW_ROLES_PERMISSIONS permission, he could get access to this API */
-        $memberUser->roles[0]->givePermissionTo(Enums\PermissionType::VIEW_ROLES_PERMISSIONS);
+        $memberUser->roles[0]->givePermissionTo(Enums\PermissionEnum::VIEW_ROLES_PERMISSIONS);
         $I->sendGET('/api/auth/roles_permissions');
         $I->seeResponseIsJson();
         $I->seeResponseCodeIs(Response::HTTP_OK);
@@ -542,18 +542,18 @@ class AuthCest
             [
                 'roles' => [
                                 [
-                                    'name' => Enums\DefaultRoleType::ADMINISTRATOR
+                                    'name' => Enums\DefaultRoleEnum::ADMINISTRATOR
                                 ],
                                 [
-                                    'name' => Enums\DefaultRoleType::MEMBER
+                                    'name' => Enums\DefaultRoleEnum::MEMBER
                                 ]
                             ],
                 'permissions' => [
                                     [
-                                        'name' => Enums\PermissionType::VIEW_ROLES_PERMISSIONS
+                                        'name' => Enums\PermissionEnum::VIEW_ROLES_PERMISSIONS
                                     ],
                                     [
-                                        'name' => Enums\PermissionType::VIEW_USERS
+                                        'name' => Enums\PermissionEnum::VIEW_USERS
                                     ],
                             ]
             ]
@@ -581,7 +581,7 @@ class AuthCest
         $I->seeUnauthorizedRequestError();
 
         /* Case: When that user is set to have VIEW_ROLES_PERMISSIONS permission, he could get access to this API */
-        $memberUser->roles[0]->givePermissionTo(Enums\PermissionType::VIEW_ROLES_PERMISSIONS);
+        $memberUser->roles[0]->givePermissionTo(Enums\PermissionEnum::VIEW_ROLES_PERMISSIONS);
         $I->sendGET('/api/auth/roles_w_permissions');
         $I->seeResponseIsJson();
         $I->seeResponseCodeIs(Response::HTTP_OK);
@@ -590,18 +590,18 @@ class AuthCest
             [
                 'roles' => [
                                 [
-                                    'name' => Enums\DefaultRoleType::ADMINISTRATOR,
+                                    'name' => Enums\DefaultRoleEnum::ADMINISTRATOR,
                                     'permissions' => [
                                         [
-                                            'name' => Enums\PermissionType::VIEW_DASHBOARD
+                                            'name' => Enums\PermissionEnum::VIEW_DASHBOARD
                                         ],
                                     ]
                                 ],
                                 [
-                                    'name' => Enums\DefaultRoleType::MEMBER,
+                                    'name' => Enums\DefaultRoleEnum::MEMBER,
                                     'permissions' => [
                                         [
-                                            'name' => Enums\PermissionType::VIEW_ROLES_PERMISSIONS
+                                            'name' => Enums\PermissionEnum::VIEW_ROLES_PERMISSIONS
                                         ],
                                     ]
                                 ],
@@ -635,7 +635,7 @@ class AuthCest
         $I->seeUnauthorizedRequestError();
 
         // When that user is set to have CREATE_ROLES permission, he could get access to this API //
-        $memberUser->roles[0]->givePermissionTo(Enums\PermissionType::CREATE_ROLES);
+        $memberUser->roles[0]->givePermissionTo(Enums\PermissionEnum::CREATE_ROLES);
         /* Case: Empty role_name should return validation error */
         $I->sendPOST('/api/auth/roles' , [
             'role_name' => ''
@@ -644,7 +644,7 @@ class AuthCest
 
         /* Case: Existing role_name should return validation error */
         $I->sendPOST('/api/auth/roles' , [
-            'role_name' => Enums\DefaultRoleType::MEMBER
+            'role_name' => Enums\DefaultRoleEnum::MEMBER
         ]);
         $I->seeValidationError();
 
@@ -671,7 +671,7 @@ class AuthCest
     **/
     public function deleteRole(ApiTester $I) {
         // Prepare data
-        $newRole = factory(AuthModels\Role::class)->create();
+        $newRole = factory(AuthorizationModels\Role::class)->create();
         $memberUser = $I->generateMemberUser();
 
         /* Case: Calling the API while not logged in should return unauthorized error */
@@ -687,7 +687,7 @@ class AuthCest
         $I->seeUnauthorizedRequestError();
 
         // When that user is set to have DELETE_ROLES permission, he could get access to this API //
-        $memberUser->roles[0]->givePermissionTo(Enums\PermissionType::DELETE_ROLES);
+        $memberUser->roles[0]->givePermissionTo(Enums\PermissionEnum::DELETE_ROLES);
         /* Case: If 0 is provided, it should return invalid role id error */
         $I->sendDELETE('/api/auth/roles/' . '0');
         $I->seeInvalidRoleIDError();
@@ -711,7 +711,7 @@ class AuthCest
         $memberUser = $I->generateMemberUser();
 
         /* Case: Calling the API while not logged in should return unauthorized error */
-        $dumpMatrix = '{"'. Enums\DefaultRoleType::MEMBER . '":["' . Enums\PermissionType::VIEW_DASHBOARD . '","' . Enums\PermissionType::VIEW_ROLES_PERMISSIONS . '"], "' . Enums\DefaultRoleType::ADMINISTRATOR . '":["' . Enums\PermissionType::UPDATE_PERMISSIONS . '"]}';
+        $dumpMatrix = '{"'. Enums\DefaultRoleEnum::MEMBER . '":["' . Enums\PermissionEnum::VIEW_DASHBOARD . '","' . Enums\PermissionEnum::VIEW_ROLES_PERMISSIONS . '"], "' . Enums\DefaultRoleEnum::ADMINISTRATOR . '":["' . Enums\PermissionEnum::UPDATE_PERMISSIONS . '"]}';
         $I->sendPUT('/api/auth/update_roles_permissions_matrix', [
             'matrix' => $dumpMatrix
         ]);
@@ -728,7 +728,7 @@ class AuthCest
         $I->seeUnauthorizedRequestError();
 
         // When that user is set to have DELETE_ROLES permission, he could get access to this API //
-        $memberUser->roles[0]->givePermissionTo(Enums\PermissionType::UPDATE_PERMISSIONS);
+        $memberUser->roles[0]->givePermissionTo(Enums\PermissionEnum::UPDATE_PERMISSIONS);
         /* Case: Empty matrix should return validation error */
         $I->sendPUT('/api/auth/update_roles_permissions_matrix', [
             'matrix' => ''
@@ -753,21 +753,21 @@ class AuthCest
             [
                 'roles' => [
                                 [
-                                    'name' => Enums\DefaultRoleType::ADMINISTRATOR,
+                                    'name' => Enums\DefaultRoleEnum::ADMINISTRATOR,
                                     'permissions' => [
                                         [
-                                            'name' => Enums\PermissionType::UPDATE_PERMISSIONS
+                                            'name' => Enums\PermissionEnum::UPDATE_PERMISSIONS
                                         ],
                                     ]
                                 ],
                                 [
-                                    'name' => Enums\DefaultRoleType::MEMBER,
+                                    'name' => Enums\DefaultRoleEnum::MEMBER,
                                     'permissions' => [
                                         [
-                                            'name' => Enums\PermissionType::VIEW_DASHBOARD
+                                            'name' => Enums\PermissionEnum::VIEW_DASHBOARD
                                         ],
                                         [
-                                            'name' => Enums\PermissionType::VIEW_ROLES_PERMISSIONS
+                                            'name' => Enums\PermissionEnum::VIEW_ROLES_PERMISSIONS
                                         ],
                                     ]
                                 ],

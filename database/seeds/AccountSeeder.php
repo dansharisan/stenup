@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Enums\DefaultRoleType;
-use App\Enums\UserStatus;
+use App\Enums\DefaultRoleEnum;
+use App\Enums\UserStatusEnum;
 use App\Models\User;
 
 class AccountSeeder extends Seeder
@@ -18,9 +18,9 @@ class AccountSeeder extends Seeder
             'email' => 'dansharisan@gmail.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$kONctkXHfXNakypS40w6S.k/WIitrpFDng3ObG8O9fmiH8yEC1uWu',
-            'status' => UserStatus::Active
+            'status' => UserStatusEnum::Active
         ])->each(function ($user) {
-            $user->assignRole(DefaultRoleType::ADMINISTRATOR);
+            $user->assignRole(DefaultRoleEnum::ADMINISTRATOR);
         });
     }
 }

@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-use App\Enums\UserStatus;
+use App\Enums\UserStatusEnum;
 
 class CreateUsersTable extends Migration
 {
@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->integer('status')->default(UserStatus::Active);
+            $table->integer('status')->default(UserStatusEnum::Active);
             $table->string('activation_token')->nullable();
             $table->rememberToken();
             $table->timestamps();

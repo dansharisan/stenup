@@ -4,7 +4,7 @@ namespace App\Enums;
 
 use BenSampo\Enum\Enum;
 
-final class PermissionType extends Enum
+final class PermissionEnum extends Enum
 {
     const VIEW_USERS = 'view-users';
     const CREATE_USERS = 'create-users';

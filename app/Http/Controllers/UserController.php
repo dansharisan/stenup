@@ -3,19 +3,17 @@
 namespace App\Http\Controllers;
 
 use Validator;
-use App\Models\User;
-use App\Enums\Error;
-use App\Enums\UserStatus;
-use App\Enums\PermissionType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Role;
 use Symfony\Component\HttpFoundation\Response as Response;
-use App\Http\Traits\ResponseTrait;
+use App\Http\Traits as Traits;
+use Spatie\Permission\Models as AuthorizationModels;
+use App\Enums as Enums;
+use App\Models as Models;
 
 class UserController extends Controller
 {
-    use ResponseTrait;
+    use Traits\ResponseTrait;
     /**
     * @OA\Get(
     *         path="/api/users",
@@ -55,12 +53,12 @@ class UserController extends Controller
     {
         // Authorization check
         $user = $request->user();
-        if (!$user->hasPermissionTo(PermissionType::VIEW_USERS)) {
+        if (!$user->hasPermissionTo(Enums\PermissionEnum::VIEW_USERS)) {
 
             return $this->returnUnauthorizedResponse();
         }
 
-        $users = User::orderBy('created_at', 'desc')->paginate($request->query('per_page'));
+        $users = Models\User::orderBy('created_at', 'desc')->paginate($request->query('per_page'));
 
         for ($i=0; $i<count($users); $i++) {
             $roleArr = [];
@@ -68,7 +66,7 @@ class UserController extends Controller
                 array_push($roleArr, $role);
             }
             $users[$i]['display_roles'] = implode(", ", $roleArr);
-            $users[$i]['status'] = UserStatus::getKey($users[$i]['status']);
+            $users[$i]['status'] = Enums\UserStatusEnum::getKey($users[$i]['status']);
         }
 
         return response()->json(['users' => $users], Response::HTTP_OK);
@@ -104,25 +102,25 @@ class UserController extends Controller
     {
         // Authorization check
         $user = $request->user();
-        if (!$user->hasPermissionTo(PermissionType::UPDATE_USERS)) {
+        if (!$user->hasPermissionTo(Enums\PermissionEnum::UPDATE_USERS)) {
 
             return $this->returnUnauthorizedResponse();
         }
 
         // Check for data validity
-        $user = User::find($id);
+        $user = Models\User::find($id);
         if (!$id || empty($user)) {
             return response()->json(
                 ['error' =>
                             [
-                                'code' => Error::USER0001,
-                                'message' => Error::getDescription(Error::USER0001)
+                                'code' => Enums\ErrorEnum::USER0001,
+                                'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::USER0001)
                             ]
                 ], Response::HTTP_BAD_REQUEST
             );
         }
         // Update the data
-        $user->status = UserStatus::Banned;
+        $user->status = Enums\UserStatusEnum::Banned;
         $user->save();
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
@@ -158,25 +156,25 @@ class UserController extends Controller
     {
         // Authorization check
         $user = $request->user();
-        if (!$user->hasPermissionTo(PermissionType::UPDATE_USERS)) {
+        if (!$user->hasPermissionTo(Enums\PermissionEnum::UPDATE_USERS)) {
 
             return $this->returnUnauthorizedResponse();
         }
 
         // Check for data validity
-        $user = User::find($id);
+        $user = Models\User::find($id);
         if (!$id || empty($user)) {
             return response()->json(
                 ['error' =>
                             [
-                                'code' => Error::USER0001,
-                                'message' => Error::getDescription(Error::USER0001)
+                                'code' => Enums\ErrorEnum::USER0001,
+                                'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::USER0001)
                             ]
                 ], Response::HTTP_BAD_REQUEST
             );
         }
         // Update the data
-        $user->status = UserStatus::Active;
+        $user->status = Enums\UserStatusEnum::Active;
         $user->save();
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
@@ -212,19 +210,19 @@ class UserController extends Controller
     {
         // Authorization check
         $user = $request->user();
-        if (!$user->hasPermissionTo(PermissionType::DELETE_USERS)) {
+        if (!$user->hasPermissionTo(Enums\PermissionEnum::DELETE_USERS)) {
 
             return $this->returnUnauthorizedResponse();
         }
 
         // Check for data validity
-        $user = User::find($id);
+        $user = Models\User::find($id);
         if (!$id || empty($user)) {
             return response()->json(
                 ['error' =>
                             [
-                                'code' => Error::USER0001,
-                                'message' => Error::getDescription(Error::USER0001)
+                                'code' => Enums\ErrorEnum::USER0001,
+                                'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::USER0001)
                             ]
                 ], Response::HTTP_BAD_REQUEST
             );
@@ -277,7 +275,7 @@ class UserController extends Controller
     {
         // Authorization check
         $user = $request->user();
-        if (!$user->hasPermissionTo(PermissionType::DELETE_USERS)) {
+        if (!$user->hasPermissionTo(Enums\PermissionEnum::DELETE_USERS)) {
 
             return $this->returnUnauthorizedResponse();
         }
@@ -289,15 +287,15 @@ class UserController extends Controller
             return response()->json(
                 ['error' =>
                             [
-                                'code' => Error::USER0002,
-                                'message' => Error::getDescription(Error::USER0002)
+                                'code' => Enums\ErrorEnum::USER0002,
+                                'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::USER0002)
                             ]
                 ], Response::HTTP_BAD_REQUEST
             );
         }
 
         // Delete selected users
-        User::whereIn('id', $idArr)->delete();
+        Models\User::whereIn('id', $idArr)->delete();
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }
@@ -355,7 +353,7 @@ class UserController extends Controller
     {
         // Authorization check
         $user = $request->user();
-        if (!$user->hasPermissionTo(PermissionType::UPDATE_USERS)) {
+        if (!$user->hasPermissionTo(Enums\PermissionEnum::UPDATE_USERS)) {
 
             return $this->returnUnauthorizedResponse();
         }
@@ -367,8 +365,8 @@ class UserController extends Controller
             return response()->json(
                 ['error' =>
                             [
-                                'code' => Error::USER0003,
-                                'message' => Error::getDescription(Error::USER0003)
+                                'code' => Enums\ErrorEnum::USER0003,
+                                'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::USER0003)
                             ]
                 ], Response::HTTP_BAD_REQUEST
             );
@@ -377,13 +375,13 @@ class UserController extends Controller
         try {
             DB::beginTransaction();
 
-            $user = User::find($id);
+            $user = Models\User::find($id);
             if ($user == null) {
                 return response()->json(
                     ['error' =>
                                 [
-                                    'code' => Error::USER0001,
-                                    'message' => Error::getDescription(Error::USER0001)
+                                    'code' => Enums\ErrorEnum::USER0001,
+                                    'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::USER0001)
                                 ]
                     ], Response::HTTP_BAD_REQUEST
                 );
@@ -402,7 +400,7 @@ class UserController extends Controller
             $roleIdArr = preg_split('/,/', $roleIds, null, PREG_SPLIT_NO_EMPTY);
             if ($roleIdArr && is_array($roleIdArr) && !empty($roleIdArr[0]) && count($roleIdArr) > 0) {
                 foreach ($roleIdArr as $roleId) {
-                    $role = Role::find($roleId);
+                    $role = AuthorizationModels\Role::find($roleId);
                     $user->assignRole($role->name);
                 }
             }
@@ -414,7 +412,7 @@ class UserController extends Controller
             return response()->json(
                 ['error' =>
                             [
-                                'code' => Error::GENR0001,
+                                'code' => Enums\ErrorEnum::GENR0001,
                                 'message' => $e->getMessage()
                             ]
                 ], Response::HTTP_INTERNAL_SERVER_ERROR
@@ -483,7 +481,7 @@ class UserController extends Controller
     {
         // Authorization check
         $user = $request->user();
-        if (!$user->hasPermissionTo(PermissionType::CREATE_USERS)) {
+        if (!$user->hasPermissionTo(Enums\PermissionEnum::CREATE_USERS)) {
 
             return $this->returnUnauthorizedResponse();
         }
@@ -502,8 +500,8 @@ class UserController extends Controller
             [
                 'error' =>
                         [
-                            'code' => Error::GENR0002,
-                            'message' => Error::getDescription(Error::GENR0002)
+                            'code' => Enums\ErrorEnum::GENR0002,
+                            'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::GENR0002)
                         ],
                 'validation' => $validator->errors()
             ],
@@ -515,8 +513,8 @@ class UserController extends Controller
             return response()->json(
                 ['error' =>
                             [
-                                'code' => Error::USER0003,
-                                'message' => Error::getDescription(Error::USER0003)
+                                'code' => Enums\ErrorEnum::USER0003,
+                                'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::USER0003)
                             ]
                 ], Response::HTTP_BAD_REQUEST
             );
@@ -525,7 +523,7 @@ class UserController extends Controller
         // Create user
         try {
             DB::beginTransaction();
-            $user = new User([
+            $user = new Models\User([
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
             ]);
@@ -541,7 +539,7 @@ class UserController extends Controller
             $roleIdArr = preg_split('/,/', $roleIds, null, PREG_SPLIT_NO_EMPTY);
             if ($roleIdArr && is_array($roleIdArr) && !empty($roleIdArr[0]) && count($roleIdArr) > 0) {
                 foreach ($roleIdArr as $roleId) {
-                    $role = Role::find($roleId);
+                    $role = AuthorizationModels\Role::find($roleId);
                     $user->assignRole($role->name);
                 }
             }
@@ -552,7 +550,7 @@ class UserController extends Controller
             return response()->json(
                 ['error' =>
                             [
-                                'code' => Error::GENR0001,
+                                'code' => Enums\ErrorEnum::GENR0001,
                                 'message' => $e->getMessage()
                             ]
                 ], Response::HTTP_INTERNAL_SERVER_ERROR
@@ -583,7 +581,7 @@ class UserController extends Controller
     {
         // Authorization check
         $user = $request->user();
-        if (!$user->hasPermissionTo(PermissionType::VIEW_DASHBOARD)) {
+        if (!$user->hasPermissionTo(Enums\PermissionEnum::VIEW_DASHBOARD)) {
 
             return $this->returnUnauthorizedResponse();
         }
@@ -592,7 +590,7 @@ class UserController extends Controller
         $last7Days = [];
         $last7DayStats = [];
 
-        $registeredUserStats['total'] = User::count();
+        $registeredUserStats['total'] = Models\User::count();
 
         for ($i=0; $i<7; $i++)
         {
@@ -600,7 +598,7 @@ class UserController extends Controller
         }
 
         foreach ($last7Days as $eachDay) {
-            $totalUsersOfDay = User::whereBetween('created_at', [$eachDay . " 00:00:00", $eachDay . " 23:59:59"])->count();
+            $totalUsersOfDay = Models\User::whereBetween('created_at', [$eachDay . " 00:00:00", $eachDay . " 23:59:59"])->count();
             $last7DayStats[$eachDay] = $totalUsersOfDay;
         }
         $registeredUserStats['last_7_day_stats'] = array_reverse($last7DayStats);

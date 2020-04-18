@@ -4,30 +4,21 @@ namespace App\Http\Controllers;
 
 use Validator;
 use Carbon\Carbon;
-use App\Models\User;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
-use App\Enums\Error;
-use App\Enums\DefaultRoleType;
-use App\Enums\UserStatus;
-use App\Enums\PermissionType;
 use Illuminate\Http\Request;
-use App\Models\PasswordReset;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
-use App\Notifications\RegisterActivate;
-use App\Notifications\PasswordResetRequest;
-use App\Notifications\PasswordResetSuccess;
-use App\Notifications\PasswordChangeSuccess;
 use Symfony\Component\HttpFoundation\Response as Response;
 use Illuminate\Support\Facades\DB;
-use App\Http\Traits\ResponseTrait;
-use App\Http\Traits\UtilTrait;
+use App\Http\Traits as Traits;
+use App\Notifications as Notifications;
+use Spatie\Permission\Models as AuthorizationModels;
+use App\Enums as Enums;
+use App\Models as Models;
 
 class AuthController extends Controller
 {
     const PASSWORD_RESET_TOKEN_TIME_VALIDITY_IN_MINUTE = 60;
-    use ResponseTrait, UtilTrait;
+    use Traits\ResponseTrait, Traits\UtilTrait;
     /**
     * @OA\Post(
     *         path="/api/auth/register",
@@ -88,8 +79,8 @@ class AuthController extends Controller
             [
                 'error' =>
                         [
-                            'code' => Error::GENR0002,
-                            'message' => Error::getDescription(Error::GENR0002)
+                            'code' => Enums\ErrorEnum::GENR0002,
+                            'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::GENR0002)
                         ],
                 'validation' => $validator->errors()
             ],
@@ -97,7 +88,7 @@ class AuthController extends Controller
         }
 
         // Create user
-        $user = new User([
+        $user = new Models\User([
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'activation_token' => $this->quickRandom(60)
@@ -105,10 +96,10 @@ class AuthController extends Controller
         $user->save();
 
         // Default role
-        $user->assignRole(DefaultRoleType::MEMBER);
+        $user->assignRole(Enums\DefaultRoleEnum::MEMBER);
 
         // Send email with activation link
-        $user->notify(new RegisterActivate($user));
+        $user->notify(new Notifications\RegisterActivate($user));
 
         return response()->json(['user' => $user], Response::HTTP_OK);
     }
@@ -170,8 +161,8 @@ class AuthController extends Controller
             [
                 'error' =>
                         [
-                            'code' => Error::GENR0002,
-                            'message' => Error::getDescription(Error::GENR0002)
+                            'code' => Enums\ErrorEnum::GENR0002,
+                            'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::GENR0002)
                         ],
                 'validation' => $validator->errors()
             ],
@@ -179,7 +170,7 @@ class AuthController extends Controller
         }
 
         $credentials = request(['email', 'password']);
-        $credentials['status'] = UserStatus::Active;
+        $credentials['status'] = Enums\UserStatusEnum::Active;
         $credentials['deleted_at'] = null;
 
         // Check the combination of email and password, also check for active status
@@ -187,8 +178,8 @@ class AuthController extends Controller
             return response()->json(
                 ['error' =>
                             [
-                                'code' => Error::AUTH0001,
-                                'message' => Error::getDescription(Error::AUTH0001)
+                                'code' => Enums\ErrorEnum::AUTH0001,
+                                'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::AUTH0001)
                             ]
                 ], Response::HTTP_UNAUTHORIZED
             );
@@ -200,8 +191,8 @@ class AuthController extends Controller
             return response()->json(
                 ['error' =>
                             [
-                                'code' => Error::AUTH0011,
-                                'message' => Error::getDescription(Error::AUTH0011)
+                                'code' => Enums\ErrorEnum::AUTH0011,
+                                'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::AUTH0011)
                             ]
                 ], Response::HTTP_UNAUTHORIZED
             );
@@ -298,14 +289,14 @@ class AuthController extends Controller
     */
     public function activate($token)
     {
-        $user = User::where('activation_token', $token)->first();
+        $user = Models\User::where('activation_token', $token)->first();
         // If the token is not existing, throw error
         if (!$user) {
             return response()->json(
                 ['error' =>
                             [
-                                'code' => Error::AUTH0002,
-                                'message' => Error::getDescription(Error::AUTH0002)
+                                'code' => Enums\ErrorEnum::AUTH0002,
+                                'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::AUTH0002)
                             ]
                 ], Response::HTTP_BAD_REQUEST
             );
@@ -368,21 +359,21 @@ class AuthController extends Controller
             [
                 'error' =>
                         [
-                            'code' => Error::GENR0002,
-                            'message' => Error::getDescription(Error::GENR0002)
+                            'code' => Enums\ErrorEnum::GENR0002,
+                            'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::GENR0002)
                         ],
                 'validation' => $validator->errors()
             ],
             Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $user = User::where('email', $request->email)->first();
+        $user = Models\User::where('email', $request->email)->first();
         // If the email is not existing, pretends it's a successful request, but do nothing (for security concern)
         if (!$user) {
             return response()->json(null, Response::HTTP_NO_CONTENT);
         }
         // Create or update token
-        $passwordReset = PasswordReset::updateOrCreate(
+        $passwordReset = Models\PasswordReset::updateOrCreate(
             ['email' => $user->email],
             [
                 'email' => $user->email,
@@ -390,7 +381,7 @@ class AuthController extends Controller
             ]
         );
         if ($user && $passwordReset) {
-            $user->notify(new PasswordResetRequest($passwordReset->token));
+            $user->notify(new Notifications\PasswordResetRequest($passwordReset->token));
         }
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
@@ -429,25 +420,25 @@ class AuthController extends Controller
     public function findPasswordResetToken($token)
     {
         // Make sure the password reset token is findable, otherwise throw error
-        $passwordReset = PasswordReset::where('token', $token)->first();
+        $passwordReset = Models\PasswordReset::where('token', $token)->first();
         if (!$passwordReset) {
             return response()->json(
                 ['error' =>
                             [
-                                'code' => Error::AUTH0004,
-                                'message' => Error::getDescription(Error::AUTH0004)
+                                'code' => Enums\ErrorEnum::AUTH0004,
+                                'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::AUTH0004)
                             ]
                 ], Response::HTTP_BAD_REQUEST
             );
         }
 
-        if (Carbon::parse($passwordReset->updated_at)->addMinutes(PasswordReset::PASSWORD_RESET_TOKEN_TIME_VALIDITY_IN_MINUTE)->isPast()) {
+        if (Carbon::parse($passwordReset->updated_at)->addMinutes(Models\PasswordReset::PASSWORD_RESET_TOKEN_TIME_VALIDITY_IN_MINUTE)->isPast()) {
             $passwordReset->delete();
             return response()->json(
                 ['error' =>
                             [
-                                'code' => Error::AUTH0005,
-                                'message' => Error::getDescription(Error::AUTH0005)
+                                'code' => Enums\ErrorEnum::AUTH0005,
+                                'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::AUTH0005)
                             ]
                 ], Response::HTTP_BAD_REQUEST
             );
@@ -526,15 +517,15 @@ class AuthController extends Controller
             [
                 'error' =>
                         [
-                            'code' => Error::GENR0002,
-                            'message' => Error::getDescription(Error::GENR0002)
+                            'code' => Enums\ErrorEnum::GENR0002,
+                            'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::GENR0002)
                         ],
                 'validation' => $validator->errors()
             ],
             Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $passwordReset = PasswordReset::where([
+        $passwordReset = Models\PasswordReset::where([
             ['token', $request->token],
             ['email', $request->email]
         ])->first();
@@ -542,20 +533,20 @@ class AuthController extends Controller
             return response()->json(
                 ['error' =>
                             [
-                                'code' => Error::AUTH0006,
-                                'message' => Error::getDescription(Error::AUTH0006)
+                                'code' => Enums\ErrorEnum::AUTH0006,
+                                'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::AUTH0006)
                             ]
                 ], Response::HTTP_BAD_REQUEST
             );
         }
 
-        $user = User::where('email', $passwordReset->email)->first();
+        $user = Models\User::where('email', $passwordReset->email)->first();
         if (!$user) {
             return response()->json(
                 ['error' =>
                             [
-                                'code' => Error::AUTH0003,
-                                'message' => Error::getDescription(Error::AUTH0003)
+                                'code' => Enums\ErrorEnum::AUTH0003,
+                                'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::AUTH0003)
                             ]
                 ], Response::HTTP_BAD_REQUEST
             );
@@ -567,7 +558,7 @@ class AuthController extends Controller
         // Delete password reset token
         $passwordReset->delete();
         // Send notification email
-        $user->notify(new PasswordResetSuccess($passwordReset));
+        $user->notify(new Notifications\PasswordResetSuccess($passwordReset));
 
         return response()->json(['user' => $user], Response::HTTP_OK);
     }
@@ -639,8 +630,8 @@ class AuthController extends Controller
             [
                 'error' =>
                         [
-                            'code' => Error::GENR0002,
-                            'message' => Error::getDescription(Error::GENR0002)
+                            'code' => Enums\ErrorEnum::GENR0002,
+                            'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::GENR0002)
                         ],
                 'validation' => $validator->errors()
             ],
@@ -650,7 +641,7 @@ class AuthController extends Controller
         // Check if the combination of email and password is correct, if it is then proceed, if no, throw error
         $credentials = request(['password']);
         $credentials['email'] = $email;
-        $credentials['status'] = UserStatus::Active;
+        $credentials['status'] = Enums\UserStatusEnum::Active;
         $credentials['deleted_at'] = null;
 
         // Check the combination of email and password, also check for activation status
@@ -658,8 +649,8 @@ class AuthController extends Controller
             return response()->json(
                 ['error' =>
                             [
-                                'code' => Error::AUTH0001,
-                                'message' => Error::getDescription(Error::AUTH0001)
+                                'code' => Enums\ErrorEnum::AUTH0001,
+                                'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::AUTH0001)
                             ]
                 ], Response::HTTP_UNAUTHORIZED
             );
@@ -670,7 +661,7 @@ class AuthController extends Controller
         $user->save();
 
         // Send notification email
-        $user->notify(new PasswordChangeSuccess());
+        $user->notify(new Notifications\PasswordChangeSuccess());
 
         return response()->json(['user' => $user], Response::HTTP_OK);
     }
@@ -694,13 +685,13 @@ class AuthController extends Controller
     public function getRolesAndPermissions(Request $request) {
         // Authorization check
         $user = $request->user();
-        if (!$user->hasPermissionTo(PermissionType::VIEW_ROLES_PERMISSIONS)) {
+        if (!$user->hasPermissionTo(Enums\PermissionEnum::VIEW_ROLES_PERMISSIONS)) {
 
             return $this->returnUnauthorizedResponse();
         }
 
-        $roles = Role::get();
-        $permissions = Permission::get();
+        $roles = AuthorizationModels\Role::get();
+        $permissions = AuthorizationModels\Permission::get();
 
         return response()->json(['roles' => $roles, 'permissions' => $permissions], Response::HTTP_OK);
     }
@@ -724,12 +715,12 @@ class AuthController extends Controller
     public function getRolesWithPermissions(Request $request) {
         // Authorization check
         $user = $request->user();
-        if (!$user->hasPermissionTo(PermissionType::VIEW_ROLES_PERMISSIONS)) {
+        if (!$user->hasPermissionTo(Enums\PermissionEnum::VIEW_ROLES_PERMISSIONS)) {
 
             return $this->returnUnauthorizedResponse();
         }
 
-        $roles = Role::with('permissions')->get();
+        $roles = AuthorizationModels\Role::with('permissions')->get();
 
         return response()->json(['roles' => $roles], Response::HTTP_OK);
     }
@@ -773,7 +764,7 @@ class AuthController extends Controller
     {
         // Authorization check
         $user = $request->user();
-        if (!$user->hasPermissionTo(PermissionType::CREATE_ROLES)) {
+        if (!$user->hasPermissionTo(Enums\PermissionEnum::CREATE_ROLES)) {
 
             return $this->returnUnauthorizedResponse();
         }
@@ -789,8 +780,8 @@ class AuthController extends Controller
             [
                 'error' =>
                         [
-                            'code' => Error::GENR0002,
-                            'message' => Error::getDescription(Error::GENR0002)
+                            'code' => Enums\ErrorEnum::GENR0002,
+                            'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::GENR0002)
                         ],
                 'validation' => $validator->errors()
             ],
@@ -798,7 +789,7 @@ class AuthController extends Controller
         }
 
         // Create the role
-        $role = Role::create(['name' => $request->input('role_name')]);
+        $role = AuthorizationModels\Role::create(['name' => $request->input('role_name')]);
 
         return response()->json(['role' => $role], Response::HTTP_OK);
     }
@@ -833,19 +824,19 @@ class AuthController extends Controller
     {
         // Authorization check
         $user = $request->user();
-        if (!$user->hasPermissionTo(PermissionType::DELETE_ROLES)) {
+        if (!$user->hasPermissionTo(Enums\PermissionEnum::DELETE_ROLES)) {
 
             return $this->returnUnauthorizedResponse();
         }
 
         // Check for data validity
-        $role = Role::find($id);
+        $role = AuthorizationModels\Role::find($id);
         if (!$id || empty($role)) {
             return response()->json(
                 ['error' =>
                             [
-                                'code' => Error::AUTH0012,
-                                'message' => Error::getDescription(Error::AUTH0012)
+                                'code' => Enums\ErrorEnum::AUTH0012,
+                                'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::AUTH0012)
                             ]
                 ], Response::HTTP_BAD_REQUEST
             );
@@ -895,7 +886,7 @@ class AuthController extends Controller
     {
         // Authorization check
         $user = $request->user();
-        if (!$user->hasPermissionTo(PermissionType::UPDATE_PERMISSIONS)) {
+        if (!$user->hasPermissionTo(Enums\PermissionEnum::UPDATE_PERMISSIONS)) {
 
             return $this->returnUnauthorizedResponse();
         }
@@ -911,8 +902,8 @@ class AuthController extends Controller
             [
                 'error' =>
                         [
-                            'code' => Error::GENR0002,
-                            'message' => Error::getDescription(Error::GENR0002)
+                            'code' => Enums\ErrorEnum::GENR0002,
+                            'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::GENR0002)
                         ],
                 'validation' => $validator->errors()
             ],
@@ -923,8 +914,8 @@ class AuthController extends Controller
         $matrix = json_decode($request->input('matrix'));
 
         // Update permissions
-        $roles = Role::get();
-        $permissions = Permission::get();
+        $roles = AuthorizationModels\Role::get();
+        $permissions = AuthorizationModels\Permission::get();
         DB::beginTransaction();
         try {
             foreach ($matrix as $roleName => $associatedPermissions) {
@@ -945,8 +936,8 @@ class AuthController extends Controller
             return response()->json(
                 ['error' =>
                             [
-                                'code' => Error::AUTH0013,
-                                'message' => Error::getDescription(Error::AUTH0013)
+                                'code' => Enums\ErrorEnum::AUTH0013,
+                                'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::AUTH0013)
                             ]
                 ], Response::HTTP_BAD_REQUEST
             );
