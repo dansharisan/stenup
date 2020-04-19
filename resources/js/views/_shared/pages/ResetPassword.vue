@@ -45,11 +45,12 @@
                                 <b-row>
                                     <b-col cols="6" class="text-left">
                                         <b-button variant="link" class="px-0" @click="$router.push({ name: 'Login' })">
-                                            Go to Login
+                                            Login
                                         </b-button>
-                                        <button type="button" class="btn px-0 btn-link" @click="goToHome()">
-                                            Back to Home
-                                        </button>
+                                        <br />
+                                        <b-button variant="link" class="px-0" @click="$router.push({ name: 'Home' })">
+                                            Home
+                                        </b-button>
                                     </b-col>
                                     <b-col cols="6" class="text-right" v-if="findTokenRequest.status==2 && this.resetPasswordRequest.status != 2">
                                         <b-button variant="success" class="px-4" @click="submit">
@@ -100,7 +101,8 @@ export default {
         // Get token param from URL
         this.params.token = this.$route.params.token
         if (!this.params.token) {
-            message = 'Token not found'
+            this.notification.type = 'danger'
+            this.notification.message = 'Token not found'
             return false
         }
 
@@ -108,10 +110,6 @@ export default {
         this.checkToken(this.params.token);
     },
     methods: {
-        goToHome () {
-            this.$router.push({ name: 'Home' })
-        },
-
         submit () {
             this.resetPassword(this.form.email, this.form.password, this.form.password_confirmation, this.params.token)
         },

@@ -47,11 +47,12 @@
                                 <b-row>
                                     <b-col cols="6" class="text-left">
                                         <b-button variant="link" class="px-0" @click="$router.push({ name: 'Login' })">
-                                            Go to Login
+                                            Login
                                         </b-button>
-                                        <button type="button" class="btn px-0 btn-link" @click="goToHome()">
-                                            Back to Home
-                                        </button>
+                                        <br />
+                                        <b-button variant="link" class="px-0" @click="$router.push({ name: 'Home' })">
+                                            Home
+                                        </b-button>
                                     </b-col>
                                     <b-col cols="6" class="text-right" v-if="request.status != 2">
                                         <b-button variant="success" class="px-4" @click="submit">
@@ -105,9 +106,6 @@ export default {
         }
     },
     methods: {
-        goToHome () {
-            this.$router.push({ name: 'Home' })
-        },
         submit () {
             this.register(this.form.email, this.form.password, this.form.password_confirmation)
         },

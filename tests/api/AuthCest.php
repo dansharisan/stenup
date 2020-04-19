@@ -216,7 +216,7 @@ class AuthCest
     {
         // Prepare data: an unactivated user
         $activationToken = $this->quickRandom(60);
-        $verifiedUser = factory(Models\User::class)->create([
+        $unactivatedUser = factory(Models\User::class)->create([
             'activation_token' => $activationToken
         ]);
 
@@ -228,10 +228,65 @@ class AuthCest
         $I->sendGET('/api/auth/register/activate/' . $activationToken);
         $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
         // Check if email_verified_at is no longer null
-        $user = Models\User::firstWhere('email', $verifiedUser->email);
+        $user = Models\User::firstWhere('email', $unactivatedUser->email);
         $I->assertNotNull($user->email_verified_at);
         // And activation_token should be null
         $I->assertNull($user->activation_token);
+    }
+
+    /**
+    * Endpoint: POST /api/auth/register/resend_activation_email
+    **/
+    public function resendActivationEmail(ApiTester $I)
+    {
+        // Prepare data
+        $unactivatedUser = factory(Models\User::class)->create([
+            'activation_token' => $this->quickRandom(60)
+        ]);
+        $activatedUser = factory(Models\User::class)->create([
+            'email_verified_at' => now()
+        ]);
+
+        /* Case: Empty email should return validation error */
+        $I->sendPOST('/api/auth/password/token/create', [
+            'email' => ''
+        ]);
+        $I->seeValidationError();
+
+        /* Case: Email not valid should return validation error */
+        $I->sendPOST('/api/auth/password/token/create', [
+            'email' => 'invalid_email'
+        ]);
+        $I->seeValidationError();
+
+        /* Case: Non-existing email should return a success response (but actually no mail was sent)*/
+        $nonExistentEmail = 'non_existing_email@example.com';
+        $I->sendPOST('/api/auth/register/resend_activation_email', [
+            'email' => $nonExistentEmail
+        ]);
+        $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
+
+        /* Case: Activated user's email should return a success response (but actually no mail was sent)*/
+        $I->sendPOST('/api/auth/register/resend_activation_email', [
+            'email' => $activatedUser->email
+        ]);
+        $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
+        // Activation token shouldn't be updated/filled in the DB
+        $activatedUserFromDB = Models\User::firstWhere('email', $activatedUser->email);
+        $I->assertNotNull($activatedUserFromDB);
+        $I->assertNull($activatedUserFromDB->activation_token);
+
+        /* Case: Unactivated user's email return a success response */
+        $I->sendPOST('/api/auth/register/resend_activation_email', [
+            'email' => $unactivatedUser->email
+        ]);
+        $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
+        // Check if data has been updated in DB
+        $unactivatedUserFromDB = Models\User::firstWhere('email', $unactivatedUser->email);
+        $I->assertNotNull($unactivatedUserFromDB);
+        $I->assertNotEmpty($unactivatedUserFromDB->activation_token);
+        // Activation token should be updated, so different from the old one
+        $I->assertNotEquals($unactivatedUserFromDB->activation_token, $unactivatedUser->activation_token);
     }
 
     /**

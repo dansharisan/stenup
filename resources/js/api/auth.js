@@ -49,6 +49,17 @@ export default {
     },
 
     /*
+    POST /api/auth/register/resend_activation_email
+    Resend activation email
+    */
+    resendActivationEmail: function(email) {
+        return axios.post(APP_CONFIG.API_URL + '/auth/register/resend_activation_email',
+        {
+            email: email
+        });
+    },
+
+    /*
     PATCH /api/auth/password/reset
     Reset password
     */

@@ -19,6 +19,7 @@ class AuthController extends Controller
 {
     const PASSWORD_RESET_TOKEN_TIME_VALIDITY_IN_MINUTE = 60;
     use Traits\ResponseTrait, Traits\UtilTrait;
+
     /**
     * @OA\Post(
     *         path="/api/auth/register",
@@ -102,6 +103,78 @@ class AuthController extends Controller
         $user->notify(new Notifications\RegisterActivateNotification($user));
 
         return response()->json(['user' => $user], Response::HTTP_OK);
+    }
+
+    /**
+    * @OA\Post(
+    *         path="/api/auth/register/resend_activation_email",
+    *         tags={"Auth"},
+    *         summary="Resend activation email",
+    *         description="Resend activation email",
+    *         operationId="resend-activation-email",
+    *         @OA\Response(
+    *             response=204,
+    *             description="Successful operation with no content in return"
+    *         ),
+    *         @OA\Response(
+    *             response=422,
+    *             description="Validation error"
+    *         ),
+    *         @OA\Response(
+    *             response=500,
+    *             description="Server error"
+    *         ),
+    *         @OA\RequestBody(
+    *             required=true,
+    *             @OA\MediaType(
+    *                 mediaType="application/x-www-form-urlencoded",
+    *                 @OA\Schema(
+    *                     type="object",
+    *                     @OA\Property(
+    *                         property="email",
+    *                         description="Email",
+    *                         type="string",
+    *                     )
+    *                 )
+    *             )
+    *         )
+    * )
+    */
+    public function resendActivationEmail(Request $request)
+    {
+        // Validate input data
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(
+            [
+                'error' =>
+                        [
+                            'code' => Enums\ErrorEnum::GENR0002,
+                            'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::GENR0002)
+                        ],
+                'validation' => $validator->errors()
+            ],
+            Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        // Find user with that email
+        $user = Models\User::firstWhere('email', $request->email);
+
+        // Pretend we've sent email (for security concern)
+        if (!$user || !$user->activation_token) {
+            return response()->json(null, Response::HTTP_NO_CONTENT);
+        }
+
+        // Generate new token
+        $user->activation_token = $this->quickRandom(60);
+        $user->save();
+
+        // Send email with activation link
+        $user->notify(new Notifications\RegisterActivateNotification($user));
+
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -274,8 +347,8 @@ class AuthController extends Controller
     *             )
     *         ),
     *         @OA\Response(
-    *             response=200,
-    *             description="Successful operation"
+    *             response=204,
+    *             description="Successful operation with no content in return"
     *         ),
     *         @OA\Response(
     *             response=400,
@@ -367,7 +440,7 @@ class AuthController extends Controller
             Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $user = Models\User::where('email', $request->email)->first();
+        $user = Models\User::firstWhere('email', $request->email);
         // If the email is not existing, pretends it's a successful request, but do nothing (for security concern)
         if (!$user) {
             return response()->json(null, Response::HTTP_NO_CONTENT);
@@ -404,8 +477,8 @@ class AuthController extends Controller
     *             )
     *         ),
     *         @OA\Response(
-    *             response=200,
-    *             description="Successful operation"
+    *             response=204,
+    *             description="Successful operation with no content in return"
     *         ),
     *         @OA\Response(
     *             response=400,

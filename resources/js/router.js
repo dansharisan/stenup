@@ -14,7 +14,8 @@ import Register from './views/_shared/pages/Register'
 import ForgotPassword from './views/_shared/pages/ForgotPassword'
 import ResetPassword from './views/_shared/pages/ResetPassword'
 import UserInfo from './views/_shared/pages/UserInfo'
-import ActivateAccount from './views/_shared/pages/ActivateAccount'
+import AccountActivation from './views/_shared/pages/AccountActivation'
+import AccountActivationRequest from './views/_shared/pages/AccountActivationRequest'
 
 // User site
 import Index from './views/user/pages/Index'
@@ -184,9 +185,14 @@ const router = new Router({
             component: ResetPassword
         },
         {
+            path     : '/activate-account',
+            name     : COMPONENT_NAME.REQUEST_ACTIVATE_ACCOUNT,
+            component: AccountActivationRequest
+        },
+        {
             path     : '/activate-account/:token',
             name     : COMPONENT_NAME.ACTIVATE_ACCOUNT,
-            component: ActivateAccount
+            component: AccountActivation
         },
         {
             path     : '/userinfo',

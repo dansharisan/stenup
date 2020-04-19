@@ -14,6 +14,7 @@ use App\Models as Models;
 class UserController extends Controller
 {
     use Traits\ResponseTrait;
+    
     /**
     * @OA\Get(
     *         path="/api/users",

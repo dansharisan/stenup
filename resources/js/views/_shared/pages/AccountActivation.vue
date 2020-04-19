@@ -16,11 +16,12 @@
                                 <b-row>
                                     <b-col cols="6" class="text-left">
                                         <b-button variant="link" class="px-0" @click="$router.push({ name: 'Login' })">
-                                            Go to Login
+                                            Login
                                         </b-button>
-                                        <button type="button" class="btn px-0 btn-link" @click="goToHome()">
-                                            Back to Home
-                                        </button>
+                                        <br />
+                                        <b-button variant="link" class="px-0" @click="$router.push({ name: 'Home' })">
+                                            Home
+                                        </b-button>
                                     </b-col>
                                 </b-row>
                             </b-card-body>
@@ -36,7 +37,7 @@
 import AuthAPI from '../../../api/auth.js'
 
 export default {
-    name: 'ActivateAccount',
+    name: 'AccountActivation',
     data () {
         return {
             notification: {
@@ -55,7 +56,8 @@ export default {
         // Get token param from URL
         this.params.token = this.$route.params.token
         if (!this.params.token) {
-            message = 'Token not found'
+            this.notification.type = 'danger'
+            this.notification.message = 'Token not found'
             return false
         }
 
@@ -63,10 +65,6 @@ export default {
         this.activateAccount(this.params.token);
     },
     methods: {
-        goToHome () {
-            this.$router.push({ name: 'Home' })
-        },
-
         activateAccount (token) {
             var vm = this;
             this.activateAccountRequest.status = 1

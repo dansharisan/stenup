@@ -22,7 +22,8 @@ export const COMPONENT_NAME = {
     REGISTER: "Register",
     FORGOT_PASSWORD: "ForgotPassword",
     RESET_PASSWORD: "ResetPassword",
-    ACTIVATE_ACCOUNT: "ActivateAccount",
+    ACTIVATE_ACCOUNT: "AccountActivation",
+    REQUEST_ACTIVATE_ACCOUNT: "AccountActivationRequest",
     USER_INFO: "UserInfo"
 }
 

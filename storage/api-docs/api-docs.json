@@ -58,6 +58,43 @@
                 }
             }
         },
+        "/api/auth/register/resend_activation_email": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Resend activation email",
+                "description": "Resend activation email",
+                "operationId": "resend-activation-email",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "description": "Email",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Successful operation with no content in return"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
         "/api/auth/login": {
             "post": {
                 "tags": [
@@ -159,8 +196,8 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "Successful operation"
+                    "204": {
+                        "description": "Successful operation with no content in return"
                     },
                     "400": {
                         "description": "Invalid input data"
@@ -231,8 +268,8 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "Successful operation"
+                    "204": {
+                        "description": "Successful operation with no content in return"
                     },
                     "400": {
                         "description": "Invalid input data"

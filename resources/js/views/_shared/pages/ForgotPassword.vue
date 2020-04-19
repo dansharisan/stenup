@@ -25,11 +25,12 @@
                                 <b-row>
                                     <b-col cols="6" class="text-left">
                                         <b-button variant="link" class="px-0" @click="$router.push({ name: 'Login' })">
-                                            Go to Login
+                                            Login
                                         </b-button>
-                                        <button type="button" class="btn px-0 btn-link" @click="goToHome()">
-                                            Back to Home
-                                        </button>
+                                        <br />
+                                        <b-button variant="link" class="px-0" @click="$router.push({ name: 'Home' })">
+                                            Home
+                                        </b-button>
                                     </b-col>
                                     <b-col cols="6" class="text-right" v-if="request.status != 2">
                                         <b-button variant="success" class="px-4" @click="submit">
@@ -67,13 +68,9 @@ export default {
         }
     },
     methods: {
-        goToHome () {
-            this.$router.push({ name: 'Home' })
-        },
         submit () {
             this.requestPasswordReset(this.form.email)
         },
-
         requestPasswordReset (email) {
             var vm = this;
             // Mark request status as loading
@@ -82,7 +79,7 @@ export default {
             AuthAPI.createPasswordResetToken(email)
             .then(response => {
                 vm.notification.type = 'info'
-                vm.notification.message = "An email has been sent to <strong>" + vm.form.email + "</strong> if it was used to register on our website. Please check that email for further instructions about resetting password."
+                vm.notification.message = "An email will be sent to <strong>" + vm.form.email + "</strong> if it was previously used to register on our website. Please check that email for further instructions about resetting password."
                 // Mark request status as loaded succesully
                 vm.request.status = 2
                 // Show success message

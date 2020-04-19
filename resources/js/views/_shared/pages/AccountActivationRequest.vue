@@ -6,12 +6,14 @@
                     <loading :active="request.status == 1"></loading>
                     <b-card-group>
                         <b-card no-body class="mb-0">
-                            <b-card-header><h2 class="m-0">Login</h2></b-card-header>
+                            <b-card-header><h2 class="m-0">Activate account</h2></b-card-header>
                             <b-card-body>
                                 <p class="text-muted">
-                                    Sign In to your account
+                                    Request to activate account
                                 </p>
-                                <b-input-group class="mb-3">
+                                <b-alert :variant="notification.type" :show="notification.message != null" v-html="notification.message">
+                                </b-alert>
+                                <b-input-group class="mb-3" v-if="request.status != 2">
                                     <b-input-group-prepend is-text class="item-header-text">
                                         <i class="fas fa-at"></i>
                                     </b-input-group-prepend>
@@ -20,36 +22,19 @@
                                         {{ validation.email[0] }}
                                     </div>
                                 </b-input-group>
-                                <b-input-group class="mb-3">
-                                    <b-input-group-prepend is-text class="item-header-text">
-                                        <i class="fas fa-key"></i>
-                                    </b-input-group-prepend>
-                                    <b-input v-model="form.password" type="password" :class="{'border-danger' : (validation && validation.password)}" placeholder="Password" v-on:keyup.enter="submit"/>
-                                    <div class="invalid-feedback d-block" v-if="validation && validation.password">
-                                        {{ validation.password[0] }}
-                                    </div>
-                                </b-input-group>
                                 <b-row>
                                     <b-col cols="6" class="text-left">
-                                        <b-button variant="link" class="px-0" @click="$router.push({ name: 'Register' })">
-                                            Register
-                                        </b-button>
-                                        <br />
-                                        <b-button variant="link" class="px-0" @click="$router.push({ name: 'ForgotPassword' })">
-                                            Forgot password
-                                        </b-button>
-                                        <br />
-                                        <b-button variant="link" class="px-0" @click="$router.push({ name: 'AccountActivationRequest' })">
-                                            Activate account
+                                        <b-button variant="link" class="px-0" @click="$router.push({ name: 'Login' })">
+                                            Login
                                         </b-button>
                                         <br />
                                         <b-button variant="link" class="px-0" @click="$router.push({ name: 'Home' })">
                                             Home
                                         </b-button>
                                     </b-col>
-                                    <b-col cols="6" class="text-right">
-                                        <b-button variant="primary" class="px-4" @click="submit">
-                                            Login
+                                    <b-col cols="6" class="text-right" v-if="request.status != 2">
+                                        <b-button variant="success" class="px-4" @click="submit">
+                                            Request
                                         </b-button>
                                     </b-col>
                                 </b-row>
@@ -63,13 +48,18 @@
 </template>
 
 <script>
+import AuthAPI from '../../../api/auth.js'
+
 export default {
-    name: 'Login',
+    name: 'AccountActivationRequest',
     data () {
         return {
             form: {
                 email: '',
-                password: '',
+            },
+            notification: {
+                type: 'danger',
+                message: null
             },
             validation: null,
             request: {
@@ -79,24 +69,21 @@ export default {
     },
     methods: {
         submit () {
-            this.login(this.form.email, this.form.password)
+            this.requestAccountActivation(this.form.email)
         },
-        login (email, password) {
+        requestAccountActivation (email) {
             var vm = this;
             // Mark request status as loading
-            vm.request.status = 1
-            // Do the login
-            var credential = {}
-            credential.email = email
-            credential.password = password
-            vm.$store.dispatch('auth/login', credential)
-            .then(res => {
+            this.request.status = 1
+            // Get the access token
+            AuthAPI.resendActivationEmail(email)
+            .then(response => {
+                vm.notification.type = 'info'
+                vm.notification.message = "An email will be sent to <strong>" + vm.form.email + "</strong> if it was previously used to register and not yet activated. Please check that email for further instructions about activating your account."
                 // Mark request status as loaded succesully
                 vm.request.status = 2
                 // Show success message
-                vm.$snotify.success("Login successfully")
-                // Move to UserInfo page
-                vm.$router.push({ name: 'UserInfo' })
+                vm.$snotify.success("Request account activation successfully")
             })
             .catch(error => {
                 // Mark request status as failed to load
