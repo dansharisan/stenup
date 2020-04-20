@@ -22,6 +22,16 @@ mix.webpackConfig({
             '@'         : path.resolve(__dirname, 'resources/js/'),
             'static'    : path.resolve(__dirname, 'resources/static/')
         },
+    },
+    output: { 
+        chunkFilename: 'js/chunks/[name].[chunkhash].js',
+        publicPath: '/',
+    },
+    optimization: {
+        namedModules: true,
+        // splitChunks: {
+        //     chunks: 'all'
+        // }
     }
 })
 

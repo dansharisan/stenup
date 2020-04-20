@@ -1,30 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-
-// Containers
-import AdminContainer from './views/admin/Container'
-import UserContainer from './views/user/Container'
-
-// Views - Pages
-import Page403 from './views/_shared/pages/Page403'
-import Page404 from './views/_shared/pages/Page404'
-import Page500 from './views/_shared/pages/Page500'
-import Login from './views/_shared/pages/Login'
-import Registration from './views/_shared/pages/Registration'
-import PasswordResetRequest from './views/_shared/pages/PasswordResetRequest'
-import PasswordReset from './views/_shared/pages/PasswordReset'
-import UserInfo from './views/_shared/pages/UserInfo'
-import AccountActivation from './views/_shared/pages/AccountActivation'
-import AccountActivationRequest from './views/_shared/pages/AccountActivationRequest'
-
-// User site
-import Index from './views/user/pages/Index'
-
-// Admin Tools
-import Dashboard from './views/admin/pages/Dashboard'
-import Users from './views/admin/pages/Users'
-import RolesPermissions from './views/admin/pages/RolesPermissions'
-
 import store from './store/index.js';
 import AuthPlugin from './plugins/auth.js'
 import { COMPONENT_NAME, PERMISSION_NAME } from './const.js';
@@ -108,12 +83,12 @@ const router = new Router({
             path     : '/',
             redirect : '/index',
             name     : COMPONENT_NAME.HOME,
-            component: UserContainer,
+            component: () => import('./views/user/Container'),
             children : [
                 {
                     path     : 'index',
                     name     : COMPONENT_NAME.INDEX,
-                    component: Index,
+                    component: () => import('./views/user/pages/Index'),
                 },
             ],
         },
@@ -122,25 +97,25 @@ const router = new Router({
             path     : '/admin',
             redirect : '/admin/dashboard',
             name     : 'Panel',
-            component: AdminContainer,
+            component: () => import('./views/admin/Container'),
             beforeEnter: requireAuth,
             children : [
                 {
                     path     : 'dashboard',
                     name     : COMPONENT_NAME.DASHBOARD,
-                    component: Dashboard,
+                    component: () => import('./views/admin/pages/Dashboard'),
                     beforeEnter: requireAccessPermission
                 },
                 {
                     path     : 'users',
                     name     : COMPONENT_NAME.USERS,
-                    component: Users,
+                    component: () => import('./views/admin/pages/Users'),
                     beforeEnter: requireAccessPermission
                 },
                 {
                     path     : 'roles-permissions',
                     name     : COMPONENT_NAME.ROLES_PERMISSIONS,
-                    component: RolesPermissions,
+                    component: () => import('./views/admin/pages/RolesPermissions'),
                     beforeEnter: requireAccessPermission
                 },
             ],
@@ -149,61 +124,61 @@ const router = new Router({
         {
             path     : '/404',
             name     : COMPONENT_NAME.PAGE_404,
-            component: Page404,
+            component: () => import('./views/_shared/pages/Page404'),
         },
         {
             path     : '/403',
             name     : COMPONENT_NAME.PAGE_403,
-            component: Page403,
+            component: () => import('./views/_shared/pages/Page403'),
         },
         {
             path     : '/500',
             name     : COMPONENT_NAME.PAGE_500,
-            component: Page500,
+            component: () => import('./views/_shared/pages/Page500'),
         },
         {
             path     : '/login',
             name     : COMPONENT_NAME.LOGIN,
-            component: Login,
+            component: () => import('./views/_shared/pages/Login'),
             beforeEnter: requireNonAuth
         },
         {
             path     : '/register',
             name     : COMPONENT_NAME.REGISTRATION,
-            component: Registration,
+            component: () => import('./views/_shared/pages/Registration'),
             beforeEnter: requireNonAuth
         },
         {
             path     : '/forgot-password',
             name     : COMPONENT_NAME.PASSWORD_RESET_REQUEST,
-            component: PasswordResetRequest,
+            component: () => import('./views/_shared/pages/PasswordResetRequest'),
             beforeEnter: requireNonAuth
         },
         {
             path     : '/reset-password/:token',
             name     : COMPONENT_NAME.PASSWORD_RESET,
-            component: PasswordReset
+            component: () => import('./views/_shared/pages/PasswordReset')
         },
         {
             path     : '/activate-account',
             name     : COMPONENT_NAME.ACCOUNT_ACTIVATION_REQUEST,
-            component: AccountActivationRequest
+            component: () => import('./views/_shared/pages/AccountActivationRequest'),
         },
         {
             path     : '/activate-account/:token',
             name     : COMPONENT_NAME.ACCOUNT_ACTIVATION,
-            component: AccountActivation
+            component: () => import('./views/_shared/pages/AccountActivation'),
         },
         {
             path     : '/userinfo',
             name     : COMPONENT_NAME.USER_INFO,
-            component: UserInfo,
+            component: () => import('./views/_shared/pages/UserInfo'),
             beforeEnter: requireAuth
         },
         {
             path     : '*',
             name     : COMPONENT_NAME.P404,
-            component: Page404,
+            component: () => import('./views/_shared/pages/Page404'),
         },
     ],
 })
