@@ -6,10 +6,10 @@
                     <loading :active="request.status == 1"></loading>
                     <b-card-group>
                         <b-card no-body class="mb-0">
-                            <b-card-header><h2 class="m-0">Login</h2></b-card-header>
+                            <b-card-header><h2 class="m-0">Log in</h2></b-card-header>
                             <b-card-body>
                                 <p class="text-muted">
-                                    Sign In to your account
+                                    Log in to your account
                                 </p>
                                 <b-input-group class="mb-3">
                                     <b-input-group-prepend is-text class="item-header-text">
@@ -31,11 +31,11 @@
                                 </b-input-group>
                                 <b-row>
                                     <b-col cols="6" class="text-left">
-                                        <b-button variant="link" class="px-0" @click="$router.push({ name: 'Register' })">
+                                        <b-button variant="link" class="px-0" @click="$router.push({ name: 'Registration' })">
                                             Register
                                         </b-button>
                                         <br />
-                                        <b-button variant="link" class="px-0" @click="$router.push({ name: 'ForgotPassword' })">
+                                        <b-button variant="link" class="px-0" @click="$router.push({ name: 'PasswordResetRequest' })">
                                             Forgot password
                                         </b-button>
                                         <br />
@@ -44,12 +44,12 @@
                                         </b-button>
                                         <br />
                                         <b-button variant="link" class="px-0" @click="$router.push({ name: 'Home' })">
-                                            Home
+                                            Back to Home
                                         </b-button>
                                     </b-col>
                                     <b-col cols="6" class="text-right">
                                         <b-button variant="primary" class="px-4" @click="submit">
-                                            Login
+                                            Log in
                                         </b-button>
                                     </b-col>
                                 </b-row>

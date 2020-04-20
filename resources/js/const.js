@@ -19,11 +19,11 @@ export const COMPONENT_NAME = {
     PAGE_403: "Error 403",
     PAGE_500: "Error 500",
     LOGIN: "Login",
-    REGISTER: "Register",
-    FORGOT_PASSWORD: "ForgotPassword",
-    RESET_PASSWORD: "ResetPassword",
-    ACTIVATE_ACCOUNT: "AccountActivation",
-    REQUEST_ACTIVATE_ACCOUNT: "AccountActivationRequest",
+    REGISTRATION: "Registration",
+    PASSWORD_RESET_REQUEST: "PasswordResetRequest",
+    PASSWORD_RESET: "PasswordReset",
+    ACCOUNT_ACTIVATION_REQUEST: "AccountActivationRequest",
+    ACCOUNT_ACTIVATION: "AccountActivation",
     USER_INFO: "UserInfo"
 }
 

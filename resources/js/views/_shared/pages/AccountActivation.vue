@@ -9,18 +9,18 @@
                             <b-card-header><h2 class="m-0">Activate account</h2></b-card-header>
                             <b-card-body>
                                 <p class="text-muted">
-                                    Activating your account
+                                    Activate your account
                                 </p>
                                 <div :class="'alert alert-' + notification.type" id="message" v-if="notification.message" v-html="notification.message" role="alert">
                                 </div>
                                 <b-row>
                                     <b-col cols="6" class="text-left">
                                         <b-button variant="link" class="px-0" @click="$router.push({ name: 'Login' })">
-                                            Login
+                                            Log in
                                         </b-button>
                                         <br />
                                         <b-button variant="link" class="px-0" @click="$router.push({ name: 'Home' })">
-                                            Home
+                                            Back to Home
                                         </b-button>
                                     </b-col>
                                 </b-row>

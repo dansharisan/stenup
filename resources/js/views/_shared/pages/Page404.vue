@@ -14,7 +14,7 @@
                             The page you are looking for was not found.
                         </p>
                         <b-button variant="link" class="px-0" @click="$router.push({ name: 'Home' })">
-                            Home
+                            Back to Home
                         </b-button>
                     </div>
                     <!-- <b-input-group>

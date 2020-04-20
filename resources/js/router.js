@@ -10,9 +10,9 @@ import Page403 from './views/_shared/pages/Page403'
 import Page404 from './views/_shared/pages/Page404'
 import Page500 from './views/_shared/pages/Page500'
 import Login from './views/_shared/pages/Login'
-import Register from './views/_shared/pages/Register'
-import ForgotPassword from './views/_shared/pages/ForgotPassword'
-import ResetPassword from './views/_shared/pages/ResetPassword'
+import Registration from './views/_shared/pages/Registration'
+import PasswordResetRequest from './views/_shared/pages/PasswordResetRequest'
+import PasswordReset from './views/_shared/pages/PasswordReset'
 import UserInfo from './views/_shared/pages/UserInfo'
 import AccountActivation from './views/_shared/pages/AccountActivation'
 import AccountActivationRequest from './views/_shared/pages/AccountActivationRequest'
@@ -169,29 +169,29 @@ const router = new Router({
         },
         {
             path     : '/register',
-            name     : COMPONENT_NAME.REGISTER,
-            component: Register,
+            name     : COMPONENT_NAME.REGISTRATION,
+            component: Registration,
             beforeEnter: requireNonAuth
         },
         {
             path     : '/forgot-password',
-            name     : COMPONENT_NAME.FORGOT_PASSWORD,
-            component: ForgotPassword,
+            name     : COMPONENT_NAME.PASSWORD_RESET_REQUEST,
+            component: PasswordResetRequest,
             beforeEnter: requireNonAuth
         },
         {
             path     : '/reset-password/:token',
-            name     : COMPONENT_NAME.RESET_PASSWORD,
-            component: ResetPassword
+            name     : COMPONENT_NAME.PASSWORD_RESET,
+            component: PasswordReset
         },
         {
             path     : '/activate-account',
-            name     : COMPONENT_NAME.REQUEST_ACTIVATE_ACCOUNT,
+            name     : COMPONENT_NAME.ACCOUNT_ACTIVATION_REQUEST,
             component: AccountActivationRequest
         },
         {
             path     : '/activate-account/:token',
-            name     : COMPONENT_NAME.ACTIVATE_ACCOUNT,
+            name     : COMPONENT_NAME.ACCOUNT_ACTIVATION,
             component: AccountActivation
         },
         {

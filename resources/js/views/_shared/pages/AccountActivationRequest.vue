@@ -9,7 +9,7 @@
                             <b-card-header><h2 class="m-0">Activate account</h2></b-card-header>
                             <b-card-body>
                                 <p class="text-muted">
-                                    Request to activate account
+                                    Request to activate your account
                                 </p>
                                 <b-alert :variant="notification.type" :show="notification.message != null" v-html="notification.message">
                                 </b-alert>
@@ -25,11 +25,11 @@
                                 <b-row>
                                     <b-col cols="6" class="text-left">
                                         <b-button variant="link" class="px-0" @click="$router.push({ name: 'Login' })">
-                                            Login
+                                            Log in
                                         </b-button>
                                         <br />
                                         <b-button variant="link" class="px-0" @click="$router.push({ name: 'Home' })">
-                                            Home
+                                            Back to Home
                                         </b-button>
                                     </b-col>
                                     <b-col cols="6" class="text-right" v-if="request.status != 2">

@@ -44,11 +44,11 @@
                                 </b-button>
                                 <br v-if="hasPermission(user, PERMISSION_NAME.VIEW_DASHBOARD)"/>
                                 <b-button variant="link" class="px-0" @click="$router.push({ name: 'Home' })">
-                                    Home
+                                    Back to Home
                                 </b-button>
                                 <br />
                                 <button type="button" class="btn px-0 btn-link" @click="logout()">
-                                    Logout
+                                    Log out
                                 </button>
                             </b-card-body>
                         </b-card>
