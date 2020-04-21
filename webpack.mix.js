@@ -12,8 +12,7 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
-    .sass('resources/sass/app.scss', 'public/css')
-    .sourceMaps();
+    .sass('resources/sass/app.scss', 'public/css');
 
 mix.webpackConfig({
     devServer: { disableHostCheck: true },
@@ -27,12 +26,6 @@ mix.webpackConfig({
         chunkFilename: 'js/chunks/[name].[chunkhash].js',
         publicPath: '/',
     },
-    optimization: {
-        namedModules: true,
-        // splitChunks: {
-        //     chunks: 'all'
-        // }
-    }
 })
 
 if (mix.inProduction())
