@@ -1,4 +1,4 @@
-(window["webpackJsonp"] = window["webpackJsonp"] || []).push([[7],{
+(window["webpackJsonp"] = window["webpackJsonp"] || []).push([["accountactivation"],{
 
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/views/_shared/pages/AccountActivation.vue?vue&type=script&lang=js&":
 /*!*************************************************************************************************************************************************************************************!*\

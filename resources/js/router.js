@@ -83,12 +83,12 @@ const router = new Router({
             path     : '/',
             redirect : '/index',
             name     : COMPONENT_NAME.HOME,
-            component: () => import('./views/user/Container'),
+            component: () => import(/* webpackChunkName: 'user_container' */ './views/user/Container'),
             children : [
                 {
                     path     : 'index',
                     name     : COMPONENT_NAME.INDEX,
-                    component: () => import('./views/user/pages/Index'),
+                    component: () => import(/* webpackChunkName: 'user_index' */ './views/user/pages/Index'),
                 },
             ],
         },
@@ -97,25 +97,25 @@ const router = new Router({
             path     : '/admin',
             redirect : '/admin/dashboard',
             name     : 'Panel',
-            component: () => import('./views/admin/Container'),
+            component: () => import(/* webpackChunkName: 'admin_container' */ './views/admin/Container'),
             beforeEnter: requireAuth,
             children : [
                 {
                     path     : 'dashboard',
                     name     : COMPONENT_NAME.DASHBOARD,
-                    component: () => import('./views/admin/pages/Dashboard'),
+                    component: () => import(/* webpackChunkName: 'admin_dashboard' */ './views/admin/pages/Dashboard'),
                     beforeEnter: requireAccessPermission
                 },
                 {
                     path     : 'users',
                     name     : COMPONENT_NAME.USERS,
-                    component: () => import('./views/admin/pages/Users'),
+                    component: () => import(/* webpackChunkName: 'admin_users' */ './views/admin/pages/Users'),
                     beforeEnter: requireAccessPermission
                 },
                 {
                     path     : 'roles-permissions',
                     name     : COMPONENT_NAME.ROLES_PERMISSIONS,
-                    component: () => import('./views/admin/pages/RolesPermissions'),
+                    component: () => import(/* webpackChunkName: 'admin_rolespermissions' */ './views/admin/pages/RolesPermissions'),
                     beforeEnter: requireAccessPermission
                 },
             ],
@@ -124,61 +124,61 @@ const router = new Router({
         {
             path     : '/404',
             name     : COMPONENT_NAME.PAGE_404,
-            component: () => import('./views/_shared/pages/Page404'),
+            component: () => import(/* webpackChunkName: 'page404' */ './views/_shared/pages/Page404'),
         },
         {
             path     : '/403',
             name     : COMPONENT_NAME.PAGE_403,
-            component: () => import('./views/_shared/pages/Page403'),
+            component: () => import(/* webpackChunkName: 'page403' */ './views/_shared/pages/Page403'),
         },
         {
             path     : '/500',
             name     : COMPONENT_NAME.PAGE_500,
-            component: () => import('./views/_shared/pages/Page500'),
+            component: () => import(/* webpackChunkName: 'page500' */ './views/_shared/pages/Page500'),
         },
         {
             path     : '/login',
             name     : COMPONENT_NAME.LOGIN,
-            component: () => import('./views/_shared/pages/Login'),
+            component: () => import(/* webpackChunkName: 'login' */ './views/_shared/pages/Login'),
             beforeEnter: requireNonAuth
         },
         {
             path     : '/register',
             name     : COMPONENT_NAME.REGISTRATION,
-            component: () => import('./views/_shared/pages/Registration'),
+            component: () => import(/* webpackChunkName: 'registration' */ './views/_shared/pages/Registration'),
             beforeEnter: requireNonAuth
         },
         {
             path     : '/forgot-password',
             name     : COMPONENT_NAME.PASSWORD_RESET_REQUEST,
-            component: () => import('./views/_shared/pages/PasswordResetRequest'),
+            component: () => import(/* webpackChunkName: 'passwordresetrequest' */ './views/_shared/pages/PasswordResetRequest'),
             beforeEnter: requireNonAuth
         },
         {
             path     : '/reset-password/:token',
             name     : COMPONENT_NAME.PASSWORD_RESET,
-            component: () => import('./views/_shared/pages/PasswordReset')
+            component: () => import(/* webpackChunkName: 'passwordreset' */ './views/_shared/pages/PasswordReset')
         },
         {
             path     : '/activate-account',
             name     : COMPONENT_NAME.ACCOUNT_ACTIVATION_REQUEST,
-            component: () => import('./views/_shared/pages/AccountActivationRequest'),
+            component: () => import(/* webpackChunkName: 'accountactivationrequest' */ './views/_shared/pages/AccountActivationRequest'),
         },
         {
             path     : '/activate-account/:token',
             name     : COMPONENT_NAME.ACCOUNT_ACTIVATION,
-            component: () => import('./views/_shared/pages/AccountActivation'),
+            component: () => import(/* webpackChunkName: 'accountactivation' */ './views/_shared/pages/AccountActivation'),
         },
         {
             path     : '/userinfo',
             name     : COMPONENT_NAME.USER_INFO,
-            component: () => import('./views/_shared/pages/UserInfo'),
+            component: () => import(/* webpackChunkName: 'userinfo' */ './views/_shared/pages/UserInfo'),
             beforeEnter: requireAuth
         },
         {
             path     : '*',
             name     : COMPONENT_NAME.P404,
-            component: () => import('./views/_shared/pages/Page404'),
+            component: () => import(/* webpackChunkName: 'page404' */ './views/_shared/pages/Page404'),
         },
     ],
 })
