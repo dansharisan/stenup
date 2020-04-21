@@ -345,7 +345,7 @@ class AuthCest
 
         /* Case: expired token should return expired password reset token error */
         $passwordReset = factory(Models\PasswordReset::class)->create([
-            'updated_at' => Carbon::parse(now())->addMinutes(0 - Models\PasswordReset::PASSWORD_RESET_TOKEN_TIME_VALIDITY_IN_MINUTE - 1)
+            'updated_at' => Carbon::parse(now())->addMinutes(0 - \Config::get('auth.passwords.users.expire') - 1)
         ]);
         $I->sendGET('/api/auth/password/token/find/' . $passwordReset->token);
         $I->seeExpiredPasswordResetTokenError();
@@ -463,14 +463,11 @@ class AuthCest
               'email' => $passwordReset->email
             ]
         ]);
-        // That Password Reset token should be deleted right after that process is done
-        $I->sendPATCH('/api/auth/password/reset', [
-            'email' => $passwordReset->email,
-            'password' => $newPassword,
-            'password_confirmation' => $newPassword,
-            'token' => $passwordReset->token
-        ]);
-        $I->seeInvalidTokenOrEmailError();
+        // Make sure the new password is different from the before-changed one in DB
+        $updatedUser = Models\User::firstWhere('email', $user->email);
+        $I->assertNotEquals($user->password, $updatedUser->password);
+        // The password reset token record should also be deleted
+        $I->assertNull(Models\PasswordReset::firstWhere('email', $user->email));
         // Should be able to login with the new password
         $I->sendPOST('/api/auth/login', [
             'email' => $user->email,

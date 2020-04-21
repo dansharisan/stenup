@@ -17,7 +17,6 @@ use App\Models as Models;
 
 class AuthController extends Controller
 {
-    const PASSWORD_RESET_TOKEN_TIME_VALIDITY_IN_MINUTE = 60;
     use Traits\ResponseTrait, Traits\UtilTrait;
 
     /**
@@ -505,7 +504,7 @@ class AuthController extends Controller
             );
         }
 
-        if (Carbon::parse($passwordReset->updated_at)->addMinutes(Models\PasswordReset::PASSWORD_RESET_TOKEN_TIME_VALIDITY_IN_MINUTE)->isPast()) {
+        if (Carbon::parse($passwordReset->updated_at)->addMinutes(\Config::get('auth.passwords.users.expire'))->isPast()) {
             $passwordReset->delete();
             return response()->json(
                 ['error' =>
@@ -598,10 +597,10 @@ class AuthController extends Controller
             Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $passwordReset = Models\PasswordReset::where([
+        $passwordReset = Models\PasswordReset::firstWhere([
             ['token', $request->token],
             ['email', $request->email]
-        ])->first();
+        ]);
         if (!$passwordReset) {
             return response()->json(
                 ['error' =>
@@ -613,7 +612,7 @@ class AuthController extends Controller
             );
         }
 
-        $user = Models\User::where('email', $passwordReset->email)->first();
+        $user = Models\User::firstWhere('email', $passwordReset->email);
         if (!$user) {
             return response()->json(
                 ['error' =>
