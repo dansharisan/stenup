@@ -225,6 +225,11 @@ class UserCest
             'ids' => "$memberUser1->id,$memberUser2->id"
         ]);
         $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
+         // Check data in DB
+        $deletedUser1 = Models\User::find($memberUser1->id);
+        $deletedUser2 = Models\User::find($memberUser2->id);
+        $I->assertNull($deletedUser1);
+        $I->assertNull($deletedUser2);
         // These two users should not be able to login anymore (because the account has already been deleted)
         $I->sendPOST('/api/auth/login', [
             'email' => $memberUser1->email,
