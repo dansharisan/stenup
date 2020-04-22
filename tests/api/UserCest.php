@@ -298,9 +298,11 @@ class UserCest
         $I->seeServerError();
 
         /* Case: Successfully update the user */
+        $emailVerifiedAt = '2020-01-13 14:05:49';
         $I->sendPATCH('/api/users/' . $memberUser->id, [
             'status' => Enums\UserStatusEnum::Banned,
-            'role_ids' => $roleMember->id . ',' . $roleAdministrator->id
+            'role_ids' => $roleMember->id . ',' . $roleAdministrator->id,
+            'email_verified_at' => $emailVerifiedAt
         ]);
         $I->seeResponseIsJson();
         $I->seeResponseCodeIs(Response::HTTP_OK);
@@ -320,6 +322,7 @@ class UserCest
         // Check data in DB
         $updatedUser = Models\User::find($memberUser->id);
         $I->assertEquals($updatedUser->status, Enums\UserStatusEnum::Banned);
+        $I->assertEquals($updatedUser->email_verified_at, $emailVerifiedAt);
         $I->assertTrue($updatedUser->hasRole(Enums\DefaultRoleEnum::ADMINISTRATOR));
         $I->assertTrue($updatedUser->hasRole(Enums\DefaultRoleEnum::MEMBER));
     }
