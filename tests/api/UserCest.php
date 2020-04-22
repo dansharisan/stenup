@@ -317,6 +317,11 @@ class UserCest
                           ],
                       ]
         ]);
+        // Check data in DB
+        $updatedUser = Models\User::find($memberUser->id);
+        $I->assertEquals($updatedUser->status, Enums\UserStatusEnum::Banned);
+        $I->assertTrue($updatedUser->hasRole(Enums\DefaultRoleEnum::ADMINISTRATOR));
+        $I->assertTrue($updatedUser->hasRole(Enums\DefaultRoleEnum::MEMBER));
     }
 
     /**
