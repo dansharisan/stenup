@@ -20,7 +20,7 @@ const AuthPlugin = {
                 title: 'Unauthorized',
                 html: "Something went wrong. Either you're not authorized to do this action or your authentication state has changed. We will redirect you to Home page in <b></b> seconds.",
                 timer: 3000,
-                type: 'warning',
+                icon: 'warning',
                 onBeforeOpen: () => {
                     vm.$swal.showLoading()
                     timerInterval = setInterval(() => {
@@ -38,10 +38,7 @@ const AuthPlugin = {
                 }
             })
             .then((result) => {
-                /* Read more about handling dismissals below */
-                if (result.dismiss === vm.$swal.DismissReason.timer) {
-                    window.location.replace('/');
-                }
+                window.location.replace('/');
             })
         }
     }

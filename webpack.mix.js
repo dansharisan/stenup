@@ -14,6 +14,8 @@ const mix = require('laravel-mix');
 mix.js('resources/js/app.js', 'public/js')
     .sass('resources/sass/app.scss', 'public/css');
 
+let chunkFilename = mix.inProduction() ? '[name].[chunkhash].js' : '[name].js';
+
 mix.webpackConfig({
     devServer: { disableHostCheck: true },
     resolve  : {
@@ -23,7 +25,7 @@ mix.webpackConfig({
         },
     },
     output: { 
-        chunkFilename: 'js/chunks/[name].[chunkhash].js',
+        chunkFilename: 'js/chunks/' + chunkFilename,
         publicPath: '/',
     },
 })

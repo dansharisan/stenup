@@ -110,8 +110,7 @@ export default {
             this.$swal({
                 title: 'You sure to apply this role-permission matrix?',
                 text: "This action can't be undone. However you can use administrator account to re-set permissions for all roles.",
-                type: 'warning',
-                animation: false,
+                icon: 'warning',
                 showCancelButton: true,
                 reverseButtons: true,
                 confirmButtonColor: '#4dbd74',
@@ -204,8 +203,7 @@ export default {
             this.$swal({
                 title: 'You sure to delete this role?',
                 text: "This action can't be undone. You might need to set roles for members who were associated with this role.",
-                type: 'warning',
-                animation: false,
+                icon: 'warning',
                 showCancelButton: true,
                 reverseButtons: true,
                 confirmButtonColor: '#f86c6b',
