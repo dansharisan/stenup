@@ -743,6 +743,10 @@ class AuthCest
         /* Case: Successfully delete the role*/
         $I->sendDELETE('/api/auth/roles/' . $newRole->id);
         $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
+        // Check data in DB
+        $I->dontSeeInDatabase((new SpatiePermissionModels\Role)->getTable(), [
+            'name' => $newRole->name
+        ]);
     }
 
     /**
