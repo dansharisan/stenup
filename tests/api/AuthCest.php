@@ -702,6 +702,10 @@ class AuthCest
                 ],
             ]
         );
+        // Check data in DB
+        $I->seeInDatabase((new SpatiePermissionModels\Role)->getTable(), [
+            'name' => $newRoleName
+        ]);
     }
 
     /**
