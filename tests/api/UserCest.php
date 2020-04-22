@@ -450,6 +450,12 @@ class UserCest
                           ],
                       ]
         ]);
+        // Check data in DB
+        $createdUser = Models\User::firstWhere('email', $validEmail);
+        $I->assertNotNull($createdUser);
+        $I->assertEquals($createdUser->status, Enums\UserStatusEnum::Active);
+        $createdUser->hasRole(Enums\DefaultRoleEnum::MEMBER);
+        $createdUser->hasRole(Enums\DefaultRoleEnum::ADMINISTRATOR);
     }
 
     /**
