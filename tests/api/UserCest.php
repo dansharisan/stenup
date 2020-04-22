@@ -2,6 +2,7 @@
 
 use Symfony\Component\HttpFoundation\Response as Response;
 use App\Http\Traits as Traits;
+use App\Models as Models;
 use Spatie\Permission\Models as SpatiePermissionModels;
 use App\Enums as Enums;
 
@@ -81,6 +82,9 @@ class UserCest
         /* Case: Successfully ban the user */
         $I->sendPATCH('/api/users/' . $memberUser->id . '/ban');
         $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
+        // Check data in DB
+        $updatedUser = Models\User::find($memberUser->id);
+        $I->assertEquals($updatedUser->status, Enums\UserStatusEnum::Banned);
         // This user should not be able to login anymore
         $I->sendPOST('/api/auth/login', [
             'email' => $memberUser->email,
@@ -121,6 +125,9 @@ class UserCest
         /* Case: Successfully unban the user */
         $I->sendPATCH('/api/users/' . $bannedMemberUser->id . '/unban');
         $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
+        // Check data in DB
+        $updatedUser = Models\User::find($bannedMemberUser->id);
+        $I->assertEquals($updatedUser->status, Enums\UserStatusEnum::Active);
         // This user should now be able to login
         $I->sendPOST('/api/auth/login', [
             'email' => $bannedMemberUser->email,
