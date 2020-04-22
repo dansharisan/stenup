@@ -632,7 +632,7 @@ class AuthController extends Controller
         // Send notification email
         $user->notify(new Notifications\PasswordResetSuccessNotification($passwordReset));
 
-        return response()->json(['user' => $user], Response::HTTP_OK);
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -643,8 +643,8 @@ class AuthController extends Controller
     *         description="Change an user's password (requires current password) and send notification mail",
     *         operationId="changePassword",
     *         @OA\Response(
-    *             response=200,
-    *             description="Successful operation"
+    *             response=204,
+    *             description="Successful operation with no content in return"
     *         ),
     *         @OA\Response(
     *             response=422,
@@ -735,7 +735,7 @@ class AuthController extends Controller
         // Send notification email
         $user->notify(new Notifications\PasswordChangeSuccessNotification());
 
-        return response()->json(['user' => $user], Response::HTTP_OK);
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 
     /**

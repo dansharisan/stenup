@@ -456,13 +456,7 @@ class AuthCest
             'password_confirmation' => $newPassword,
             'token' => $passwordReset->token
         ]);
-        $I->seeResponseIsJson();
-        $I->seeResponseCodeIs(Response::HTTP_OK);
-        $I->seeResponseContainsJson([
-            'user' => [
-              'email' => $passwordReset->email
-            ]
-        ]);
+        $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
         // Make sure the new password is different from the before-changed one in DB
         $updatedUser = Models\User::firstWhere('email', $user->email);
         $I->assertNotEquals($user->password, $updatedUser->password);
@@ -544,13 +538,10 @@ class AuthCest
             'new_password' => $newPassword,
             'new_password_confirmation' => $newPassword
         ]);
-        $I->seeResponseIsJson();
-        $I->seeResponseCodeIs(Response::HTTP_OK);
-        $I->seeResponseContainsJson([
-            'user' => [
-              'email' => $user->email
-            ]
-        ]);
+        $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
+        // The new password should be different from the before-changed one in DB
+        $updatedUser = Models\User::firstWhere('email', $user->email);
+        $I->assertNotEquals($user->password, $updatedUser->password);
         // Should be able to login with the new password
         $I->sendPOST('/api/auth/login', [
             'email' => $user->email,
