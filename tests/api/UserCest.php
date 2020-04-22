@@ -168,6 +168,9 @@ class UserCest
         /* Case: Successfully delete the user */
         $I->sendDELETE('/api/users/' . $memberUser->id);
         $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
+        // Check data in DB
+        $deletedUser = Models\User::find($memberUser->id);
+        $I->assertNull($deletedUser);
         // This user should not be able to login anymore (because the account has already been deleted)
         $I->sendPOST('/api/auth/login', [
             'email' => $memberUser->email,
