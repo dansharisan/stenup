@@ -605,6 +605,9 @@
                     "200": {
                         "description": "Successful operation"
                     },
+                    "400": {
+                        "description": "Bad request"
+                    },
                     "422": {
                         "description": "Invalid input or email taken"
                     },
@@ -745,6 +748,9 @@
                 "responses": {
                     "200": {
                         "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
                     },
                     "422": {
                         "description": "Invalid input"
