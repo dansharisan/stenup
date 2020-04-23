@@ -207,18 +207,18 @@ class UserCest
 
         // When that user is set to have DELETE_USERS permission, he could get access to this API //
         $memberUser1->roles[0]->givePermissionTo(Enums\PermissionEnum::DELETE_USERS);
-        /* Case: Empty IDs should return invalid user id string sequence error */
+        /* Case: Empty IDs should return validation error */
         $I->sendPOST('/api/users/collection:batchDelete', [
             'ids' => ""
         ]);
-        $I->seeInvalidUserIDStringSequenceError();
+        $I->seeValidationError();
 
-        /* Case: Invalid IDs string sequence should return invalid user id string sequence error */
+        /* Case: Invalid IDs string sequence should return validation error */
         $invalidStringSequence = '[,8';
         $I->sendPOST('/api/users/collection:batchDelete', [
             'ids' => $invalidStringSequence
         ]);
-        $I->seeInvalidUserIDStringSequenceError();
+        $I->seeValidationError();
 
         /* Case: Successfully delete selected users */
         $I->sendPOST('/api/users/collection:batchDelete', [
@@ -279,7 +279,7 @@ class UserCest
             'status' => Enums\UserStatusEnum::Banned,
             'role_ids' => ''
         ]);
-        $I->seeInvalidOrNoRoleSelectedError();
+        $I->seeValidationError();
 
         /* Case: Invalid role IDs string sequence should return invalid or no role selected error */
         $invalidStringSequence = '[,8';
@@ -287,7 +287,7 @@ class UserCest
             'status' => Enums\UserStatusEnum::Banned,
             'role_ids' => $invalidStringSequence
         ]);
-        $I->seeInvalidOrNoRoleSelectedError();
+        $I->seeValidationError();
 
         /* Case: Non-existent role should return invalid or no role selected error */
         $nonExistentRoleIdArr = '9999,0';
@@ -295,7 +295,7 @@ class UserCest
             'status' => Enums\UserStatusEnum::Banned,
             'role_ids' => $nonExistentRoleIdArr
         ]);
-        $I->seeServerError();
+        $I->seeInvalidRolesError();
 
         /* Case: Successfully update the user */
         $emailVerifiedAt = '2020-01-13 14:05:49';
@@ -416,7 +416,7 @@ class UserCest
             'status' => Enums\UserStatusEnum::Active,
             'role_ids' => $invalidStringSequence
         ]);
-        $I->seeInvalidOrNoRoleSelectedError();
+        $I->seeValidationError();
 
         /* Case: Non-existent role should return invalid or no role selected error */
         $nonExistentRoleIdArr = '9999,0';
@@ -426,7 +426,7 @@ class UserCest
             'status' => Enums\UserStatusEnum::Active,
             'role_ids' => $nonExistentRoleIdArr
         ]);
-        $I->seeServerError();
+        $I->seeInvalidRolesError();
 
         /* Case: Successfully add the user */
         $I->sendPOST('/api/users', [

@@ -10,6 +10,7 @@ use App\Http\Traits as Traits;
 use Spatie\Permission\Models as SpatiePermissionModels;
 use App\Enums as Enums;
 use App\Models as Models;
+use App\Rules as Rules;
 
 class UserController extends Controller
 {
@@ -284,15 +285,22 @@ class UserController extends Controller
         // Check for data validity
         $ids = $request->input('ids');
         $idArr = explode(',', $ids);
-        if (empty($ids) || !is_array($idArr) || count($idArr) == 0 || $idArr != array_filter($idArr, 'is_numeric')) {
+
+        // Validate input data
+        $validator = Validator::make(['ids' => $idArr], [
+            'ids' => ['required', new Rules\IntArray]
+        ]);
+        if ($validator->fails()) {
             return response()->json(
-                ['error' =>
-                            [
-                                'code' => Enums\ErrorEnum::USER0002,
-                                'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::USER0002)
-                            ]
-                ], Response::HTTP_BAD_REQUEST
-            );
+            [
+                'error' =>
+                        [
+                            'code' => Enums\ErrorEnum::GENR0002,
+                            'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::GENR0002)
+                        ],
+                'validation' => $validator->errors()
+            ],
+            Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         // Delete selected users
@@ -311,6 +319,14 @@ class UserController extends Controller
     *         @OA\Response(
     *             response=200,
     *             description="Successful operation"
+    *         ),
+    *         @OA\Response(
+    *             response=400,
+    *             description="Bad request"
+    *         ),
+    *         @OA\Response(
+    *             response=422,
+    *             description="Invalid input"
     *         ),
     *         @OA\Response(
     *             response=500,
@@ -361,16 +377,21 @@ class UserController extends Controller
 
         $roleIds = $request->input('role_ids');
         $roleIdArr = explode(',', $roleIds);
-        // Check for data validity
-        if (empty($roleIds) || !is_array($roleIdArr) || count($roleIdArr) == 0 || $roleIdArr != array_filter($roleIdArr, 'is_numeric')) {
+        // Validate input data
+        $validator = Validator::make(['role_ids' => $roleIdArr], [
+            'role_ids' => ['required', new Rules\IntArray]
+        ]);
+        if ($validator->fails()) {
             return response()->json(
-                ['error' =>
-                            [
-                                'code' => Enums\ErrorEnum::USER0003,
-                                'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::USER0003)
-                            ]
-                ], Response::HTTP_BAD_REQUEST
-            );
+            [
+                'error' =>
+                        [
+                            'code' => Enums\ErrorEnum::GENR0002,
+                            'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::GENR0002)
+                        ],
+                'validation' => $validator->errors()
+            ],
+            Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         try {
@@ -402,6 +423,19 @@ class UserController extends Controller
             if ($roleIdArr && is_array($roleIdArr) && !empty($roleIdArr[0]) && count($roleIdArr) > 0) {
                 foreach ($roleIdArr as $roleId) {
                     $role = SpatiePermissionModels\Role::find($roleId);
+                    // Immediately roll back if any role is invalid
+                    if (!$role) {
+                        DB::rollBack();
+
+                        return response()->json(
+                            ['error' =>
+                                        [
+                                            'code' => Enums\ErrorEnum::AUTH0014,
+                                            'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::AUTH0014)
+                                        ]
+                            ], Response::HTTP_BAD_REQUEST
+                        );
+                    }
                     $user->assignRole($role->name);
                 }
             }
@@ -414,7 +448,7 @@ class UserController extends Controller
                 ['error' =>
                             [
                                 'code' => Enums\ErrorEnum::GENR0001,
-                                'message' => $e->getMessage()
+                                'message' => $e->getMessage(),
                             ]
                 ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
@@ -433,6 +467,10 @@ class UserController extends Controller
     *         @OA\Response(
     *             response=200,
     *             description="Successful operation"
+    *         ),
+    *         @OA\Response(
+    *             response=400,
+    *             description="Bad request"
     *         ),
     *         @OA\Response(
     *             response=422,
@@ -486,15 +524,16 @@ class UserController extends Controller
 
             return $this->returnUnauthorizedResponse();
         }
-
+        
+        $input = $request->all();
         $roleIds = $request->input('role_ids');
         $roleIdArr = explode(',', $roleIds);
-
+        $input['role_ids'] = $roleIdArr;
         // Validate input data
-        $validator = Validator::make($request->all(), [
+        $validator = Validator::make($input, [
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string',
-            'role_ids' => 'required',
+            'role_ids' => ['required', new Rules\IntArray]
         ]);
         if ($validator->fails()) {
             return response()->json(
@@ -507,18 +546,6 @@ class UserController extends Controller
                 'validation' => $validator->errors()
             ],
             Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        // Check for role Id array validity
-        if (!is_array($roleIdArr) || count($roleIdArr) == 0 || $roleIdArr != array_filter($roleIdArr, 'is_numeric')) {
-            return response()->json(
-                ['error' =>
-                            [
-                                'code' => Enums\ErrorEnum::USER0003,
-                                'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::USER0003)
-                            ]
-                ], Response::HTTP_BAD_REQUEST
-            );
         }
 
         // Create user
@@ -541,6 +568,19 @@ class UserController extends Controller
             if ($roleIdArr && is_array($roleIdArr) && !empty($roleIdArr[0]) && count($roleIdArr) > 0) {
                 foreach ($roleIdArr as $roleId) {
                     $role = SpatiePermissionModels\Role::find($roleId);
+                     // Immediately roll back if any role is invalid
+                     if (!$role) {
+                        DB::rollBack();
+
+                        return response()->json(
+                            ['error' =>
+                                        [
+                                            'code' => Enums\ErrorEnum::AUTH0014,
+                                            'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::AUTH0014)
+                                        ]
+                            ], Response::HTTP_BAD_REQUEST
+                        );
+                    }
                     $user->assignRole($role->name);
                 }
             }

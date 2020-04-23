@@ -370,8 +370,8 @@
                     }
                 },
                 "responses": {
-                    "200": {
-                        "description": "Successful operation"
+                    "204": {
+                        "description": "Successful operation with no content in return"
                     },
                     "422": {
                         "description": "Validation error"
@@ -745,6 +745,9 @@
                 "responses": {
                     "200": {
                         "description": "Successful operation"
+                    },
+                    "422": {
+                        "description": "Invalid input"
                     },
                     "500": {
                         "description": "Server error"

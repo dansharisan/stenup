@@ -733,12 +733,12 @@ class AuthCest
         $memberUser->roles[0]->givePermissionTo(Enums\PermissionEnum::DELETE_ROLES);
         /* Case: If 0 is provided, it should return invalid role id error */
         $I->sendDELETE('/api/auth/roles/' . '0');
-        $I->seeInvalidRoleIDError();
+        $I->seeInvalidRoleError();
 
         /* Case: If non-existent ID is provided, it should return invalid role id error */
         $nonExistentRoleId = 999;
         $I->sendDELETE('/api/auth/roles/' . $nonExistentRoleId);
-        $I->seeInvalidRoleIDError();
+        $I->seeInvalidRoleError();
 
         /* Case: Successfully delete the role*/
         $I->sendDELETE('/api/auth/roles/' . $newRole->id);
