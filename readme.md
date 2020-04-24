@@ -19,7 +19,7 @@ Boilerplate for API-based web app project, with basic admin panel and api docume
 - jquery: manipulate DOM easily
 - vue-snotify: Show toast notifications
 - vue-loading-overlay: Show loading icon on full page or its container
-- simple-line-icons: Some icons for the admin panel
+- simple-line-icons: Some icons for the admin panel (https://simplelineicons.github.io/)
 - vue-chartjs: Build charts for dashboard
 - vue-sweetalert2: Alert box for vue
 And of course unmissable common packages like vuex, vue-router...

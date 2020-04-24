@@ -4,9 +4,8 @@
         <sidebar-form />
         <nav class="sidebar-nav">
             <div slot="header" />
-            <ul class="nav">
-                <template v-for="(item, index) in navItems">
-                    <template v-if="hasPermission(user, item.permission)">
+                <ul class="nav">
+                    <template v-for="(item, index) in navItems">
                         <template v-if="item.title">
                             <sidebar-nav-title
                             :key="index"
@@ -32,7 +31,8 @@
                             />
                         </template>
                         <template v-else>
-                            <template v-if="item.children">
+                            <!-- Only show this if has any permission of child-nav down below -->
+                            <template v-if="item.children && hasAnySubNavPermission(item.children)">
                                 <!-- First level dropdown -->
                                 <sidebar-nav-dropdown
                                 :key="index"
@@ -40,70 +40,72 @@
                                 :url="item.url"
                                 :icon="item.icon"
                                 >
-                                <template v-for="(childL1, index1) in item.children">
-                                    <template v-if="childL1.children">
-                                        <!-- Second level dropdown -->
-                                        <sidebar-nav-dropdown
-                                        :key="index1"
-                                        :name="childL1.name"
-                                        :url="childL1.url"
-                                        :icon="childL1.icon"
-                                        >
-                                        <li
-                                        v-for="(childL2, index2) in childL1.children"
-                                        :key="index2"
-                                        class="nav-item"
-                                        >
-                                        <sidebar-nav-link
-                                        :name="childL2.name"
-                                        :url="childL2.url"
-                                        :icon="childL2.icon"
-                                        :badge="childL2.badge"
-                                        :variant="item.variant"
-                                        />
-                                    </li>
+                                    <template v-for="(childL1, index1) in item.children">
+                                        <!-- Only show this if has any permission of child-nav down below -->
+                                        <template v-if="childL1.children && hasAnySubNavPermission(childL1.children)">
+                                            <!-- Second level dropdown -->
+                                            <sidebar-nav-dropdown
+                                            :key="index1"
+                                            :name="childL1.name"
+                                            :url="childL1.url"
+                                            :icon="childL1.icon"
+                                            >
+                                                <template v-for="(childL2, index2) in childL1.children">
+                                                    <li
+                                                    :key="index2"
+                                                    class="nav-item"
+                                                    v-if="!childL2.permission || (childL2.permission && hasPermission(user, childL2.permission))"
+                                                    >
+                                                        <sidebar-nav-link
+                                                        :name="childL2.name"
+                                                        :url="childL2.url"
+                                                        :icon="childL2.icon"
+                                                        :badge="childL2.badge"
+                                                        :variant="item.variant"
+                                                        />
+                                                    </li>
+                                                </template>
+                                            </sidebar-nav-dropdown>
+                                        </template>
+                                        <template v-else-if="!childL1.children && (!childL1.permission || (childL1.permission && hasPermission(user, childL1.permission)))">
+                                            <sidebar-nav-item
+                                            :key="index1"
+                                            :classes="item.class"
+                                            >
+                                                <sidebar-nav-link
+                                                :name="childL1.name"
+                                                :url="childL1.url"
+                                                :icon="childL1.icon"
+                                                :badge="childL1.badge"
+                                                :variant="item.variant"
+                                                />
+                                            </sidebar-nav-item>
+                                        </template>
+                                    </template>
                                 </sidebar-nav-dropdown>
                             </template>
-                            <template v-else>
+                            <template v-else-if="!item.children && (!item.permission || (item.permission && hasPermission(user, item.permission)))">
                                 <sidebar-nav-item
-                                :key="index1"
+                                :key="index"
                                 :classes="item.class"
                                 >
-                                <sidebar-nav-link
-                                :name="childL1.name"
-                                :url="childL1.url"
-                                :icon="childL1.icon"
-                                :badge="childL1.badge"
-                                :variant="item.variant"
-                                />
-                            </sidebar-nav-item>
+                                    <sidebar-nav-link
+                                    :name="item.name"
+                                    :url="item.url"
+                                    :icon="item.icon"
+                                    :badge="item.badge"
+                                    :variant="item.variant"
+                                    />
+                                </sidebar-nav-item>
+                            </template>
                         </template>
                     </template>
-                </sidebar-nav-dropdown>
-            </template>
-            <template v-else>
-                <sidebar-nav-item
-                :key="index"
-                :classes="item.class"
-                >
-                <sidebar-nav-link
-                :name="item.name"
-                :url="item.url"
-                :icon="item.icon"
-                :badge="item.badge"
-                :variant="item.variant"
-                />
-            </sidebar-nav-item>
-        </template>
-    </template>
-</template>
-</template>
-</ul>
-<slot />
-</nav>
-<sidebar-footer />
-<sidebar-minimizer />
-</div>
+                </ul>
+            <slot />
+        </nav>
+        <sidebar-footer />
+        <sidebar-minimizer />
+    </div>
 </template>
 <script>
 import SidebarFooter from './SidebarFooter'
@@ -152,6 +154,19 @@ export default {
             e.preventDefault()
             e.target.parentElement.classList.toggle('open')
         },
+        hasAnySubNavPermission(items) {
+            var vm = this;
+            for (const item of items) {
+                if (!item.permission || vm.hasPermission(vm.user, item.permission)) {
+                    return true
+                }
+                if (item.children) {
+                    return vm.hasAnySubNavPermission(item.children)
+                }
+            }
+
+            return false
+        }
     },
     computed: {
         user(){
