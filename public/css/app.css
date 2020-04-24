@@ -18654,6 +18654,10 @@ body {
   position: relative;
 }
 
+.avoid-breadcrumb {
+  margin-top: 4.7rem;
+}
+
 button {
   cursor: pointer;
 }
@@ -20685,7 +20689,6 @@ base-chart.chart {
 }
 
 .app-footer {
-  margin-top: 1.5rem;
   border-top: 1px solid #a4b7c1;
   align-items: center;
   background: #f0f3f5;
@@ -24359,6 +24362,10 @@ app-root {
 
 .breadcrumb {
   transition: left 0.25s, right 0.25s, width 0.25s;
+  position: fixed;
+  width: 100%;
+  z-index: 1020;
+  margin-bottom: 0;
 }
 
 @media (max-width: 991.98px) {

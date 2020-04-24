@@ -8,7 +8,7 @@
             />
             <main class="main">
                 <breadcrumb :list="list" />
-                <div class="container-fluid">
+                <div class="container-fluid avoid-breadcrumb">
                     <router-view />
                 </div>
             </main>
