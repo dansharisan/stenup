@@ -20,6 +20,8 @@ export const AuthUtils = {
             var vm = this
             vm.$store.dispatch('auth/logout')
             .then(response => {
+                // Show success message
+                vm.$snotify.success("Logged out successfully")
                 // Only redirect if current page is not Index
                 if (vm.$route.name != 'Index') {
                     vm.$router.push({ name: 'Index' })

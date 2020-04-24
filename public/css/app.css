@@ -24364,7 +24364,7 @@ app-root {
   transition: left 0.25s, right 0.25s, width 0.25s;
   position: fixed;
   width: 100%;
-  z-index: 1020;
+  z-index: 1;
   margin-bottom: 0;
 }
 

@@ -94,7 +94,7 @@ export default {
                 // Mark request status as loaded succesully
                 vm.request.status = 2
                 // Show success message
-                vm.$snotify.success("Login successfully")
+                vm.$snotify.success("Logged in successfully")
                 // Move to UserInfo page
                 vm.$router.push({ name: 'UserInfo' })
             })
