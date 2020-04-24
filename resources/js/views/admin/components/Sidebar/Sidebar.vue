@@ -157,11 +157,10 @@ export default {
         hasAnySubNavPermission(items) {
             var vm = this;
             for (const item of items) {
-                if (!item.permission || vm.hasPermission(vm.user, item.permission)) {
-                    return true
-                }
                 if (item.children) {
                     return vm.hasAnySubNavPermission(item.children)
+                } else if (!item.permission || vm.hasPermission(vm.user, item.permission)) {
+                    return true
                 }
             }
 
