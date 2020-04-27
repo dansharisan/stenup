@@ -29,6 +29,9 @@
                                             <i class="fas fa-key"></i>
                                         </b-input-group-prepend>
                                         <b-input v-model="form.password" type="password" :class="{'border-danger' : (validation && validation.password)}" placeholder="Password" v-on:keyup.enter="submit"/>
+                                        <b-input-group-append is-text class="item-header-text cursor-pointer" @click="togglePasswordVisibility($event)">
+                                            <i class="fa fa-eye-slash"></i>
+                                        </b-input-group-append>
                                         <div class="invalid-feedback d-block" v-if="validation && validation.password">
                                             {{ validation.password[0] }}
                                         </div>
@@ -39,6 +42,9 @@
                                             <i class="fas fa-key"></i>
                                         </b-input-group-prepend>
                                         <b-input v-model="form.password_confirmation" type="password" :class="{'border-danger' : (validation && validation.password_confirmation)}" placeholder="Confirm password" v-on:keyup.enter="submit"/>
+                                        <b-input-group-append is-text class="item-header-text cursor-pointer" @click="togglePasswordVisibility($event)">
+                                            <i class="fa fa-eye-slash"></i>
+                                        </b-input-group-append>
                                         <div class="invalid-feedback d-block" v-if="validation && validation.password_confirmation">
                                             {{ validation.password_confirmation[0] }}
                                         </div>
@@ -85,9 +91,12 @@
 
 <script>
 import AuthAPI from '../../../api/auth.js'
-
+import { DOMUtils } from '../../../mixins/dom-utils.js'
 export default {
     name: 'Registration',
+    mixins:[
+        DOMUtils,
+    ],
     data () {
         return {
             form: {

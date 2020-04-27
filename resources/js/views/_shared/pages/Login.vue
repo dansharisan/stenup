@@ -25,6 +25,9 @@
                                         <i class="fas fa-key"></i>
                                     </b-input-group-prepend>
                                     <b-input v-model="form.password" type="password" :class="{'border-danger' : (validation && validation.password)}" placeholder="Password" v-on:keyup.enter="submit"/>
+                                    <b-input-group-append is-text class="item-header-text cursor-pointer" @click="togglePasswordVisibility($event)">
+                                        <i class="fa fa-eye-slash"></i>
+                                    </b-input-group-append>
                                     <div class="invalid-feedback d-block" v-if="validation && validation.password">
                                         {{ validation.password[0] }}
                                     </div>
@@ -63,8 +66,12 @@
 </template>
 
 <script>
+import { DOMUtils } from '../../../mixins/dom-utils.js'
 export default {
     name: 'Login',
+    mixins:[
+        DOMUtils,
+    ],
     data () {
         return {
             form: {

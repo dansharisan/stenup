@@ -24908,6 +24908,10 @@ th {
   text-align: center;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 var map = {
 	"./af": "./node_modules/moment/locale/af.js",
 	"./af.js": "./node_modules/moment/locale/af.js",
