@@ -695,7 +695,8 @@ class AuthController extends Controller
         // Validate input data
         $validator = Validator::make($request->all(), [
             'password' => 'required|string',
-            'new_password' => 'required|string|confirmed'
+            'new_password' => 'required|string',
+            'new_password_confirmation' => 'required|string|same:new_password'
         ]);
         if ($validator->fails()) {
             return response()->json(

@@ -17,5 +17,6 @@
     "/js/chunks/user_container.js": "/js/chunks/user_container.js",
     "/js/chunks/user_index.js": "/js/chunks/user_index.js",
     "/js/chunks/userinfo.js": "/js/chunks/userinfo.js",
-    "/js/chunks/vendors~admin_dashboard.js": "/js/chunks/vendors~admin_dashboard.js"
+    "/js/chunks/vendors~admin_dashboard.js": "/js/chunks/vendors~admin_dashboard.js",
+    "/js/chunks/passwordchange.js": "/js/chunks/passwordchange.js"
 }

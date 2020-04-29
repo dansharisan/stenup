@@ -134,7 +134,7 @@ export default {
                 // Mark request status as loaded succesully
                 vm.request.status = 2
                 // Show success message
-                vm.$snotify.success("Register successfully")
+                vm.$snotify.success("Registered successfully")
                 vm.notification.type = 'info'
                 vm.notification.message = "We have sent an email to <strong>" + vm.form.email + "</strong>. Please follow the instruction to activate your account before you can login."
             })

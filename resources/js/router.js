@@ -176,6 +176,12 @@ const router = new Router({
             beforeEnter: requireAuth
         },
         {
+            path     : '/change-password',
+            name     : COMPONENT_NAME.PASSWORD_CHANGE,
+            component: () => import(/* webpackChunkName: 'passwordchange' */ './views/_shared/pages/PasswordChange'),
+            beforeEnter: requireAuth
+        },
+        {
             path     : '*',
             name     : COMPONENT_NAME.P404,
             component: () => import(/* webpackChunkName: 'page404' */ './views/_shared/pages/Page404'),

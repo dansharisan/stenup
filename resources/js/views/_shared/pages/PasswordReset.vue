@@ -149,7 +149,6 @@ export default {
             var vm = this;
             // Mark request status as loading
             this.resetPasswordRequest.status = 1
-            // Get the access token
             AuthAPI.resetPassword(email, password, password_confirmation, token)
             .then(response => {
                 vm.notification.type = 'success'
@@ -157,7 +156,7 @@ export default {
                 vm.resetPasswordRequest.status = 2
                 vm.notification.message = "Your password has been reset successfully. Now you can login with your new password."
                 // Show success message
-                vm.$snotify.success("Password reset successfully")
+                vm.$snotify.success("Reset reset successfully")
             })
             .catch(error => {
                 // Mark request status as failed to load

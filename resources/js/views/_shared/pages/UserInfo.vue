@@ -43,6 +43,10 @@
                                     Admin panel
                                 </b-button>
                                 <br v-if="hasPermission(user, PERMISSION_NAME.VIEW_DASHBOARD)"/>
+                                <b-button variant="link" class="px-0" @click="$router.push({ name: 'PasswordChange' })">
+                                    Change password
+                                </b-button>
+                                <br />
                                 <b-button variant="link" class="px-0" @click="$router.push({ name: 'Home' })">
                                     Back to Home
                                 </b-button>

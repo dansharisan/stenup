@@ -83,7 +83,7 @@ export default {
                 // Mark request status as loaded succesully
                 vm.request.status = 2
                 // Show success message
-                vm.$snotify.success("Request password reset successfully")
+                vm.$snotify.success("Requested password reset successfully")
             })
             .catch(error => {
                 // Mark request status as failed to load

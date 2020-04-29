@@ -74,6 +74,19 @@ export default {
     },
 
     /*
+    PATCH /api/auth/password/reset
+    Reset password
+    */
+    changePassword: function(password, new_password, new_password_confirmation) {
+        return axios.patch(APP_CONFIG.API_URL + '/auth/password/change',
+        {
+            password: password,
+            new_password: new_password,
+            new_password_confirmation: new_password_confirmation
+        });
+    },
+
+    /*
     GET /api/auth/logout
     Logout
     */

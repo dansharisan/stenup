@@ -24,7 +24,8 @@ export const COMPONENT_NAME = {
     PASSWORD_RESET: "PasswordReset",
     ACCOUNT_ACTIVATION_REQUEST: "AccountActivationRequest",
     ACCOUNT_ACTIVATION: "AccountActivation",
-    USER_INFO: "UserInfo"
+    USER_INFO: "UserInfo",
+    PASSWORD_CHANGE: "PasswordChange"
 }
 
 export const PERMISSION_NAME = {
