@@ -4,7 +4,7 @@
             <loading :active="crudRoleRequest.loadStatus == 1"></loading>
             <template>
                 <b-form-group>
-                    <label for="company">Role name</label>
+                    <label for="role_name">Role name</label>
                     <b-form-input type="text" placeholder="developer" :class="{'border-danger' : (crudRoleRequest.data.validation && crudRoleRequest.data.validation.role_name)}" v-model="crudRoleRequest.form.role_name" v-on:keyup.enter="createRole" />
                 </b-form-group>
                 <div class="row">
@@ -16,7 +16,7 @@
         </b-modal>
 
         <b-card header="Roles-Permissions Matrix" header-class="text-left" class="text-center">
-            <div class="col-12 text-right pr-0 mb-4">
+            <div class="col-12 text-right pr-0 mb-3">
                 <b-button v-if="hasPermission(user, PERMISSION_NAME.CREATE_ROLES)" size="md" class="btn btn-action" variant="primary" v-b-modal.create-role-modal>
                     <i class="fas fa-plus text-white" aria-hidden="true"></i> <span class="text-white">Create Role</span>
                 </b-button>
@@ -63,7 +63,7 @@
                 </template>
             </div>
 
-            <div class="col-12 text-right pr-0" style="margin-top: 1.5rem" v-if="hasPermission(user, PERMISSION_NAME.UPDATE_PERMISSIONS)">
+            <div class="col-12 text-right pr-0 mt-3" v-if="hasPermission(user, PERMISSION_NAME.UPDATE_PERMISSIONS)">
                 <b-button size="md" class="btn btn-action" variant="secondary" @click="reload()">
                     <i class="fas fa-undo-alt text-white" aria-hidden="true"></i> <span class="text-white">Reload</span>
                 </b-button>
@@ -314,7 +314,7 @@ export default {
     display: grid; /* This is a (hacky) way to make the .grid element size to fit its content */
     overflow: auto;
     min-height: 100%;
-    max-height: calc(100vh - 314px - 7.5rem);
+    max-height: calc(100vh - 298px - 6rem);
     width: 100%;
 }
 .grid {

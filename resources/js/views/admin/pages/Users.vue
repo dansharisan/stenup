@@ -1,14 +1,29 @@
 <template>
     <div>
+        <b-modal id="create-user-modal" modal-class="text-left" centered title="Create new user" @ok="createOrUpdateUser" ok-variant="success" ref="create-role-modal">
+            <loading :active="crudUserRequest.loadStatus == 1"></loading>
+            <template>
+                <b-form-group>
+                    <label for="email">Email</label>
+                    <b-form-input type="text" placeholder="email@example.com" :class="{'border-danger' : (crudUserRequest.data.validation && crudUserRequest.data.validation.email)}" v-model="crudUserRequest.form.email" v-on:keyup.enter="createOrUpdateUser" />
+                </b-form-group>
+                <div class="row">
+                    <div class="col-12 invalid-feedback text-left d-block" v-if="crudUserRequest.data.validation && crudUserRequest.data.validation.email">
+                        {{ crudUserRequest.data.validation.email[0] }}
+                    </div>
+                </div>
+            </template>
+        </b-modal>
+
         <b-card header="Users" header-class="text-left" class="text-center">
-            <p v-if="crudUsersRequest.loadStatus == 3" class="text-center mb-0">Data load error</p>
+            <p v-if="crudUserRequest.loadStatus == 3" class="text-center mb-0">Data load error</p>
             <div v-else id="master-table">
                 <div class="row justify-content-between">
-                    <div class="col-2 pl-0 pr-0 mb-3 mt-2 ml-3">
+                    <div class="col-2 mb-3">
                         <b-input-group class="input-group-sm">
                           <b-form-select
                             @input="onChangePerPage"
-                            v-model="crudUsersRequest.tablePerPage"
+                            v-model="crudUserRequest.tablePerPage"
                             id="per_page"
                             :plain="false"
                             :options="[{ text: '15', value: 15}, { text: '30', value: 30}, { text: '50', value: 50}]"
@@ -18,14 +33,11 @@
                           />
                         </b-input-group>
                     </div>
-                    <!-- <div class="col-8 text-right mb-3 mt-2 pr-0 pl-2">
-                        <b-button size="sm" class="btn-action" variant="danger" @click="deleteItems()" v-if="hasChecked">
-                            <i class="fa fa-remove text-white" aria-hidden="true"></i> <span class="text-white">Delete</span>
+                    <div class="col-2 text-right mb-3">
+                        <b-button v-if="hasPermission(user, PERMISSION_NAME.CREATE_USERS)" size="md" class="btn btn-action" variant="primary" v-b-modal.create-user-modal>
+                            <i class="fas fa-plus text-white" aria-hidden="true"></i> <span class="text-white">Create User</span>
                         </b-button>
-                        <b-button size="sm" class="btn-action" variant="primary" @click="prepareCreatingItem()" v-b-modal.edit-form-modal>
-                            <i class="fa fa-file text-white" aria-hidden="true"></i> <span class="text-white">Create</span>
-                        </b-button>
-                    </div> -->
+                    </div>
                 </div>
 
                 <b-table
@@ -34,14 +46,14 @@
                 :bordered="true"
                 :small="false"
                 :fixed="false"
-                :items="crudUsersRequest.data.data"
-                :fields="crudUsersRequest.tableFields"
-                :current-page="crudUsersRequest.tableCurrentPage"
+                :items="crudUserRequest.data.data"
+                :fields="crudUserRequest.tableFields"
+                :current-page="crudUserRequest.tableCurrentPage"
                 per-page=0
                 responsive="md"
                 show-empty
                 empty-text="There are no records to show"
-                :busy="crudUsersRequest.loadStatus == 1"
+                :busy="crudUserRequest.loadStatus == 1"
                 >
                     <div slot="table-busy" class="align-middle text-center text-info my-2">
                         <loading :active="true" :is-full-page="false"></loading>
@@ -60,12 +72,12 @@
                         </b-form-checkbox>
                     </template> -->
 
-                    <template v-slot:cell(status)="cell" v-if="crudUsersRequest.data.data && crudUsersRequest.data.data.length > 0">
+                    <template v-slot:cell(status)="cell" v-if="crudUserRequest.data.data && crudUserRequest.data.data.length > 0">
                         <b-badge :variant="getBadge(cell.item.status)">
                             {{ cell.item.status }}
                         </b-badge>
                     </template>
-                    <template v-slot:cell(created_at)="cell" v-if="crudUsersRequest.data.data && crudUsersRequest.data.data.length > 0">
+                    <template v-slot:cell(created_at)="cell" v-if="crudUserRequest.data.data && crudUserRequest.data.data.length > 0">
                         {{ cell.item.created_at.slice(0, -8) }}
                     </template>
 
@@ -78,11 +90,11 @@
                         </b-button>
                     </template> -->
                 </b-table>
-                <nav v-if="crudUsersRequest.loadStatus == 2">
+                <nav v-if="crudUserRequest.loadStatus == 2">
                     <b-pagination
-                    v-model="crudUsersRequest.tableCurrentPage"
-                    :total-rows="crudUsersRequest.data.total"
-                    :per-page="crudUsersRequest.data.per_page"
+                    v-model="crudUserRequest.tableCurrentPage"
+                    :total-rows="crudUserRequest.data.total"
+                    :per-page="crudUserRequest.data.per_page"
                     class="mb-2"
                     size="md"
                     >
@@ -95,13 +107,17 @@
 
 <script>
 import UserAPI from '../../../api/user.js'
-
+import { PERMISSION_NAME } from '../../../const.js'
 export default {
     data: function () {
         return {
-            crudUsersRequest: {
+            PERMISSION_NAME: PERMISSION_NAME,
+            crudUserRequest: {
                 loadStatus: 0,
                 data: {},
+                form: {
+                    email: ''
+                },
                 tableFields:  [
                     // { key: 'checkbox', label: ' ' },
                     { key: 'id', label: 'ID' },
@@ -117,7 +133,15 @@ export default {
             },
         }
     },
+    computed: {
+        user () {
+            return this.$store.get('auth/user');
+        },
+    },
     methods: {
+        createOrUpdateUser() {
+            alert('TO DO')
+        },
         getBadge (status) {
             return status === 'Active' ? 'success'
             : status === 'Inactive' ? 'secondary'
@@ -129,30 +153,30 @@ export default {
         },
         getUsers (page = 1, perPage = 15) {
             var vm = this
-            vm.crudUsersRequest.loadStatus = 1
+            vm.crudUserRequest.loadStatus = 1
             UserAPI.getUsers(page, perPage)
             .then(response => {
-                vm.crudUsersRequest.data = response.data.users
-                vm.crudUsersRequest.loadStatus = 2
+                vm.crudUserRequest.data = response.data.users
+                vm.crudUserRequest.loadStatus = 2
             })
             .catch(error => {
                 // Handle unauthorized error
                 if (error.response && error.response.status == 401) {
                     vm.handleInvalidAuthState(vm)
                 } else {
-                    vm.crudUsersRequest.loadStatus = 3
+                    vm.crudUserRequest.loadStatus = 3
                 }
             })
         },
     },
     watch: {
-        'crudUsersRequest.tableCurrentPage': function (newVal, oldVal) {
+        'crudUserRequest.tableCurrentPage': function (newVal, oldVal) {
             // Request to change data, but not on the first load
             if (oldVal) {
-                this.getUsers(newVal, this.crudUsersRequest.tablePerPage)
+                this.getUsers(newVal, this.crudUserRequest.tablePerPage)
             }
         },
-        'crudUsersRequest.tablePerPage': function (newVal, oldVal) {
+        'crudUserRequest.tablePerPage': function (newVal, oldVal) {
             // Request to change data, but not on the first load
             if (oldVal) {
                 this.getUsers(1, newVal)
