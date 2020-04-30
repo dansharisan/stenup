@@ -2,17 +2,62 @@
     <div>
         <b-modal id="create-user-modal" modal-class="text-left" centered title="Create new user" @ok="createOrUpdateUser" ok-variant="success" ref="create-role-modal">
             <loading :active="crudUserRequest.loadStatus == 1"></loading>
-            <template>
-                <b-form-group>
-                    <label for="email">Email</label>
-                    <b-form-input type="text" placeholder="email@example.com" :class="{'border-danger' : (crudUserRequest.data.validation && crudUserRequest.data.validation.email)}" v-model="crudUserRequest.form.email" v-on:keyup.enter="createOrUpdateUser" />
-                </b-form-group>
+            <b-form-group>
+                <label for="email">Email</label>
+                <b-form-input type="text" placeholder="email@example.com" :class="{'border-danger' : (crudUserRequest.data.validation && crudUserRequest.data.validation.email)}" v-model="crudUserRequest.form.email" v-on:keyup.enter="createOrUpdateUser" />
                 <div class="row">
                     <div class="col-12 invalid-feedback text-left d-block" v-if="crudUserRequest.data.validation && crudUserRequest.data.validation.email">
                         {{ crudUserRequest.data.validation.email[0] }}
                     </div>
                 </div>
-            </template>
+            </b-form-group>
+
+            <b-form-group>
+                <label for="password">Password</label>
+                <b-input-group>
+                    <b-input v-model="crudUserRequest.form.email" type="password" :class="{'border-danger' : (crudUserRequest.data.validation && crudUserRequest.data.validation.email)}" placeholder="my_p@ssw0rD" v-on:keyup.enter="submit"/>
+                    <b-input-group-append is-text class="item-header-text cursor-pointer" @click="togglePasswordVisibility($event)">
+                        <i class="fa fa-eye-slash"></i>
+                    </b-input-group-append>
+                </b-input-group>
+                <div class="row">
+                    <div class="col-12 invalid-feedback text-left d-block" v-if="crudUserRequest.data.validation && crudUserRequest.data.validation.password">
+                        {{ crudUserRequest.data.validation.password[0] }}
+                    </div>
+                </div>
+            </b-form-group>
+
+            <b-form-group>
+                <label for="email_verified_at">Verified at</label>
+                <b-datepicker 
+                    v-model="crudUserRequest.form.email_verified_at" 
+                    placeholder="2020/06/15" 
+                    :date-format-options="{ year: 'numeric', month: '2-digit', day: '2-digit' }"
+                    locale="ja"
+                />
+                <div class="row">
+                    <div class="col-12 invalid-feedback text-left d-block" v-if="crudUserRequest.data.validation && crudUserRequest.data.validation.email_verified_at">
+                        {{ crudUserRequest.data.validation.email_verified_at[0] }}
+                    </div>
+                </div>
+            </b-form-group>
+
+            <b-form-group label="Roles">
+                <b-form-checkbox
+                    v-for="option in [{text: 'administrator', value: 1}, {text: 'moderator', value: 2}, {text: 'member', value: 3}]"
+                    v-model="crudUserRequest.form.role_ids"
+                    :key="option.value"
+                    :value="option.value"
+                    name="roles"
+                >
+                    {{ option.text }}
+                </b-form-checkbox>
+                <div class="row">
+                    <div class="col-12 invalid-feedback text-left d-block" v-if="crudUserRequest.data.validation && crudUserRequest.data.validation.role_ids">
+                        {{ crudUserRequest.data.validation.role_ids[0] }}
+                    </div>
+                </div>
+            </b-form-group>
         </b-modal>
 
         <b-card header="Users" header-class="text-left" class="text-center">
@@ -108,7 +153,11 @@
 <script>
 import UserAPI from '../../../api/user.js'
 import { PERMISSION_NAME } from '../../../const.js'
+import { DOMUtils } from '../../../mixins/dom-utils.js'
 export default {
+    mixins:[
+        DOMUtils,
+    ],
     data: function () {
         return {
             PERMISSION_NAME: PERMISSION_NAME,
@@ -116,7 +165,10 @@ export default {
                 loadStatus: 0,
                 data: {},
                 form: {
-                    email: ''
+                    email: '',
+                    password: '',
+                    email_verified_at: null,
+                    role_ids: []
                 },
                 tableFields:  [
                     // { key: 'checkbox', label: ' ' },

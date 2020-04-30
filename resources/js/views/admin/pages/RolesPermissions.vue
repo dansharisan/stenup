@@ -2,17 +2,15 @@
     <div>
         <b-modal id="create-role-modal" modal-class="text-left" centered title="Create new role" @ok="createRole" ok-variant="success" ref="create-role-modal">
             <loading :active="crudRoleRequest.loadStatus == 1"></loading>
-            <template>
-                <b-form-group>
-                    <label for="role_name">Role name</label>
-                    <b-form-input type="text" placeholder="developer" :class="{'border-danger' : (crudRoleRequest.data.validation && crudRoleRequest.data.validation.role_name)}" v-model="crudRoleRequest.form.role_name" v-on:keyup.enter="createRole" />
-                </b-form-group>
+            <b-form-group>
+                <label for="role_name">Role name</label>
+                <b-form-input type="text" placeholder="developer" :class="{'border-danger' : (crudRoleRequest.data.validation && crudRoleRequest.data.validation.role_name)}" v-model="crudRoleRequest.form.role_name" v-on:keyup.enter="createRole" />
                 <div class="row">
                     <div class="col-12 invalid-feedback text-left d-block" v-if="crudRoleRequest.data.validation && crudRoleRequest.data.validation.role_name">
                         {{ crudRoleRequest.data.validation.role_name[0] }}
                     </div>
                 </div>
-            </template>
+            </b-form-group>
         </b-modal>
 
         <b-card header="Roles-Permissions Matrix" header-class="text-left" class="text-center">
