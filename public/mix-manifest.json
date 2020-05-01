@@ -11,12 +11,12 @@
     "/js/chunks/page403.js": "/js/chunks/page403.js",
     "/js/chunks/page404.js": "/js/chunks/page404.js",
     "/js/chunks/page500.js": "/js/chunks/page500.js",
+    "/js/chunks/passwordchange.js": "/js/chunks/passwordchange.js",
     "/js/chunks/passwordreset.js": "/js/chunks/passwordreset.js",
     "/js/chunks/passwordresetrequest.js": "/js/chunks/passwordresetrequest.js",
     "/js/chunks/registration.js": "/js/chunks/registration.js",
     "/js/chunks/user_container.js": "/js/chunks/user_container.js",
     "/js/chunks/user_index.js": "/js/chunks/user_index.js",
     "/js/chunks/userinfo.js": "/js/chunks/userinfo.js",
-    "/js/chunks/vendors~admin_dashboard.js": "/js/chunks/vendors~admin_dashboard.js",
-    "/js/chunks/passwordchange.js": "/js/chunks/passwordchange.js"
+    "/js/chunks/vendors~admin_dashboard.js": "/js/chunks/vendors~admin_dashboard.js"
 }

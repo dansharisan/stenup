@@ -1,6 +1,12 @@
 <template>
     <div>
-        <b-modal id="crud-user-modal" ref="crud-user-modal" :title="crudUserRequest.modalTitle" modal-class="text-left" centered>
+        <b-modal id="crud-user-modal" ref="crud-user-modal" modal-class="text-left" centered>
+            <template v-slot:modal-header="{ close }">
+                <h5 class="modal-title" v-if="crudUserRequest.action == 'create'">Create new user</h5>
+                <h5 class="modal-title" v-else-if="crudUserRequest.action == 'update'">Update user</h5>
+                <button type="button" aria-label="Close" class="close" @click="close()">×</button>
+            </template>
+            
             <loading :active="crudUserRequest.loadStatus == 1"></loading>
             <b-form-group>
                 <label for="email">Email</label>
@@ -62,6 +68,9 @@
             <template v-slot:modal-footer>
                 <b-button v-if="crudUserRequest.action == 'create'" size="md" class="btn btn-action" variant="success" @click="createUser()">
                     <span class="text-white">Create</span>
+                </b-button>
+                <b-button v-else-if="crudUserRequest.action == 'update'" size="md" class="btn btn-action" variant="success" @click="updateUser()">
+                    <span class="text-white">Update</span>
                 </b-button>
             </template>
         </b-modal>
@@ -200,10 +209,10 @@ export default {
             var vm = this
             switch(action) {
                 case 'create':
-                    vm.initCRUDUserModal("Create new user")
+                    vm.initCRUDUserModal()
                     break
                 case 'update':
-                    vm.initCRUDUserModal("Update user")
+                    vm.initCRUDUserModal()
                     break
             }
             // Set action
@@ -211,8 +220,7 @@ export default {
             // Open the modal
             vm.$refs['crud-user-modal'].show()
         },
-        initCRUDUserModal(modalTitle) {
-            this.crudUserRequest.modalTitle = modalTitle
+        initCRUDUserModal() {
             this.crudUserRequest.loadStatus = 0
             this.crudUserRequest.action = ''
             this.crudUserRequest.data = {}
@@ -253,6 +261,9 @@ export default {
                 }
             })
         },
+        updateUser() {
+            alert('TO DO')
+        },
         getBadge(status) {
             return status === 'Active' ? 'success'
             : status === 'Inactive' ? 'secondary'
@@ -290,7 +301,7 @@ export default {
     },
     created() {
         // Initialize CRUD user modal
-        this.initCRUDUserModal("Create new user")
+        this.initCRUDUserModal()
         // Load list of users
         this.getUsers(1, this.listUsersRequest.data.per_page)
     },
