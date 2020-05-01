@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-modal id="create-role-modal" modal-class="text-left" centered title="Create new role" @ok="createRole" ok-variant="success" ref="create-role-modal">
+        <b-modal id="create-role-modal" modal-class="text-left" centered title="Create new role" @ok="createRole" ok-only ok-title="Create" ok-variant="success" ref="create-role-modal">
             <loading :active="crudRoleRequest.loadStatus == 1"></loading>
             <b-form-group>
                 <label for="role_name">Role name</label>
@@ -77,7 +77,7 @@
 import AuthAPI from '../../../api/auth.js'
 import { PERMISSION_NAME } from '../../../const.js'
 export default {
-    data: function () {
+    data: function() {
         return {
             PERMISSION_NAME: PERMISSION_NAME,
             getRolesAndPermissionsRequest: {
@@ -98,12 +98,12 @@ export default {
         }
     },
     computed: {
-        user () {
+        user() {
             return this.$store.get('auth/user');
         },
     },
     methods: {
-        applyPermissions () {
+        applyPermissions() {
             var vm = this
             this.$swal({
                 title: 'You sure to apply this role-permission matrix?',
@@ -162,7 +162,7 @@ export default {
                 }
             })
         },
-        createRole (bvModalEvt) {
+        createRole(bvModalEvt) {
             // Prevent modal from closing
             bvModalEvt.preventDefault()
 
@@ -195,7 +195,7 @@ export default {
                 }
             })
         },
-        deleteRole (roleId) {
+        deleteRole(roleId) {
             var vm = this
 
             this.$swal({
@@ -219,7 +219,7 @@ export default {
                         // Fire notification
                         vm.$snotify.success("Deleted role successfully")
                     })
-                    .catch( function(error) {
+                    .catch(function(error) {
                         // Handle unauthorized error
                         if (error.response && error.response.status == 401) {
                             vm.handleInvalidAuthState(vm)
@@ -236,7 +236,7 @@ export default {
                 }
             })
         },
-        roleHasPermission (roleId, permissionId) {
+        roleHasPermission(roleId, permissionId) {
             var hasRole = false
 
             for (let role of this.getRolesWithPermissionsRequest.data.roles) {
@@ -253,18 +253,18 @@ export default {
 
             return hasRole
         },
-        reload () {
+        reload() {
             // Reload the matrix data
             this.loadMatrixData()
         },
-        loadMatrixData () {
+        loadMatrixData() {
             var vm = this
             // Get all roles and permissions
             vm.loadRolesAndPermissions()
             // Get all roles with associated permissions
             vm.loadRolesWithPermissions()
         },
-        loadRolesAndPermissions () {
+        loadRolesAndPermissions() {
             var vm = this
             vm.getRolesAndPermissionsRequest.loadStatus = 1
             AuthAPI.getRolesAndPermissions()
@@ -272,7 +272,7 @@ export default {
                 vm.getRolesAndPermissionsRequest.data = response.data
                 vm.getRolesAndPermissionsRequest.loadStatus = 2
             })
-            .catch( function(error) {
+            .catch(function(error) {
                 // Handle unauthorized error
                 if (error.response && error.response.status == 401) {
                     vm.handleInvalidAuthState(vm)
@@ -282,7 +282,7 @@ export default {
                 }
             })
         },
-        loadRolesWithPermissions () {
+        loadRolesWithPermissions() {
             var vm = this
             vm.getRolesWithPermissionsRequest.loadStatus = 1
             AuthAPI.getRolesWithPermissions()
@@ -290,7 +290,7 @@ export default {
                 vm.getRolesWithPermissionsRequest.data = response.data
                 vm.getRolesWithPermissionsRequest.loadStatus = 2
             })
-            .catch( function(error) {
+            .catch(function(error) {
                 // Handle unauthorized error
                 if (error.response && error.response.status == 401) {
                     vm.handleInvalidAuthState(vm)
@@ -301,7 +301,7 @@ export default {
             })
         }
     },
-    created () {
+    created() {
         this.loadMatrixData()
     },
 }
