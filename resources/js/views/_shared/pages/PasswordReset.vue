@@ -59,7 +59,7 @@
                                         </b-button>
                                     </b-col>
                                     <b-col cols="6" class="text-right" v-if="findTokenRequest.status==2 && this.resetPasswordRequest.status != 2">
-                                        <b-button variant="success" class="px-4" @click="submit">
+                                        <b-button variant="success" @click="submit">
                                             Reset
                                         </b-button>
                                     </b-col>

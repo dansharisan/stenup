@@ -58,7 +58,7 @@
                                         </b-button>
                                     </b-col>
                                     <b-col cols="6" class="text-right" v-if="request.status != 2">
-                                        <b-button variant="success" class="px-4" @click="submit">
+                                        <b-button variant="success" @click="submit">
                                             Change
                                         </b-button>
                                     </b-col>

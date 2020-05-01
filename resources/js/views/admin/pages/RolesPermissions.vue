@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-modal id="create-role-modal" modal-class="text-left" centered title="Create new role" @ok="createRole" ok-only ok-title="Create" ok-variant="success" ref="create-role-modal">
+        <b-modal id="create-role-modal" modal-class="text-left" centered title="Create new role" ref="create-role-modal">
             <loading :active="crudRoleRequest.loadStatus == 1"></loading>
             <b-form-group>
                 <label for="role_name">Role name</label>
@@ -11,12 +11,18 @@
                     </div>
                 </div>
             </b-form-group>
+
+            <template v-slot:modal-footer>
+                <b-button size="md" class="btn btn-action" variant="success" @click="createRole()">
+                    <span class="text-white">Create</span>
+                </b-button>
+            </template>
         </b-modal>
 
         <b-card header="Roles-Permissions Matrix" header-class="text-left" class="text-center">
             <div class="col-12 text-right pr-0 mb-3">
-                <b-button v-if="hasPermission(user, PERMISSION_NAME.CREATE_ROLES)" size="md" class="btn btn-action" variant="primary" v-b-modal.create-role-modal>
-                    <i class="fas fa-plus text-white" aria-hidden="true"></i> <span class="text-white">Create Role</span>
+                <b-button v-if="hasPermission(user, PERMISSION_NAME.CREATE_ROLES)" size="md" class="btn btn-action" variant="primary" @click="openCreateRoleModal()">
+                    <span class="text-white">Create Role</span>
                 </b-button>
             </div>
 
@@ -63,10 +69,10 @@
 
             <div class="col-12 text-right pr-0 mt-3" v-if="hasPermission(user, PERMISSION_NAME.UPDATE_PERMISSIONS)">
                 <b-button size="md" class="btn btn-action" variant="secondary" @click="reload()">
-                    <i class="fas fa-undo-alt text-white" aria-hidden="true"></i> <span class="text-white">Reload</span>
+                    <span class="text-white">Reload</span>
                 </b-button>
                 <b-button size="md" class="btn btn-action" variant="success" @click="applyPermissions()">
-                    <i class="fas fa-check text-white" aria-hidden="true"></i> <span class="text-white">Apply</span>
+                    <span class="text-white">Apply</span>
                 </b-button>
             </div>
         </b-card>
@@ -89,11 +95,7 @@ export default {
                 data: {}
             },
             crudRoleRequest: {
-                loadStatus: 0,
-                data: {},
-                form: {
-                    role_name: ''
-                }
+                loadStatus: 0
             }
         }
     },
@@ -103,6 +105,19 @@ export default {
         },
     },
     methods: {
+        openCreateRoleModal() {
+            var vm = this
+            vm.initCreateRoleModal()
+            // Open the modal
+            vm.$refs['create-role-modal'].show()
+        },
+        initCreateRoleModal() {
+            this.crudRoleRequest.loadStatus = 0
+            this.crudRoleRequest.data = {}
+            this.crudRoleRequest.form = {
+                role_name: ''
+            }
+        },
         applyPermissions() {
             var vm = this
             this.$swal({
@@ -162,10 +177,7 @@ export default {
                 }
             })
         },
-        createRole(bvModalEvt) {
-            // Prevent modal from closing
-            bvModalEvt.preventDefault()
-
+        createRole() {
             var vm = this
             vm.crudRoleRequest.loadStatus = 1
             AuthAPI.createRole(vm.crudRoleRequest.form.role_name)
@@ -302,6 +314,9 @@ export default {
         }
     },
     created() {
+        // Initialize CRUD role modal
+        this.initCreateRoleModal()
+        // Load Matrix data
         this.loadMatrixData()
     },
 }

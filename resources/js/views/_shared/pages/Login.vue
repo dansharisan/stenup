@@ -51,7 +51,7 @@
                                         </b-button>
                                     </b-col>
                                     <b-col cols="6" class="text-right">
-                                        <b-button variant="primary" class="px-4" @click="submit">
+                                        <b-button variant="primary" @click="submit">
                                             Log in
                                         </b-button>
                                     </b-col>

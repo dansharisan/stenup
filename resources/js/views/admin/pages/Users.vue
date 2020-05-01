@@ -95,7 +95,7 @@
                     </div>
                     <div class="col-2 text-right mb-3">
                         <b-button v-if="hasPermission(user, PERMISSION_NAME.CREATE_USERS)" size="md" class="btn btn-action" variant="primary" @click="openCRUDModal('create')">
-                            <i class="fas fa-plus text-white" aria-hidden="true"></i> <span class="text-white">Create User</span>
+                            <span class="text-white">Create User</span>
                         </b-button>
                     </div>
                 </div>
