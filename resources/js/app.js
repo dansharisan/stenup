@@ -75,6 +75,13 @@ const snotifyOptions = {
 }
 Vue.use(Snotify, snotifyOptions)
 
+// Handle vue error
+Vue.config.errorHandler = err => {
+    if (err) {
+        console.error(err)
+    }
+}
+
 export default new Vue({
     el        : '#app',
     router    : router,
