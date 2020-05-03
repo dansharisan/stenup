@@ -38,7 +38,7 @@ function requireAccessPermission(to, from, next) {
     } else {
         // Not authorized or auth state has changed
         if (from.name) {
-            Vue.prototype.handleInvalidAuthState(router.app)
+            Vue.prototype.handleInvalidAuthState(router.app, to)
         } else {
             next('/403')
         }
