@@ -27,23 +27,23 @@
             </div>
 
             <div class="grid-container">
-                <div class="middle-center" style="position: inherit" v-if="getRolesAndPermissionsRequest.loadStatus == 1 || getRolesWithPermissionsRequest.loadStatus == 1">
+                <div class="middle-center" style="position: inherit" v-if="rolesAndPermissionsLoadStatus == 1 || getRolesWithPermissionsRequest.loadStatus == 1">
                     <div>
                         <loading :active="true" :is-full-page="false"></loading>
                     </div>
                 </div>
-                <p v-else-if="getRolesAndPermissionsRequest.loadStatus == 3 || getRolesWithPermissionsRequest.loadStatus == 3" class="text-center mb-0">Data load error</p>
-                <template v-else-if="getRolesAndPermissionsRequest.loadStatus == 2 && getRolesWithPermissionsRequest.loadStatus == 2">
+                <p v-else-if="rolesAndPermissionsLoadStatus == 3 || getRolesWithPermissionsRequest.loadStatus == 3" class="text-center mb-0">Data load error</p>
+                <template v-else-if="rolesAndPermissionsLoadStatus == 2 && getRolesWithPermissionsRequest.loadStatus == 2">
                     <div class="grid" style="margin: auto">
                         <div class="grid-col grid-col--fixed-left">
                             <div class="grid-item grid-item--role-name">
                                 <p class="m-0 ml-1 mr-1 text-center" style="line-height: 2.5em; font-size: large"><sub>permission</sub>\<sup>role</sup></p>
                             </div>
-                            <div class="grid-item grid-item--permission-name" v-for="permission in getRolesAndPermissionsRequest.data.permissions" :key="permission.id">
+                            <div class="grid-item grid-item--permission-name" v-for="permission in rolesAndPermissions.permissions" :key="permission.id">
                                 <abbr :title="permission.name"><p class="m-0 ml-1 mr-1" style="line-height: 3em">{{ permission.name }}</p></abbr>
                             </div>
                         </div>
-                        <div class="grid-col" v-for="role in getRolesAndPermissionsRequest.data.roles" :key="role.id">
+                        <div class="grid-col" v-for="role in rolesAndPermissions.roles" :key="role.id">
                             <div class="grid-item grid-item--role-name">
                                 <p class="m-0 ml-1 mr-1 text-center" style="line-height: 3em">
                                     {{ role.name }}
@@ -54,7 +54,7 @@
                                     </template>
                                 </p>
                             </div>
-                            <div class="grid-item" v-for="permission in getRolesAndPermissionsRequest.data.permissions" :key="permission.id">
+                            <div class="grid-item" v-for="permission in rolesAndPermissions.permissions" :key="permission.id">
                                 <div class="custom-control form-control-lg text-center">
                                     <input v-if="roleHasPermission(role.id, permission.id) && (1 == role.id || !hasPermission(user, PERMISSION_NAME.UPDATE_PERMISSIONS))" type="checkbox" checked disabled class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
                                     <input v-else-if="!roleHasPermission(role.id, permission.id) && (1 == role.id || !hasPermission(user, PERMISSION_NAME.UPDATE_PERMISSIONS))" type="checkbox" disabled class="custom-checkbox" :id="'r_' + role.id + '_p_' + permission.id">
@@ -86,22 +86,28 @@ export default {
     data: function() {
         return {
             PERMISSION_NAME: PERMISSION_NAME,
-            getRolesAndPermissionsRequest: {
-                loadStatus: 0,
-                data: {}
-            },
             getRolesWithPermissionsRequest: {
                 loadStatus: 0,
                 data: {}
             },
             crudRoleRequest: {
-                loadStatus: 0
+                loadStatus: 0,
+                data: {},
+                form: {
+                    role_name: ''
+                }
             }
         }
     },
     computed: {
         user() {
             return this.$store.get('auth/user');
+        },
+        rolesAndPermissions() {
+            return this.$store.get('auth/rolesAndPermissions');
+        },
+        rolesAndPermissionsLoadStatus() {
+            return this.$store.get('auth/rolesAndPermissionsLoadStatus');
         },
     },
     methods: {
@@ -131,11 +137,9 @@ export default {
                 confirmButtonText: 'Apply'
             }).then((result) => {
                 if (result.value) {
-                    // vm.getRolesAndPermissionsRequest.data.permissions
-                    // vm.getRolesAndPermissionsRequest.data.roles
                     var matrix = new Object()
                     // Prepare roles permissions matrix to send
-                    for (var roleObj of vm.getRolesAndPermissionsRequest.data.roles) {
+                    for (var roleObj of vm.rolesAndPermissions.roles) {
                         // Initialize the role object we need to send
                         matrix[roleObj.name] = []
 
@@ -146,7 +150,7 @@ export default {
                             var regex = /r_\d+_p_(\d+)/gm
                             var permId = regex.exec(checkedPermEl.id)[1]
                             // Find permission name
-                            for (var permObj of vm.getRolesAndPermissionsRequest.data.permissions) {
+                            for (var permObj of vm.rolesAndPermissions.permissions) {
                                 if (permObj.id == permId) {
                                     matrix[roleObj.name].push(permObj.name)
                                 }
@@ -168,8 +172,6 @@ export default {
                         if (error.response && error.response.status == 401) {
                             vm.handleInvalidAuthState(vm)
                         }
-                        // vm.getRolesWithPermissionsRequest.data = {}
-                        // vm.getRolesWithPermissionsRequest.loadStatus = 3
                         vm.loadRolesWithPermissions()
                         // Fire notification
                         vm.$snotify.error("Failed to apply roles-permissions matrix")
@@ -272,27 +274,9 @@ export default {
         loadMatrixData() {
             var vm = this
             // Get all roles and permissions
-            vm.loadRolesAndPermissions()
+            vm.$store.dispatch('auth/getRolesAndPermissions')
             // Get all roles with associated permissions
             vm.loadRolesWithPermissions()
-        },
-        loadRolesAndPermissions() {
-            var vm = this
-            vm.getRolesAndPermissionsRequest.loadStatus = 1
-            AuthAPI.getRolesAndPermissions()
-            .then((response) => {
-                vm.getRolesAndPermissionsRequest.data = response.data
-                vm.getRolesAndPermissionsRequest.loadStatus = 2
-            })
-            .catch(function(error) {
-                // Handle unauthorized error
-                if (error.response && error.response.status == 401) {
-                    vm.handleInvalidAuthState(vm)
-                } else {
-                    vm.getRolesAndPermissionsRequest.data = {}
-                    vm.getRolesAndPermissionsRequest.loadStatus = 3
-                }
-            })
         },
         loadRolesWithPermissions() {
             var vm = this
@@ -379,7 +363,7 @@ export default {
 }
 
 .custom-checkbox {
-    width: 30px;
+    width: 100%;
     height: 30px;
 }
 </style>

@@ -7,63 +7,69 @@
                 <button type="button" aria-label="Close" class="close" @click="close()">×</button>
             </template>
             
-            <loading :active="crudUserRequest.loadStatus == 1"></loading>
-            <b-form-group>
-                <label for="email">Email</label>
-                <b-form-input type="text" placeholder="email@example.com" :class="{'border-danger' : (crudUserRequest.data.validation && crudUserRequest.data.validation.email)}" v-model="crudUserRequest.form.email" v-on:keyup.enter="createUser" />
-                <div class="row">
-                    <div class="col-12 invalid-feedback text-left d-block" v-if="crudUserRequest.data.validation && crudUserRequest.data.validation.email">
-                        {{ crudUserRequest.data.validation.email[0] }}
+            <loading :active="crudUserRequest.loadStatus == 1 || rolesAndPermissionsLoadStatus == 1"></loading>
+            <p v-if="rolesAndPermissionsLoadStatus == 3" class="text-center mb-0">Data load error</p>
+            <template v-else-if="rolesAndPermissionsLoadStatus == 2">
+                <b-form-group>
+                    <label for="email">Email</label>
+                    <b-form-input type="text" placeholder="email@example.com" :class="{'border-danger' : (crudUserRequest.data.validation && crudUserRequest.data.validation.email)}" v-model="crudUserRequest.form.email" v-on:keyup.enter="createUser" />
+                    <div class="row">
+                        <div class="col-12 invalid-feedback text-left d-block" v-if="crudUserRequest.data.validation && crudUserRequest.data.validation.email">
+                            {{ crudUserRequest.data.validation.email[0] }}
+                        </div>
                     </div>
-                </div>
-            </b-form-group>
+                </b-form-group>
 
-            <b-form-group>
-                <label for="password">Password</label>
-                <b-input-group>
-                    <b-input v-model="crudUserRequest.form.password" type="password" :class="{'border-danger' : (crudUserRequest.data.validation && crudUserRequest.data.validation.password)}" placeholder="my_p@ssw0rD" v-on:keyup.enter="createUser"/>
-                    <b-input-group-append is-text class="item-header-text cursor-pointer" @click="togglePasswordVisibility($event)">
-                        <i class="fa fa-eye-slash"></i>
-                    </b-input-group-append>
-                </b-input-group>
-                <div class="row">
-                    <div class="col-12 invalid-feedback text-left d-block" v-if="crudUserRequest.data.validation && crudUserRequest.data.validation.password">
-                        {{ crudUserRequest.data.validation.password[0] }}
+                <b-form-group>
+                    <label for="password">Password</label>
+                    <b-input-group>
+                        <b-input v-model="crudUserRequest.form.password" type="password" :class="{'border-danger' : (crudUserRequest.data.validation && crudUserRequest.data.validation.password)}" placeholder="my_p@ssw0rD" v-on:keyup.enter="createUser"/>
+                        <b-input-group-append is-text class="item-header-text cursor-pointer" @click="togglePasswordVisibility($event)">
+                            <i class="fa fa-eye-slash"></i>
+                        </b-input-group-append>
+                    </b-input-group>
+                    <div class="row">
+                        <div class="col-12 invalid-feedback text-left d-block" v-if="crudUserRequest.data.validation && crudUserRequest.data.validation.password">
+                            {{ crudUserRequest.data.validation.password[0] }}
+                        </div>
                     </div>
-                </div>
-            </b-form-group>
+                </b-form-group>
 
-            <b-form-group>
-                <label for="email_verified_at">Verified at</label>
-                <b-datepicker 
-                    v-model="crudUserRequest.form.email_verified_at" 
-                    placeholder="06/15/2020" 
-                    :date-format-options="{ year: 'numeric', month: '2-digit', day: '2-digit' }"
-                    locale="en"
-                />
-                <div class="row">
-                    <div class="col-12 invalid-feedback text-left d-block" v-if="crudUserRequest.data.validation && crudUserRequest.data.validation.email_verified_at">
-                        {{ crudUserRequest.data.validation.email_verified_at[0] }}
+                <b-form-group>
+                    <label for="email_verified_at">Verified at</label>
+                    <b-datepicker 
+                        v-model="crudUserRequest.form.email_verified_at" 
+                        placeholder="06/15/2020" 
+                        today-button
+                        reset-button
+                        close-button
+                        :date-format-options="{ year: 'numeric', month: '2-digit', day: '2-digit' }"
+                        locale="en"
+                    />
+                    <div class="row">
+                        <div class="col-12 invalid-feedback text-left d-block" v-if="crudUserRequest.data.validation && crudUserRequest.data.validation.email_verified_at">
+                            {{ crudUserRequest.data.validation.email_verified_at[0] }}
+                        </div>
                     </div>
-                </div>
-            </b-form-group>
+                </b-form-group>
 
-            <b-form-group label="Roles">
-                <b-form-checkbox
-                    v-for="option in [{text: 'administrator', value: 1}, {text: 'moderator', value: 2}, {text: 'member', value: 3}]"
-                    v-model="crudUserRequest.form.role_ids"
-                    :key="option.value"
-                    :value="option.value"
-                    name="roles"
-                >
-                    {{ option.text }}
-                </b-form-checkbox>
-                <div class="row">
-                    <div class="col-12 invalid-feedback text-left d-block" v-if="crudUserRequest.data.validation && crudUserRequest.data.validation.role_ids">
-                        {{ crudUserRequest.data.validation.role_ids[0] }}
+                <b-form-group label="Roles">
+                    <b-form-checkbox
+                        v-for="role in rolesAndPermissions.roles"
+                        v-model="crudUserRequest.form.role_ids"
+                        :key="role.id"
+                        :value="role.id"
+                        name="roles"
+                    >
+                        {{ role.name }}
+                    </b-form-checkbox>
+                    <div class="row">
+                        <div class="col-12 invalid-feedback text-left d-block" v-if="crudUserRequest.data.validation && crudUserRequest.data.validation.role_ids">
+                            {{ crudUserRequest.data.validation.role_ids[0] }}
+                        </div>
                     </div>
-                </div>
-            </b-form-group>
+                </b-form-group>
+            </template>
 
             <template v-slot:modal-footer>
                 <b-button v-if="crudUserRequest.action == 'create'" size="md" class="btn btn-action" variant="success" @click="createUser()">
@@ -196,12 +202,26 @@ export default {
             },
             crudUserRequest: {
                 loadStatus: 0,
+                action: '',
+                data: {},
+                form: {
+                    email: '',
+                    password: '',
+                    email_verified_at: null,
+                    role_ids: []
+                }
             }
         }
     },
     computed: {
         user () {
             return this.$store.get('auth/user');
+        },
+        rolesAndPermissions() {
+            return this.$store.get('auth/rolesAndPermissions');
+        },
+        rolesAndPermissionsLoadStatus() {
+            return this.$store.get('auth/rolesAndPermissionsLoadStatus');
         },
     },
     methods: {
@@ -304,6 +324,10 @@ export default {
         this.initCRUDUserModal()
         // Load list of users
         this.getUsers(1, this.listUsersRequest.data.per_page)
+        // Preload permissions (will be used when creating/updating an user)
+        if (this.rolesAndPermissionsLoadStatus != 2 && this.rolesAndPermissionsLoadStatus != 1) {
+            this.$store.dispatch('auth/getRolesAndPermissions')
+        }
     },
 }
 </script>

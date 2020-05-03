@@ -32,7 +32,7 @@ export const AuthUtils = {
                 if (error.response && error.response.status == 401) {
                     vm.handleInvalidAuthState(vm)
                 } else {
-                    vm.$snotify.error("Something went wrong")
+                    vm.$snotify.error("Failed to log out")
                 }
             })
         },

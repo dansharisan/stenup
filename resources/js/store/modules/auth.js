@@ -1,11 +1,12 @@
 import { defaultMutations } from 'vuex-easy-access'
-import { APP_CONFIG } from '../../const.js'
 import AuthAPI from '../../api/auth.js'
 
 const state = {
     user: {},
     userLoadStatus: 0,
-    logoutLoadStatus: 0
+    logoutLoadStatus: 0,
+    rolesAndPermissions: {roles: [], permissions: []},
+    rolesAndPermissionsLoadStatus: 0
 }
 
 // add generate mutation vuex easy access
@@ -15,7 +16,9 @@ const mutations = { ...defaultMutations(state) }
 const getters = {
     getUser: state => () => state.user,
     getUserLoadStatus: state => () => state.userLoadStatus,
-    getLogoutLoadStatus: state => () => state.logoutLoadStatus
+    getLogoutLoadStatus: state => () => state.logoutLoadStatus,
+    getRolesAndPermissions: state => () => state.rolesAndPermissions,
+    getRolesAndPermissionsLoadStatus: state => () => state.rolesAndPermissionsLoadStatus
 }
 
 const actions = {
@@ -30,6 +33,26 @@ const actions = {
         .catch( function( e ) {
             commit('userLoadStatus', 3)
             commit('user', {})
+        })
+    },
+
+    getRolesAndPermissions ({ commit }) {
+        var vm = this._vm
+        commit('rolesAndPermissionsLoadStatus', 1)
+
+        AuthAPI.getRolesAndPermissions()
+        .then((response) => {
+            commit('rolesAndPermissionsLoadStatus', 2)
+            commit('rolesAndPermissions', response.data)
+        })
+        .catch(function(e) {
+            // Handle unauthorized error
+            if (e.response && e.response.status == 401) {
+                vm.handleInvalidAuthState(vm)
+            } else {
+                commit('rolesAndPermissionsLoadStatus', 3)
+                commit('rolesAndPermissions', [])
+            }
         })
     },
 
