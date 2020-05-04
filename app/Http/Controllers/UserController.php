@@ -46,6 +46,14 @@ class UserController extends Controller
     *             description="Successful operation"
     *         ),
     *         @OA\Response(
+    *             response=401,
+    *             description="Unauthorized request"
+    *         ),
+    *         @OA\Response(
+    *             response=403,
+    *             description="No permission"
+    *         ),
+    *         @OA\Response(
     *             response=500,
     *             description="Server error"
     *         ),
@@ -53,11 +61,11 @@ class UserController extends Controller
     */
     public function index(Request $request)
     {
-        // Authorization check
+        // Permission check
         $user = $request->user();
         if (!$user->hasPermissionTo(Enums\PermissionEnum::VIEW_USERS)) {
 
-            return $this->returnUnauthorizedResponse();
+            return $this->forbiddenResponse();
         }
 
         $users = Models\User::orderBy('created_at', 'desc')->paginate($request->query('per_page'));
@@ -86,6 +94,18 @@ class UserController extends Controller
     *             description="Successful operation with no content in return"
     *         ),
     *         @OA\Response(
+    *             response=400,
+    *             description="Invalid user"
+    *         ),
+    *         @OA\Response(
+    *             response=401,
+    *             description="Unauthorized request"
+    *         ),
+    *         @OA\Response(
+    *             response=403,
+    *             description="No permission"
+    *         ),
+    *         @OA\Response(
     *             response=500,
     *             description="Server error"
     *         ),
@@ -102,11 +122,11 @@ class UserController extends Controller
     */
     public function ban(Request $request, $id)
     {
-        // Authorization check
+        // Permission check
         $user = $request->user();
         if (!$user->hasPermissionTo(Enums\PermissionEnum::UPDATE_USERS)) {
 
-            return $this->returnUnauthorizedResponse();
+            return $this->forbiddenResponse();
         }
 
         // Check for data validity
@@ -140,6 +160,18 @@ class UserController extends Controller
     *             description="Successful operation with no content in return"
     *         ),
     *         @OA\Response(
+    *             response=400,
+    *             description="Invalid user"
+    *         ),
+    *         @OA\Response(
+    *             response=401,
+    *             description="Unauthorized request"
+    *         ),
+    *         @OA\Response(
+    *             response=403,
+    *             description="No permission"
+    *         ),
+    *         @OA\Response(
     *             response=500,
     *             description="Server error"
     *         ),
@@ -156,11 +188,11 @@ class UserController extends Controller
     */
     public function unban(Request $request, $id)
     {
-        // Authorization check
+        // Permission check
         $user = $request->user();
         if (!$user->hasPermissionTo(Enums\PermissionEnum::UPDATE_USERS)) {
 
-            return $this->returnUnauthorizedResponse();
+            return $this->forbiddenResponse();
         }
 
         // Check for data validity
@@ -194,6 +226,18 @@ class UserController extends Controller
     *             description="Successful operation with no content in return"
     *         ),
     *         @OA\Response(
+    *             response=400,
+    *             description="Invalid user"
+    *         ),
+    *         @OA\Response(
+    *             response=401,
+    *             description="Unauthorized request"
+    *         ),
+    *         @OA\Response(
+    *             response=403,
+    *             description="No permission"
+    *         ),
+    *         @OA\Response(
     *             response=500,
     *             description="Server error"
     *         ),
@@ -210,11 +254,11 @@ class UserController extends Controller
     */
     public function delete(Request $request, $id)
     {
-        // Authorization check
+        // Permission check
         $user = $request->user();
         if (!$user->hasPermissionTo(Enums\PermissionEnum::DELETE_USERS)) {
 
-            return $this->returnUnauthorizedResponse();
+            return $this->forbiddenResponse();
         }
 
         // Check for data validity
@@ -247,6 +291,14 @@ class UserController extends Controller
     *             description="Successful operation with no content in return"
     *         ),
     *         @OA\Response(
+    *             response=401,
+    *             description="Unauthorized request"
+    *         ),
+    *         @OA\Response(
+    *             response=403,
+    *             description="No permission"
+    *         ),
+    *         @OA\Response(
     *             response=422,
     *             description="Invalid input"
     *         ),
@@ -275,11 +327,11 @@ class UserController extends Controller
     */
     public function batchDelete(Request $request)
     {
-        // Authorization check
+        // Permission check
         $user = $request->user();
         if (!$user->hasPermissionTo(Enums\PermissionEnum::DELETE_USERS)) {
 
-            return $this->returnUnauthorizedResponse();
+            return $this->forbiddenResponse();
         }
 
         // Check for data validity
@@ -325,6 +377,14 @@ class UserController extends Controller
     *             description="Bad request"
     *         ),
     *         @OA\Response(
+    *             response=401,
+    *             description="Unauthorized request"
+    *         ),
+    *         @OA\Response(
+    *             response=403,
+    *             description="No permission"
+    *         ),
+    *         @OA\Response(
     *             response=422,
     *             description="Invalid input"
     *         ),
@@ -368,11 +428,11 @@ class UserController extends Controller
     */
     public function update(Request $request, $id)
     {
-        // Authorization check
+        // Permission check
         $user = $request->user();
         if (!$user->hasPermissionTo(Enums\PermissionEnum::UPDATE_USERS)) {
 
-            return $this->returnUnauthorizedResponse();
+            return $this->forbiddenResponse();
         }
 
         $roleIds = $request->input('role_ids');
@@ -473,6 +533,14 @@ class UserController extends Controller
     *             description="Bad request"
     *         ),
     *         @OA\Response(
+    *             response=401,
+    *             description="Unauthorized request"
+    *         ),
+    *         @OA\Response(
+    *             response=403,
+    *             description="No permission"
+    *         ),
+    *         @OA\Response(
     *             response=422,
     *             description="Invalid input or email taken"
     *         ),
@@ -518,11 +586,11 @@ class UserController extends Controller
     */
     public function store(Request $request)
     {
-        // Authorization check
+        // Permission check
         $user = $request->user();
         if (!$user->hasPermissionTo(Enums\PermissionEnum::CREATE_USERS)) {
 
-            return $this->returnUnauthorizedResponse();
+            return $this->forbiddenResponse();
         }
         
         $input = $request->all();
@@ -613,6 +681,14 @@ class UserController extends Controller
     *             description="Successful operation"
     *         ),
     *         @OA\Response(
+    *             response=401,
+    *             description="Unauthorized request"
+    *         ),
+    *         @OA\Response(
+    *             response=403,
+    *             description="No permission"
+    *         ),
+    *         @OA\Response(
     *             response=500,
     *             description="Server error"
     *         ),
@@ -620,11 +696,11 @@ class UserController extends Controller
     */
     public function registeredUserStats(Request $request)
     {
-        // Authorization check
+        // Permission check
         $user = $request->user();
         if (!$user->hasPermissionTo(Enums\PermissionEnum::VIEW_DASHBOARD)) {
 
-            return $this->returnUnauthorizedResponse();
+            return $this->forbiddenResponse();
         }
 
         $registeredUserStats = [];

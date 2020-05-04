@@ -29,7 +29,7 @@ class UserCest
             'password' => 'password'
         ]);
         $I->sendGET('/api/users');
-        $I->seeUnauthorizedRequestError();
+        $I->seeForbiddenError();
 
         /* Case: When that user is set to have VIEW_ROLES_PERMISSIONS permission, he could get access to this API */
         $memberUser1->roles[0]->givePermissionTo(Enums\PermissionEnum::VIEW_USERS);
@@ -70,7 +70,7 @@ class UserCest
             'password' => 'password'
         ]);
         $I->sendPATCH('/api/users/' . $memberUser->id . '/ban');
-        $I->seeUnauthorizedRequestError();
+        $I->seeForbiddenError();
 
         // When that user is set to have UPDATE_USERS permission, he could get access to this API //
         $memberUser->roles[0]->givePermissionTo(Enums\PermissionEnum::UPDATE_USERS);
@@ -113,7 +113,7 @@ class UserCest
             'password' => 'password'
         ]);
         $I->sendPATCH('/api/users/' . $bannedMemberUser->id . '/unban');
-        $I->seeUnauthorizedRequestError();
+        $I->seeForbiddenError();
 
         // When that user is set to have UPDATE_USERS permission, he could get access to this API //
         $memberUser->roles[0]->givePermissionTo(Enums\PermissionEnum::UPDATE_USERS);
@@ -156,7 +156,7 @@ class UserCest
             'password' => 'password'
         ]);
         $I->sendDELETE('/api/users/' . $memberUser->id);
-        $I->seeUnauthorizedRequestError();
+        $I->seeForbiddenError();
 
         // When that user is set to have DELETE_USERS permission, he could get access to this API //
         $memberUser->roles[0]->givePermissionTo(Enums\PermissionEnum::DELETE_USERS);
@@ -203,7 +203,7 @@ class UserCest
         $I->sendPOST('/api/users/collection:batchDelete', [
             'ids' => "$memberUser1->id,$memberUser2->id"
         ]);
-        $I->seeUnauthorizedRequestError();
+        $I->seeForbiddenError();
 
         // When that user is set to have DELETE_USERS permission, he could get access to this API //
         $memberUser1->roles[0]->givePermissionTo(Enums\PermissionEnum::DELETE_USERS);
@@ -270,7 +270,7 @@ class UserCest
             'status' => Enums\UserStatusEnum::Banned,
             'role_ids' => $roleMember->id . ',' . $roleAdministrator->id
         ]);
-        $I->seeUnauthorizedRequestError();
+        $I->seeForbiddenError();
 
         // When that user is set to have UPDATE_USERS permission, he could get access to this API //
         $memberUser->roles[0]->givePermissionTo(Enums\PermissionEnum::UPDATE_USERS);
@@ -359,7 +359,7 @@ class UserCest
             'status' => Enums\UserStatusEnum::Active,
             'role_ids' => $roleMember->id . ',' . $roleAdministrator->id
         ]);
-        $I->seeUnauthorizedRequestError();
+        $I->seeForbiddenError();
 
         // When that user is set to have CREATE_USERS permission, he could get access to this API //
         $memberUser->roles[0]->givePermissionTo(Enums\PermissionEnum::CREATE_USERS);
@@ -477,7 +477,7 @@ class UserCest
             'password' => 'password'
         ]);
         $I->sendGET('/api/users/registered_user_stats');
-        $I->seeUnauthorizedRequestError();
+        $I->seeForbiddenError();
 
         /* Case: When that user is set to have VIEW_DASHBOARD permission, he could get access to this API */
         $memberUser->roles[0]->givePermissionTo(Enums\PermissionEnum::VIEW_DASHBOARD);

@@ -192,7 +192,7 @@ class AuthController extends Controller
     *             description="Validation error"
     *         ),
     *         @OA\Response(
-    *             response=403,
+    *             response=400,
     *             description="Wrong combination of email and password or email not verified"
     *         ),
     *         @OA\Response(
@@ -253,7 +253,7 @@ class AuthController extends Controller
                                 'code' => Enums\ErrorEnum::AUTH0001,
                                 'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::AUTH0001)
                             ]
-                ], Response::HTTP_UNAUTHORIZED
+                ], Response::HTTP_BAD_REQUEST
             );
         }
 
@@ -289,6 +289,10 @@ class AuthController extends Controller
     *             description="Successful operation with no content in return"
     *         ),
     *         @OA\Response(
+    *             response=401,
+    *             description="Unauthorized request"
+    *         ),
+    *         @OA\Response(
     *             response=500,
     *             description="Server error"
     *         ),
@@ -311,6 +315,10 @@ class AuthController extends Controller
     *         @OA\Response(
     *             response=200,
     *             description="Successful operation"
+    *         ),
+    *         @OA\Response(
+    *             response=401,
+    *             description="Unauthorized request"
     *         ),
     *         @OA\Response(
     *             response=500,
@@ -391,10 +399,6 @@ class AuthController extends Controller
     *         @OA\Response(
     *             response=204,
     *             description="Successful operation with no content in return"
-    *         ),
-    *         @OA\Response(
-    *             response=400,
-    *             description="Invalid input data"
     *         ),
     *         @OA\Response(
     *             response=422,
@@ -647,12 +651,12 @@ class AuthController extends Controller
     *             description="Successful operation with no content in return"
     *         ),
     *         @OA\Response(
-    *             response=422,
-    *             description="Validation error"
+    *             response=400,
+    *             description="Wrong combination of email and password or email not verified"
     *         ),
     *         @OA\Response(
-    *             response=403,
-    *             description="Wrong combination of email and password or email not verified"
+    *             response=422,
+    *             description="Validation error"
     *         ),
     *         @OA\Response(
     *             response=500,
@@ -725,7 +729,7 @@ class AuthController extends Controller
                                 'code' => Enums\ErrorEnum::AUTH0001,
                                 'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::AUTH0001)
                             ]
-                ], Response::HTTP_UNAUTHORIZED
+                ], Response::HTTP_BAD_REQUEST
             );
         }
 
@@ -750,17 +754,25 @@ class AuthController extends Controller
     *             description="Successful operation"
     *         ),
     *         @OA\Response(
+    *             response=401,
+    *             description="Unauthorized request"
+    *         ),
+    *         @OA\Response(
+    *             response=403,
+    *             description="No permission"
+    *         ),
+    *         @OA\Response(
     *             response=500,
     *             description="Server error"
     *         ),
     * )
     */
     public function getRolesAndPermissions(Request $request) {
-        // Authorization check
+        // Permission check
         $user = $request->user();
         if (!$user->hasPermissionTo(Enums\PermissionEnum::VIEW_ROLES_PERMISSIONS)) {
 
-            return $this->returnUnauthorizedResponse();
+            return $this->forbiddenResponse();
         }
 
         $roles = SpatiePermissionModels\Role::get();
@@ -780,17 +792,25 @@ class AuthController extends Controller
     *             description="Successful operation"
     *         ),
     *         @OA\Response(
+    *             response=401,
+    *             description="Unauthorized request"
+    *         ),
+    *         @OA\Response(
+    *             response=403,
+    *             description="No permission"
+    *         ),
+    *         @OA\Response(
     *             response=500,
     *             description="Server error"
     *         ),
     * )
     */
     public function getRolesWithPermissions(Request $request) {
-        // Authorization check
+        // Permission check
         $user = $request->user();
         if (!$user->hasPermissionTo(Enums\PermissionEnum::VIEW_ROLES_PERMISSIONS)) {
 
-            return $this->returnUnauthorizedResponse();
+            return $this->forbiddenResponse();
         }
 
         $roles = SpatiePermissionModels\Role::with('permissions')->get();
@@ -808,6 +828,14 @@ class AuthController extends Controller
     *         @OA\Response(
     *             response=200,
     *             description="Successful operation"
+    *         ),
+    *         @OA\Response(
+    *             response=401,
+    *             description="Unauthorized request"
+    *         ),
+    *         @OA\Response(
+    *             response=403,
+    *             description="No permission"
     *         ),
     *         @OA\Response(
     *             response=422,
@@ -835,11 +863,11 @@ class AuthController extends Controller
     */
     public function createRole(Request $request)
     {
-        // Authorization check
+        // Permission check
         $user = $request->user();
         if (!$user->hasPermissionTo(Enums\PermissionEnum::CREATE_ROLES)) {
 
-            return $this->returnUnauthorizedResponse();
+            return $this->forbiddenResponse();
         }
 
         // Validate input data
@@ -879,6 +907,18 @@ class AuthController extends Controller
     *             description="Successful operation with no content in return"
     *         ),
     *         @OA\Response(
+    *             response=400,
+    *             description="Bad request"
+    *         ),
+    *         @OA\Response(
+    *             response=401,
+    *             description="Unauthorized request"
+    *         ),
+    *         @OA\Response(
+    *             response=403,
+    *             description="No permission"
+    *         ),
+    *         @OA\Response(
     *             response=500,
     *             description="Server error"
     *         ),
@@ -895,11 +935,11 @@ class AuthController extends Controller
     */
     public function deleteRole(Request $request, $id)
     {
-        // Authorization check
+        // Permission check
         $user = $request->user();
         if (!$user->hasPermissionTo(Enums\PermissionEnum::DELETE_ROLES)) {
 
-            return $this->returnUnauthorizedResponse();
+            return $this->forbiddenResponse();
         }
 
         // Check for data validity
@@ -932,6 +972,18 @@ class AuthController extends Controller
     *             description="Successful operation"
     *         ),
     *         @OA\Response(
+    *             response=400,
+    *             description="Bad request"
+    *         ),
+    *         @OA\Response(
+    *             response=401,
+    *             description="Unauthorized request"
+    *         ),
+    *         @OA\Response(
+    *             response=403,
+    *             description="No permission"
+    *         ),
+    *         @OA\Response(
     *             response=422,
     *             description="Validation error"
     *         ),
@@ -957,11 +1009,11 @@ class AuthController extends Controller
     */
     public function updateRolesPermissionsMatrix(Request $request)
     {
-        // Authorization check
+        // Permission check
         $user = $request->user();
         if (!$user->hasPermissionTo(Enums\PermissionEnum::UPDATE_PERMISSIONS)) {
 
-            return $this->returnUnauthorizedResponse();
+            return $this->forbiddenResponse();
         }
 
         // Validate input data
@@ -988,7 +1040,6 @@ class AuthController extends Controller
 
         // Update permissions
         $roles = SpatiePermissionModels\Role::get();
-        $permissions = SpatiePermissionModels\Permission::get();
         DB::beginTransaction();
         try {
             foreach ($matrix as $roleName => $associatedPermissions) {

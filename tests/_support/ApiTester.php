@@ -98,6 +98,13 @@ class ApiTester extends \Codeception\Actor
         $this->seeResponseCodeIs(Response::HTTP_UNAUTHORIZED);
     }
 
+    public function seeForbiddenError()
+    {
+        $this->seeResponseIsJson();
+        $this->seeResponseContainsJson(['error' => ['code' => 'AUTH0015']]);
+        $this->seeResponseCodeIs(Response::HTTP_FORBIDDEN);
+    }
+
     public function seeUnverifiedEmailError()
     {
         $this->seeResponseIsJson();
@@ -109,7 +116,7 @@ class ApiTester extends \Codeception\Actor
     {
         $this->seeResponseIsJson();
         $this->seeResponseContainsJson(['error' => ['code' => 'AUTH0001']]);
-        $this->seeResponseCodeIs(Response::HTTP_UNAUTHORIZED);
+        $this->seeResponseCodeIs(Response::HTTP_BAD_REQUEST);
     }
 
     public function seeValidationError()

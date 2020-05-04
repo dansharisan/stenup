@@ -18,6 +18,7 @@ return [
         ErrorEnum::AUTH0012 => "Invalid role",
         ErrorEnum::AUTH0013 => "Invalid roles-permissions matrix",
         ErrorEnum::AUTH0014 => "Invalid role(s)",
+        ErrorEnum::AUTH0015 => "Forbidden",
         ErrorEnum::USER0001 => "Invalid user",
         ErrorEnum::GENR0001 => "Server error",
         ErrorEnum::GENR0002 => "Invalid input data",

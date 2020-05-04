@@ -131,7 +131,7 @@
                     "422": {
                         "description": "Validation error"
                     },
-                    "403": {
+                    "400": {
                         "description": "Wrong combination of email and password or email not verified"
                     },
                     "500": {
@@ -376,7 +376,7 @@
                     "422": {
                         "description": "Validation error"
                     },
-                    "403": {
+                    "400": {
                         "description": "Wrong combination of email and password or email not verified"
                     },
                     "500": {
@@ -397,6 +397,9 @@
                     "200": {
                         "description": "Successful operation"
                     },
+                    "403": {
+                        "description": "No permission"
+                    },
                     "500": {
                         "description": "Server error"
                     }
@@ -414,6 +417,9 @@
                 "responses": {
                     "200": {
                         "description": "Successful operation"
+                    },
+                    "403": {
+                        "description": "No permission"
                     },
                     "500": {
                         "description": "Server error"
@@ -449,6 +455,9 @@
                     "200": {
                         "description": "Successful operation"
                     },
+                    "403": {
+                        "description": "No permission"
+                    },
                     "422": {
                         "description": "Validation error"
                     },
@@ -480,6 +489,12 @@
                 "responses": {
                     "204": {
                         "description": "Successful operation with no content in return"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "403": {
+                        "description": "No permission"
                     },
                     "500": {
                         "description": "Server error"
@@ -514,6 +529,12 @@
                 "responses": {
                     "200": {
                         "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "403": {
+                        "description": "No permission"
                     },
                     "422": {
                         "description": "Validation error"
@@ -555,6 +576,9 @@
                 "responses": {
                     "200": {
                         "description": "Successful operation"
+                    },
+                    "403": {
+                        "description": "No permission"
                     },
                     "500": {
                         "description": "Server error"
@@ -608,6 +632,9 @@
                     "400": {
                         "description": "Bad request"
                     },
+                    "403": {
+                        "description": "No permission"
+                    },
                     "422": {
                         "description": "Invalid input or email taken"
                     },
@@ -640,6 +667,12 @@
                     "204": {
                         "description": "Successful operation with no content in return"
                     },
+                    "400": {
+                        "description": "Invalid user"
+                    },
+                    "403": {
+                        "description": "No permission"
+                    },
                     "500": {
                         "description": "Server error"
                     }
@@ -669,6 +702,12 @@
                     "204": {
                         "description": "Successful operation with no content in return"
                     },
+                    "400": {
+                        "description": "Invalid user"
+                    },
+                    "403": {
+                        "description": "No permission"
+                    },
                     "500": {
                         "description": "Server error"
                     }
@@ -697,6 +736,12 @@
                 "responses": {
                     "204": {
                         "description": "Successful operation with no content in return"
+                    },
+                    "400": {
+                        "description": "Invalid user"
+                    },
+                    "403": {
+                        "description": "No permission"
                     },
                     "500": {
                         "description": "Server error"
@@ -752,6 +797,9 @@
                     "400": {
                         "description": "Bad request"
                     },
+                    "403": {
+                        "description": "No permission"
+                    },
                     "422": {
                         "description": "Invalid input"
                     },
@@ -792,6 +840,9 @@
                     "204": {
                         "description": "Successful operation with no content in return"
                     },
+                    "403": {
+                        "description": "No permission"
+                    },
                     "422": {
                         "description": "Invalid input"
                     },
@@ -812,6 +863,9 @@
                 "responses": {
                     "200": {
                         "description": "Successful operation"
+                    },
+                    "403": {
+                        "description": "No permission"
                     },
                     "500": {
                         "description": "Server error"
