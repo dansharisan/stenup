@@ -30,6 +30,8 @@ class RolesAndPermissionsSeeder extends Seeder
         SpatiePermissionModels\Permission::create(['name' => Enums\PermissionEnum::UPDATE_ROLES]);
         SpatiePermissionModels\Permission::create(['name' => Enums\PermissionEnum::DELETE_ROLES]);
         SpatiePermissionModels\Permission::create(['name' => Enums\PermissionEnum::UPDATE_PERMISSIONS]);
+        // Extra
+        SpatiePermissionModels\Permission::create(['name' => Enums\PermissionEnum::ACCESS_TELESCOPE]);
 
         /* Roles */
         $adminRole = SpatiePermissionModels\Role::create(['name' => Enums\DefaultRoleEnum::ADMINISTRATOR]); // Highest role should be the first role

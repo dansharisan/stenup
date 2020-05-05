@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use App\Http\Traits as Traits;
+use Illuminate\Support\Facades\App;
 
 class BlockThirdPartyReferers
 {
@@ -17,6 +18,11 @@ class BlockThirdPartyReferers
      */
     public function handle($request, Closure $next)
     {
+        // Allow the request bypass this middleware on Local environment
+        if (App::environment('local')) {
+            return $next($request);
+        }
+
         $acceptedClients = explode(',', \Config::get('app.accepted_clients'));
         $isFromAnAcceptedClient = false;
         if (isset($_SERVER['HTTP_REFERER'])) {

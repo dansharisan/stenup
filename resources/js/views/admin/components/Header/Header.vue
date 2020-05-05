@@ -14,7 +14,7 @@
             <b-nav-item class="px-3" @click="goTo('/api')">
                 API
             </b-nav-item>
-            <b-nav-item class="px-3" @click="goTo('/telescope')">
+            <b-nav-item class="px-3" @click="goTo('/telescope')" v-if="hasPermission(user, PERMISSION_NAME.ACCESS_TELESCOPE)">
                 Telescope
             </b-nav-item>
         </b-navbar-nav>
@@ -25,7 +25,7 @@
 </template>
 <script>
 import HeaderDropdown from './HeaderDropdown.vue'
-
+import { PERMISSION_NAME } from '../../../../const.js'
 export default {
     name      : 'CHeader',
     components: { HeaderDropdown },
@@ -33,6 +33,16 @@ export default {
         fixed: {
             type   : Boolean,
             default: true,
+        },
+    },
+    data: function() {
+        return {
+            PERMISSION_NAME: PERMISSION_NAME
+        }
+    },
+    computed: {
+        user() {
+            return this.$store.get('auth/user');
         },
     },
     mounted () {

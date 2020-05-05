@@ -16,4 +16,5 @@ final class PermissionEnum extends Enum
     const UPDATE_ROLES = 'update-roles';
     const DELETE_ROLES = 'delete-roles';
     const UPDATE_PERMISSIONS = 'update-permissions';
+    const ACCESS_TELESCOPE = 'access-telescope';
 }
