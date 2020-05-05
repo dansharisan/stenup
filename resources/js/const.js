@@ -39,5 +39,6 @@ export const PERMISSION_NAME = {
     UPDATE_ROLES: 'update-roles',
     DELETE_ROLES: 'delete-roles',
     UPDATE_PERMISSIONS: 'update-permissions',
-    ACCESS_TELESCOPE: 'access-telescope'
+    ACCESS_TELESCOPE: 'access-telescope',
+    ACCESS_API: 'access-api'
 }

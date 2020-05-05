@@ -2,7 +2,7 @@
 
 use Laravel\Telescope\Watchers;
 //use Laravel\Telescope\Http\Middleware\Authorize;
-use App\Http\Middleware\JWTAuthenticateForTelescope;
+use App\Http\Middleware\JWTAuthenticate;
 
 return [
 
@@ -77,7 +77,7 @@ return [
     */
 
     'middleware' => [
-        JWTAuthenticateForTelescope::class,
+        JWTAuthenticate::class,
         //'web',
         //Authorize::class,
     ],

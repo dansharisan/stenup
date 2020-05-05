@@ -1,4 +1,5 @@
 <?php
+use App\Http\Middleware\JWTAuthenticate;
 
 return [
     'api' => [
@@ -42,9 +43,9 @@ return [
         |--------------------------------------------------------------------------
          */
         'middleware' => [
-            'api' => [],
+            'api' => [JWTAuthenticate::class],
             'asset' => [],
-            'docs' => [],
+            'docs' => [JWTAuthenticate::class],
             'oauth2_callback' => [],
         ],
     ],

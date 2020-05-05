@@ -28,7 +28,7 @@ And of course unmissable common packages like vuex, vue-router...
 - Default roles and permissions will be added when running RolesAndPermissionsSeeder.
 - There are 3 default roles: ADMINISTRATOR, MODERATOR, and MEMBER
 - You can add new roles and adjust permissions in admin panel.
-- Use PermissionEnum when you want to create/edit permissions. Don't forget to build seeder to add then into database as well.
+- To add a new permission, you might want to modify: PermissionEnum.php, RolesAndPermissionsSeeder.php, const.js. Don't forget to adapt it in the UI as well if needed.
 - AccountSeeder can be used to create admin account. Password is hashed using bcrypt with 10 rounds. You can hash it here: https://bcrypt-generator.com/
 
 # Installation

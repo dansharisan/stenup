@@ -11,7 +11,7 @@
             <b-nav-item class="px-3" @click="$router.push({ name: 'Home' })">
                 Home
             </b-nav-item>
-            <b-nav-item class="px-3" @click="goTo('/api')">
+            <b-nav-item class="px-3" @click="goTo('/api')" v-if="hasPermission(user, PERMISSION_NAME.ACCESS_API)">
                 API
             </b-nav-item>
             <b-nav-item class="px-3" @click="goTo('/telescope')" v-if="hasPermission(user, PERMISSION_NAME.ACCESS_TELESCOPE)">
