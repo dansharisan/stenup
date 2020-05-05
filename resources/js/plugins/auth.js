@@ -14,10 +14,10 @@ const AuthPlugin = {
             return hasPermission
         }
 
-        Vue.prototype.handleInvalidAuthState = function (vm, $toRoute = null) {
-            if ($toRoute) {
-                window.location.href = $toRoute.path;
-            } else {
+        Vue.prototype.handleInvalidAuthState = function (statusCode) {
+            if (statusCode == 401) {
+                window.location.href = '/login';
+            } else if (statusCode == 403) {
                 window.location.reload()
             }
         }

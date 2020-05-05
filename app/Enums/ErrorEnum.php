@@ -22,6 +22,7 @@ final class ErrorEnum extends Enum implements LocalizedEnum
     const AUTH0013 = "AUTH0013";
     const AUTH0014 = "AUTH0014";
     const AUTH0015 = "AUTH0015";
+    const AUTH0016 = "AUTH0016";
     const USER0001 = "USER0001";
     const GENR0001 = "GENR0001";
     const GENR0002 = "GENR0002";

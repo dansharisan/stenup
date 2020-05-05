@@ -17,4 +17,16 @@ trait ResponseTrait {
             ], Response::HTTP_FORBIDDEN
         );
     }
+
+    public function invalidRefererResponse()
+    {
+        return response()->json(
+            ['error' =>
+                        [
+                            'code' => Enums\ErrorEnum::AUTH0016,
+                            'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::AUTH0016)
+                        ]
+            ], Response::HTTP_FORBIDDEN
+        );
+    }
 }

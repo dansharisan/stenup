@@ -35,41 +35,24 @@ function requireAccessPermission(to, from, next) {
     // In case user info is already in the store
     if (store.get('auth/userLoadStatus') == 2) {
         checkRouteAccessLogic()
-    } else {
-        // Not authorized or auth state has changed
-        if (from.name) {
-            Vue.prototype.handleInvalidAuthState(router.app, to)
-        } else {
-            next('/403')
-        }
+    } else if (store.get('auth/userLoadStatus') == 3) {
+        next('/403')
     }
 }
 
 function requireNonAuth (to, from, next) {
-    if (store.get('auth/userLoadStatus') != 1 && store.get('auth/logoutLoadStatus') != 1) {
-        if (store.get('auth/userLoadStatus') != 2) {
-            next()
-        } else {
-            if (from.name) {
-                Vue.prototype.handleInvalidAuthState(router.app)
-            } else {
-                next('/userinfo')
-            }
-        }
+    if (store.get('auth/userLoadStatus') == 3) {
+        next()
+    } else if (store.get('auth/userLoadStatus') == 2 && store.get('auth/logoutLoadStatus') != 1) {
+        next('/userinfo')
     }
 }
 
 function requireAuth (to, from, next) {
-    if (store.get('auth/userLoadStatus') != 1 && store.get('auth/logoutLoadStatus') != 1) {
-        if (store.get('auth/userLoadStatus') == 2) {
-            next()
-        } else {
-            if (from.name) {
-                Vue.prototype.handleInvalidAuthState(router.app)
-            } else {
-                next('/login')
-            }
-        }
+    if (store.get('auth/userLoadStatus') == 2 && store.get('auth/logoutLoadStatus') != 1) {
+        next()
+    } else if (store.get('auth/userLoadStatus') == 3) {
+        next('/login')
     }
 }
 
@@ -190,7 +173,7 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-    if (store.get('auth/userLoadStatus') != 1 && store.get('auth/logoutLoadStatus') != 1) {
+    if (store.get('auth/userLoadStatus') == 0) {
         store.dispatch('auth/getUser')
         var unwatch = store.watch(store.getters['auth/getUserLoadStatus'], n => {
             unwatch()

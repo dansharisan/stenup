@@ -169,8 +169,8 @@ export default {
                     })
                     .catch( function(error) {
                         // Handle unauthorized error
-                        if (error.response && error.response.status == 401) {
-                            vm.handleInvalidAuthState(vm)
+                        if (error.response && (error.response.status == 401 || error.response.status == 403)) {
+                            vm.handleInvalidAuthState(error.response.status)
                         }
                         vm.loadRolesWithPermissions()
                         // Fire notification
@@ -196,8 +196,8 @@ export default {
             })
             .catch( function(error) {
                 // Handle unauthorized error
-                if (error.response && error.response.status == 401) {
-                    vm.handleInvalidAuthState(vm)
+                if (error.response && (error.response.status == 401 || error.response.status == 403)) {
+                            vm.handleInvalidAuthState(error.response.status)
                 } else {
                     vm.crudRoleRequest.loadStatus = 3
                     if (error && error.response) {
@@ -235,8 +235,8 @@ export default {
                     })
                     .catch(function(error) {
                         // Handle unauthorized error
-                        if (error.response && error.response.status == 401) {
-                            vm.handleInvalidAuthState(vm)
+                        if (error.response && (error.response.status == 401 || error.response.status == 403)) {
+                            vm.handleInvalidAuthState(error.response.status)
                         } else {
                             vm.crudRoleRequest.loadStatus = 3
                             if (error && error.response) {
@@ -288,9 +288,9 @@ export default {
             })
             .catch(function(error) {
                 // Handle unauthorized error
-                if (error.response && error.response.status == 401) {
-                    vm.handleInvalidAuthState(vm)
-                } else {
+                if (error.response && (error.response.status == 401 || error.response.status == 403)) {
+                    vm.handleInvalidAuthState(error.response.status)
+                }else {
                     vm.getRolesWithPermissionsRequest.data = {}
                     vm.getRolesWithPermissionsRequest.loadStatus = 3
                 }

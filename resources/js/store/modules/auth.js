@@ -45,13 +45,13 @@ const actions = {
             commit('rolesAndPermissionsLoadStatus', 2)
             commit('rolesAndPermissions', response.data)
         })
-        .catch(function(e) {
+        .catch(function(error) {
             // Handle unauthorized error
-            if (e.response && e.response.status == 401) {
-                vm.handleInvalidAuthState(vm)
+            if (error.response && (error.response.status == 401 || error.response.status == 403)) {
+                vm.handleInvalidAuthState(error.response.status)
             } else {
                 commit('rolesAndPermissionsLoadStatus', 3)
-                commit('rolesAndPermissions', [])
+                commit('rolesAndPermissions', {roles: [], permissions: []})
             }
         })
     },
@@ -63,7 +63,7 @@ const actions = {
             AuthAPI.logout()
             .then((response) => {
                 commit('logoutLoadStatus', 2)
-                commit('userLoadStatus', 0)
+                commit('userLoadStatus', 3)
                 commit('user', {})
                 // Return successful response
                 resolve(response)
