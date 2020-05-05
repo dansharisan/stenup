@@ -21,12 +21,11 @@ class BlockThirdPartyReferers
         $isFromAnAcceptedClient = false;
         if (isset($_SERVER['HTTP_REFERER'])) {
             $refererUrlParts = parse_url($_SERVER['HTTP_REFERER']);
-            $baseRefererUrl = $refererUrlParts["scheme"] . "://" . $refererUrlParts["host"];
+            $baseRefererUrlWithoutPort = $refererUrlParts["scheme"] . "://" . $refererUrlParts["host"];
+            $baseRefererUrl = isset($refererUrlParts["port"]) ? $baseRefererUrlWithoutPort . ":" . $refererUrlParts["port"] : $baseRefererUrlWithoutPort;
 
             foreach ($acceptedClients as $acceptedClient) {
-                $acceptedClientUrlParts = parse_url($acceptedClient);
-                $baseAcceptedClientUrl = $acceptedClientUrlParts["scheme"] . "://" . $acceptedClientUrlParts["host"];
-                if ($baseRefererUrl == $baseAcceptedClientUrl || $baseRefererUrl . '/' == $baseAcceptedClientUrl) {
+                if ($baseRefererUrl == $acceptedClient || $baseRefererUrl . '/' == $acceptedClient) {
                     $isFromAnAcceptedClient = true;
                 }
             }
