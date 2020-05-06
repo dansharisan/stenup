@@ -29,7 +29,7 @@ export const AuthUtils = {
             })
             .catch(function(error) {
                 // Handle unauthorized error
-                if (error.response && (error.response.status == 401 || error.response.status == 403)) {
+                if (error.response && error.response.status) {
                     vm.handleInvalidAuthState(error.response.status)
                 } else {
                     vm.$snotify.error("Failed to log out")

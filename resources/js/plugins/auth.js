@@ -17,7 +17,7 @@ const AuthPlugin = {
         Vue.prototype.handleInvalidAuthState = function (statusCode) {
             if (statusCode == 401) {
                 window.location.href = '/login';
-            } else if (statusCode == 403) {
+            } else {
                 window.location.reload()
             }
         }

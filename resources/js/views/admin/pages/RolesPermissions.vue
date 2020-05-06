@@ -290,7 +290,7 @@ export default {
                 // Handle unauthorized error
                 if (error.response && (error.response.status == 401 || error.response.status == 403)) {
                     vm.handleInvalidAuthState(error.response.status)
-                }else {
+                } else {
                     vm.getRolesWithPermissionsRequest.data = {}
                     vm.getRolesWithPermissionsRequest.loadStatus = 3
                 }
