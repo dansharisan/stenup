@@ -114,11 +114,11 @@
                     </b-button>
                 </template>
                 <template v-else-if="crudUserRequest.action == 'read'">
+                    <b-button variant="link" @click="editUser(crudUserRequest.form.id)">
+                        Edit
+                    </b-button>
                     <b-button size="md" class="btn btn-action" variant="danger" @click="deleteUser(crudUserRequest.form.id)">
                         <span class="text-white">Delete</span>
-                    </b-button>
-                    <b-button size="md" class="btn btn-action" variant="primary" @click="editUser(crudUserRequest.form.id)">
-                        <span class="text-white">Edit</span>
                     </b-button>
                 </template>
             </template>
