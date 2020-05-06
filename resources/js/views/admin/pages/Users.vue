@@ -85,7 +85,7 @@
             <p v-if="listUsersRequest.loadStatus == 3" class="text-center mb-0">Data load error</p>
             <div v-else id="master-table">
                 <div class="row justify-content-between">
-                    <div class="col-2 mb-3">
+                    <div class="col-4 mb-3">
                         <b-input-group class="input-group-sm">
                           <b-form-select
                             @input="onChangePerPage"
@@ -99,7 +99,7 @@
                           />
                         </b-input-group>
                     </div>
-                    <div class="col-2 text-right mb-3">
+                    <div class="col-8 text-right mb-3">
                         <b-button v-if="hasPermission(user, PERMISSION_NAME.CREATE_USERS)" size="md" class="btn btn-action" variant="primary" @click="openCRUDModal('create')">
                             <span class="text-white">Create User</span>
                         </b-button>
