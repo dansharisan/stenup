@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[16],{qglx:function(n,e,t){"use strict";t.r(e);var l=t("KHd+"),s=Object(l.a)({},(function(){var n=this.$createElement;return(this._self._c||n)("div",[this._v("\n    Index page\n")])}),[],!1,null,null,null);e.default=s.exports}}]);
