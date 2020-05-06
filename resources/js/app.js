@@ -13,10 +13,6 @@ Vue.use(Sweetalert)
 import AuthPlugin from './plugins/auth.js'
 Vue.use(AuthPlugin)
 
-// Vuelidate
-import Vuelidate from 'vuelidate'
-Vue.use(Vuelidate)
-
 // Bootstrap vue
 import BootstrapVue from 'bootstrap-vue'
 Vue.use(BootstrapVue)
@@ -72,12 +68,19 @@ const snotifyOptions = {
     toast: {
         position: SnotifyPosition.rightBottom,
         timeout: 1000,
-        showProgressBar: true,
+        showProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true
     }
 }
 Vue.use(Snotify, snotifyOptions)
+
+// Handle vue error
+Vue.config.errorHandler = err => {
+    if (err) {
+        console.error(err)
+    }
+}
 
 export default new Vue({
     el        : '#app',

@@ -20,6 +20,8 @@ export const AuthUtils = {
             var vm = this
             vm.$store.dispatch('auth/logout')
             .then(response => {
+                // Show success message
+                vm.$snotify.success("Logged out successfully")
                 // Only redirect if current page is not Index
                 if (vm.$route.name != 'Index') {
                     vm.$router.push({ name: 'Index' })
@@ -27,10 +29,10 @@ export const AuthUtils = {
             })
             .catch(function(error) {
                 // Handle unauthorized error
-                if (error.response && error.response.status == 401) {
-                    vm.handleInvalidAuthState(vm)
+                if (error.response && error.response.status) {
+                    vm.handleInvalidAuthState(error.response.status)
                 } else {
-                    vm.$snotify.error("Something went wrong")
+                    vm.$snotify.error("Failed to log out")
                 }
             })
         },

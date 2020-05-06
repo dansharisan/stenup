@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
@@ -6,7 +7,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class PasswordChangeSuccess extends Notification implements ShouldQueue
+class PasswordResetSuccessNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -19,6 +20,7 @@ class PasswordChangeSuccess extends Notification implements ShouldQueue
     {
         //
     }
+
     /**
     * Get the notification's delivery channels.
     *
@@ -29,6 +31,7 @@ class PasswordChangeSuccess extends Notification implements ShouldQueue
     {
         return ['mail'];
     }
+
     /**
     * Get the mail representation of the notification.
     *
@@ -38,10 +41,11 @@ class PasswordChangeSuccess extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->line('You have changed your password successfully.')
-            ->line('If you did change your password, no further action is required.')
+            ->line('You have reset your password successfully.')
+            ->line('If you did reset your password, no further action is required.')
             ->line('If you did not do it, then please consider protecting your account.');
     }
+    
     /**
      * Get the array representation of the notification.
      *

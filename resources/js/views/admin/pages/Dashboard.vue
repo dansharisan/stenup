@@ -16,9 +16,7 @@
                             </b-card-body>
                             <card-bar-chart :data="getUserStatsRequest.last7DayStats" label="New user(s)" backgroundColor="rgba(255,255,255,.3)" chartId="card-chart-01" class="chart-wrapper px-3" style="height:70px;" height="70"/>
                         </template>
-                        <template v-else-if="getUserStatsRequest.loadStatus == 3">
-                            <div class="mb-0 mt-0 middle-center" style="height: 152px">Data load error</div>
-                        </template>
+                        <div class="mb-0 mt-0 middle-center" v-else-if="getUserStatsRequest.loadStatus == 3" style="height: 152px">Data load error</div>
                     </b-card>
                 </b-col>
             </b-row>
@@ -55,8 +53,8 @@ export default {
         })
         .catch(error => {
             // Handle unauthorized error
-            if (error.response && error.response.status == 401) {
-                vm.handleInvalidAuthState(vm)
+            if (error.response && (error.response.status == 401 || error.response.status == 403)) {
+                vm.handleInvalidAuthState(error.response.status)
             } else {
                 vm.getUserStatsRequest.loadStatus = 3
             }

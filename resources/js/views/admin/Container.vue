@@ -1,6 +1,5 @@
 <template>
     <div class="app">
-        <vue-snotify></vue-snotify>
         <app-header :fixed="fixedHeader || fixedSidebar" />
         <div class="app-body">
             <sidebar
@@ -9,7 +8,7 @@
             />
             <main class="main">
                 <breadcrumb :list="list" />
-                <div class="container-fluid">
+                <div class="container-fluid avoid-breadcrumb">
                     <router-view />
                 </div>
             </main>

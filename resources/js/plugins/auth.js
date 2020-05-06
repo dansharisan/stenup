@@ -14,35 +14,12 @@ const AuthPlugin = {
             return hasPermission
         }
 
-        Vue.prototype.handleInvalidAuthState = function (vm) {
-            let timerInterval
-            vm.$swal({
-                title: 'Unauthorized',
-                html: "Something went wrong. Either you're not authorized to do this action or your authentication state has changed. We will redirect you to Home page in <b></b> seconds.",
-                timer: 3000,
-                type: 'warning',
-                onBeforeOpen: () => {
-                    vm.$swal.showLoading()
-                    timerInterval = setInterval(() => {
-                        const content = vm.$swal.getContent()
-                        if (content) {
-                            const b = content.querySelector('b')
-                            if (b) {
-                                b.textContent = Math.ceil(parseInt(vm.$swal.getTimerLeft()) / 1000)
-                            }
-                        }
-                    }, 100)
-                },
-                onClose: () => {
-                    clearInterval(timerInterval)
-                }
-            })
-            .then((result) => {
-                /* Read more about handling dismissals below */
-                if (result.dismiss === vm.$swal.DismissReason.timer) {
-                    window.location.replace('/');
-                }
-            })
+        Vue.prototype.handleInvalidAuthState = function (statusCode) {
+            if (statusCode == 401) {
+                window.location.href = '/login';
+            } else {
+                window.location.reload()
+            }
         }
     }
 };

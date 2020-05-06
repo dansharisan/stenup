@@ -58,6 +58,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Accepted Clients
+    |--------------------------------------------------------------------------
+    |
+    | These are client referers that are accepted by the system.
+    | Can be multiple values separated by ',' (see the .env.example file)
+    | Any request sent from other than these referers will be blocked.
+    | *See BlockThirdPartyReferers.php for how we implemented it.
+    |
+    */
+
+    'accepted_clients' => env('ACCEPTED_CLIENTS', 'http://localhost'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

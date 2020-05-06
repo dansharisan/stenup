@@ -40,15 +40,19 @@
                                 class="px-0"
                                 @click="$router.push({ name: 'Dashboard' })"
                                 >
-                                    Go to Admin panel
+                                    Admin panel
                                 </b-button>
                                 <br v-if="hasPermission(user, PERMISSION_NAME.VIEW_DASHBOARD)"/>
-                                <button type="button" class="btn px-0 btn-link" @click="goToHome()">
+                                <b-button variant="link" class="px-0" @click="$router.push({ name: 'PasswordChange' })">
+                                    Change password
+                                </b-button>
+                                <br />
+                                <b-button variant="link" class="px-0" @click="$router.push({ name: 'Home' })">
                                     Back to Home
-                                </button>
+                                </b-button>
                                 <br />
                                 <button type="button" class="btn px-0 btn-link" @click="logout()">
-                                    Logout
+                                    Log out
                                 </button>
                             </b-card-body>
                         </b-card>
@@ -75,11 +79,6 @@ export default {
         user () {
             return this.$store.get('auth/user');
         },
-    },
-    methods: {
-        goToHome () {
-            this.$router.push({ name: 'Home' })
-        }
     },
     mixins:[
         AuthUtils,

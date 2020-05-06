@@ -1,22 +1,27 @@
 <?php
+
 use Symfony\Component\HttpFoundation\Response as Response;
-use App\Models\User;
-use App\Enums\UserStatus;
-use App\Models\PasswordReset;
+use App\Enums as Enums;
+use App\Models as Models;
+use Spatie\Permission\Models as SpatiePermissionModels;
+use App\Http\Traits as Traits;
 use Carbon\Carbon;
-use App\Http\Traits\UtilTrait;
-use App\Enums\DefaultRoleType;
-use App\Enums\PermissionType;
-use Spatie\Permission\Models\Role;
 
 class AuthCest
 {
-    use UtilTrait;
+    use Traits\UtilTrait;
     /**
     * Endpoint: POST /api/auth/login
     **/
     public function login(ApiTester $I)
     {
+        // Prepare data
+        $unverifiedUser = factory(Models\User::class)->create();
+        $bannedMemberUser = $I->generateMemberUser(Enums\UserStatusEnum::Banned);
+        $verifiedUser = factory(Models\User::class)->create([
+            'email_verified_at' => now()
+        ]);
+
         /* Case: Empty email should return validation error */
         $I->sendPOST('/api/auth/login', [
             'email' => '',
@@ -33,13 +38,12 @@ class AuthCest
 
         /* Case: Empty password should return validation error */
         $I->sendPOST('/api/auth/login', [
-            'email' => 'some_email@something.com',
+            'email' => $verifiedUser->email,
             'password' => ''
         ]);
         $I->seeValidationError();
 
         /* Case: Unverified account should not be able to login */
-        $unverifiedUser = factory(User::class)->create();
         $I->sendPOST('/api/auth/login', [
             'email' => $unverifiedUser->email,
             'password' => 'password'
@@ -47,7 +51,6 @@ class AuthCest
         $I->seeUnverifiedEmailError();
 
         /* Case: Banned account should not be able to login */
-        $bannedMemberUser = $I->generateMemberUser(UserStatus::Banned);
         $I->sendPOST('/api/auth/login', [
             'email' => $bannedMemberUser->email,
             'password' => 'password'
@@ -55,9 +58,6 @@ class AuthCest
         $I->seeWrongCredentialOrInvalidAccountError();
 
         /* Case: Wrong credential should return unauthorized response */
-        $verifiedUser = factory(User::class)->create([
-            'email_verified_at' => now()
-        ]);
         $I->sendPOST('/api/auth/login', [
             'email' => $verifiedUser->email,
             'password' => 'wrongpassword'
@@ -78,6 +78,10 @@ class AuthCest
     **/
     public function register(ApiTester $I)
     {
+        // Prepare data
+        $validEmail = 'email@example.com';
+        $existingUser = factory(Models\User::class)->create();
+
         /* Case: Empty email should return validation error */
         $I->sendPOST('/api/auth/register', [
             'email' => '',
@@ -88,7 +92,7 @@ class AuthCest
 
         /* Case: Empty password should return validation error */
         $I->sendPOST('/api/auth/register', [
-            'email' => 'email@example.com',
+            'email' => $validEmail,
             'password' => '',
             'password_confirmation' => 'anything'
         ]);
@@ -96,7 +100,7 @@ class AuthCest
 
         /* Case: Empty password confirmation should return validation error */
         $I->sendPOST('/api/auth/register', [
-            'email' => 'email@example.com',
+            'email' => $validEmail,
             'password' => 'anything',
             'password_confirmation' => ''
         ]);
@@ -112,18 +116,15 @@ class AuthCest
 
         /* Case: Not matching Password and Password confirmation should return validation error */
         $I->sendPOST('/api/auth/register', [
-            'email' => 'email@example.com',
+            'email' => $validEmail,
             'password' => 'anything',
             'password_confirmation' => 'anything1'
         ]);
         $I->seeValidationError();
 
         /* Case: Existing email should return validation error */
-        $user = factory(User::class)->create([
-            'email' => 'myemail@example.com',
-        ]);
         $I->sendPOST('/api/auth/register', [
-            'email' => 'myemail@example.com',
+            'email' => $existingUser->email,
             'password' => 'anything',
             'password_confirmation' => 'anything'
         ]);
@@ -131,12 +132,18 @@ class AuthCest
 
         /* Case: Register successfully */
         $I->sendPOST('/api/auth/register', [
-            'email' => 'email@example.com',
+            'email' => $validEmail,
             'password' => 'anything',
             'password_confirmation' => 'anything'
         ]);
         $I->seeResponseIsJson();
         $I->seeResponseCodeIs(Response::HTTP_OK);
+        // Check if data is properly inserted into database
+        $I->seeInDatabase((new Models\User)->getTable(), [
+            'email' => $validEmail,
+            'email_verified_at' => NULL, // Email is not verified on registration
+            'status' => Enums\UserStatusEnum::Active // Status is Active on registration
+        ]);
     }
 
     /**
@@ -151,7 +158,7 @@ class AuthCest
 
         /* Case: Successfully get user information after login */
         // Login
-        $verifiedUser = factory(User::class)->create([
+        $verifiedUser = factory(Models\User::class)->create([
             'email_verified_at' => now()
         ]);
         $I->sendPOST('/api/auth/login', [
@@ -177,7 +184,7 @@ class AuthCest
     {
         /* Successfully get user information after login */
         // Login
-        $verifiedUser = factory(User::class)->create([
+        $verifiedUser = factory(Models\User::class)->create([
             'email_verified_at' => now()
         ]);
         $I->sendPOST('/api/auth/login', [
@@ -209,7 +216,7 @@ class AuthCest
     {
         // Prepare data: an unactivated user
         $activationToken = $this->quickRandom(60);
-        $verifiedUser = factory(User::class)->create([
+        $unactivatedUser = factory(Models\User::class)->create([
             'activation_token' => $activationToken
         ]);
 
@@ -219,20 +226,27 @@ class AuthCest
 
         /* Case: With correct token, activate user successfully */
         $I->sendGET('/api/auth/register/activate/' . $activationToken);
-        $I->seeResponseIsJson();
-        $I->seeResponseCodeIs(Response::HTTP_OK);
-        $I->seeResponseContainsJson([
-            'user' => [
-              'email' => $verifiedUser->email
-            ]
-        ]);
+        $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
+        // Check if email_verified_at is no longer null
+        $user = Models\User::firstWhere('email', $unactivatedUser->email);
+        $I->assertNotNull($user->email_verified_at);
+        // And activation_token should be null
+        $I->assertNull($user->activation_token);
     }
 
     /**
-    * Endpoint: POST /api/auth/password/token/create
+    * Endpoint: POST /api/auth/register/resend_activation_email
     **/
-    public function createPasswordResetToken(ApiTester $I)
+    public function resendActivationEmail(ApiTester $I)
     {
+        // Prepare data
+        $unactivatedUser = factory(Models\User::class)->create([
+            'activation_token' => $this->quickRandom(60)
+        ]);
+        $activatedUser = factory(Models\User::class)->create([
+            'email_verified_at' => now()
+        ]);
+
         /* Case: Empty email should return validation error */
         $I->sendPOST('/api/auth/password/token/create', [
             'email' => ''
@@ -245,22 +259,78 @@ class AuthCest
         ]);
         $I->seeValidationError();
 
-        /* Case: Non-existing email should return bad request error */
-        $I->sendPOST('/api/auth/password/token/create', [
-            'email' => 'non_existing_email@example.com'
-        ]);
-        $I->seeEmailNotFoundError();
-
-        /* Case: Existing email return a success response */
-        $email = 'real_email@example.com';
-        factory(User::class)->create([
-            'email_verified_at' => now(),
-            'email' => $email
-        ]);
-        $I->sendPOST('/api/auth/password/token/create', [
-            'email' => $email
+        /* Case: Non-existing email should return a success response (but actually no mail was sent)*/
+        $nonExistentEmail = 'non_existing_email@example.com';
+        $I->sendPOST('/api/auth/register/resend_activation_email', [
+            'email' => $nonExistentEmail
         ]);
         $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
+
+        /* Case: Activated user's email should return a success response (but actually no mail was sent)*/
+        $I->sendPOST('/api/auth/register/resend_activation_email', [
+            'email' => $activatedUser->email
+        ]);
+        $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
+        // Activation token shouldn't be updated/filled in the DB
+        $activatedUserFromDB = Models\User::firstWhere('email', $activatedUser->email);
+        $I->assertNotNull($activatedUserFromDB);
+        $I->assertNull($activatedUserFromDB->activation_token);
+
+        /* Case: Unactivated user's email return a success response */
+        $I->sendPOST('/api/auth/register/resend_activation_email', [
+            'email' => $unactivatedUser->email
+        ]);
+        $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
+        // Check if data has been updated in DB
+        $unactivatedUserFromDB = Models\User::firstWhere('email', $unactivatedUser->email);
+        $I->assertNotNull($unactivatedUserFromDB);
+        $I->assertNotEmpty($unactivatedUserFromDB->activation_token);
+        // Activation token should be updated, so different from the old one
+        $I->assertNotEquals($unactivatedUserFromDB->activation_token, $unactivatedUser->activation_token);
+    }
+
+    /**
+    * Endpoint: POST /api/auth/password/token/create
+    **/
+    public function createPasswordResetToken(ApiTester $I)
+    {
+        // Prepare data
+        $user = factory(Models\User::class)->create([
+            'email_verified_at' => now()
+        ]);
+
+        /* Case: Empty email should return validation error */
+        $I->sendPOST('/api/auth/password/token/create', [
+            'email' => ''
+        ]);
+        $I->seeValidationError();
+
+        /* Case: Email not valid should return validation error */
+        $I->sendPOST('/api/auth/password/token/create', [
+            'email' => 'invalid_email'
+        ]);
+        $I->seeValidationError();
+
+        /* Case: Non-existing email should return a success response (but actually no mail was sent)*/
+        $nonExistentEmail = 'non_existing_email@example.com';
+        $I->sendPOST('/api/auth/password/token/create', [
+            'email' => $nonExistentEmail
+        ]);
+        $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
+        // PasswordReset record shouldn't be created in the DB
+        $I->dontSeeInDatabase((new Models\PasswordReset)->getTable(), [
+            'email' => $nonExistentEmail
+        ]);
+
+        /* Case: Existing email return a success response */
+        $I->sendPOST('/api/auth/password/token/create', [
+            'email' => $user->email
+        ]);
+        $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
+        // Check if data in DB
+        $passwordReset = Models\PasswordReset::firstWhere('email', $user->email);
+        $I->assertNotNull($passwordReset);
+        $I->assertNotEmpty($passwordReset->token);
     }
 
     /**
@@ -274,18 +344,18 @@ class AuthCest
         $I->seeInvalidPasswordResetTokenError();
 
         /* Case: expired token should return expired password reset token error */
-        $passwordReset = factory(PasswordReset::class)->create([
-            'updated_at' => Carbon::parse(now())->addMinutes(0 - PasswordReset::PASSWORD_RESET_TOKEN_TIME_VALIDITY_IN_MINUTE - 1)
+        $passwordReset = factory(Models\PasswordReset::class)->create([
+            'updated_at' => Carbon::parse(now())->addMinutes(0 - \Config::get('auth.passwords.users.expire') - 1)
         ]);
         $I->sendGET('/api/auth/password/token/find/' . $passwordReset->token);
         $I->seeExpiredPasswordResetTokenError();
 
         /* Case: valid token should return success response */
-        $passwordReset = factory(PasswordReset::class)->create([
+        $passwordReset = factory(Models\PasswordReset::class)->create([
             'updated_at' => now()
         ]);
         $I->sendGET('/api/auth/password/token/find/' . $passwordReset->token);
-        $I->seeResponseCodeIs(Response::HTTP_OK);
+        $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -295,14 +365,14 @@ class AuthCest
     public function resetPassword(ApiTester $I)
     {
         // Prepare data
-        $user = factory(User::class)->create([
+        $user = factory(Models\User::class)->create([
             'email_verified_at' => now()
         ]);
-        $passwordReset = factory(PasswordReset::class)->create([
+        $passwordReset = factory(Models\PasswordReset::class)->create([
             'updated_at' => now(),
             'email' => $user->email
         ]);
-        $nonExistentUserPasswordReset = factory(PasswordReset::class)->create([
+        $nonExistentUserPasswordReset = factory(Models\PasswordReset::class)->create([
             'updated_at' => now(),
         ]);
 
@@ -386,21 +456,12 @@ class AuthCest
             'password_confirmation' => $newPassword,
             'token' => $passwordReset->token
         ]);
-        $I->seeResponseIsJson();
-        $I->seeResponseCodeIs(Response::HTTP_OK);
-        $I->seeResponseContainsJson([
-            'user' => [
-              'email' => $passwordReset->email
-            ]
-        ]);
-        // That Password Reset token should be deleted right after that process is done
-        $I->sendPATCH('/api/auth/password/reset', [
-            'email' => $passwordReset->email,
-            'password' => $newPassword,
-            'password_confirmation' => $newPassword,
-            'token' => $passwordReset->token
-        ]);
-        $I->seeInvalidTokenOrEmailError();
+        $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
+        // Make sure the new password is different from the before-changed one in DB
+        $updatedUser = Models\User::firstWhere('email', $user->email);
+        $I->assertNotEquals($user->password, $updatedUser->password);
+        // The password reset token record should also be deleted
+        $I->assertNull(Models\PasswordReset::firstWhere('email', $user->email));
         // Should be able to login with the new password
         $I->sendPOST('/api/auth/login', [
             'email' => $user->email,
@@ -417,7 +478,7 @@ class AuthCest
     public function changePassword(ApiTester $I)
     {
         // Prepare data
-        $user = factory(User::class)->create([
+        $user = factory(Models\User::class)->create([
             'email_verified_at' => now()
         ]);
         $currentPassword = 'password'; // Current password is 'password' by default (see UserFactory)
@@ -477,13 +538,10 @@ class AuthCest
             'new_password' => $newPassword,
             'new_password_confirmation' => $newPassword
         ]);
-        $I->seeResponseIsJson();
-        $I->seeResponseCodeIs(Response::HTTP_OK);
-        $I->seeResponseContainsJson([
-            'user' => [
-              'email' => $user->email
-            ]
-        ]);
+        $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
+        // The new password should be different from the before-changed one in DB
+        $updatedUser = Models\User::firstWhere('email', $user->email);
+        $I->assertNotEquals($user->password, $updatedUser->password);
         // Should be able to login with the new password
         $I->sendPOST('/api/auth/login', [
             'email' => $user->email,
@@ -511,10 +569,10 @@ class AuthCest
             'password' => 'password'
         ]);
         $I->sendGET('/api/auth/roles_permissions');
-        $I->seeUnauthorizedRequestError();
+        $I->seeForbiddenError();
 
         /* Case: When that user is set to have VIEW_ROLES_PERMISSIONS permission, he could get access to this API */
-        $memberUser->roles[0]->givePermissionTo(PermissionType::VIEW_ROLES_PERMISSIONS);
+        $memberUser->roles[0]->givePermissionTo(Enums\PermissionEnum::VIEW_ROLES_PERMISSIONS);
         $I->sendGET('/api/auth/roles_permissions');
         $I->seeResponseIsJson();
         $I->seeResponseCodeIs(Response::HTTP_OK);
@@ -523,18 +581,18 @@ class AuthCest
             [
                 'roles' => [
                                 [
-                                    'name' => DefaultRoleType::ADMINISTRATOR
+                                    'name' => Enums\DefaultRoleEnum::ADMINISTRATOR
                                 ],
                                 [
-                                    'name' => DefaultRoleType::MEMBER
+                                    'name' => Enums\DefaultRoleEnum::MEMBER
                                 ]
                             ],
                 'permissions' => [
                                     [
-                                        'name' => PermissionType::VIEW_ROLES_PERMISSIONS
+                                        'name' => Enums\PermissionEnum::VIEW_ROLES_PERMISSIONS
                                     ],
                                     [
-                                        'name' => PermissionType::VIEW_USERS
+                                        'name' => Enums\PermissionEnum::VIEW_USERS
                                     ],
                             ]
             ]
@@ -559,10 +617,10 @@ class AuthCest
             'password' => 'password'
         ]);
         $I->sendGET('/api/auth/roles_w_permissions');
-        $I->seeUnauthorizedRequestError();
+        $I->seeForbiddenError();
 
         /* Case: When that user is set to have VIEW_ROLES_PERMISSIONS permission, he could get access to this API */
-        $memberUser->roles[0]->givePermissionTo(PermissionType::VIEW_ROLES_PERMISSIONS);
+        $memberUser->roles[0]->givePermissionTo(Enums\PermissionEnum::VIEW_ROLES_PERMISSIONS);
         $I->sendGET('/api/auth/roles_w_permissions');
         $I->seeResponseIsJson();
         $I->seeResponseCodeIs(Response::HTTP_OK);
@@ -571,18 +629,18 @@ class AuthCest
             [
                 'roles' => [
                                 [
-                                    'name' => DefaultRoleType::ADMINISTRATOR,
+                                    'name' => Enums\DefaultRoleEnum::ADMINISTRATOR,
                                     'permissions' => [
                                         [
-                                            'name' => PermissionType::VIEW_DASHBOARD
+                                            'name' => Enums\PermissionEnum::VIEW_DASHBOARD
                                         ],
                                     ]
                                 ],
                                 [
-                                    'name' => DefaultRoleType::MEMBER,
+                                    'name' => Enums\DefaultRoleEnum::MEMBER,
                                     'permissions' => [
                                         [
-                                            'name' => PermissionType::VIEW_ROLES_PERMISSIONS
+                                            'name' => Enums\PermissionEnum::VIEW_ROLES_PERMISSIONS
                                         ],
                                     ]
                                 ],
@@ -613,10 +671,10 @@ class AuthCest
         $I->sendPOST('/api/auth/roles' , [
             'role_name' => 'New role'
         ]);
-        $I->seeUnauthorizedRequestError();
+        $I->seeForbiddenError();
 
         // When that user is set to have CREATE_ROLES permission, he could get access to this API //
-        $memberUser->roles[0]->givePermissionTo(PermissionType::CREATE_ROLES);
+        $memberUser->roles[0]->givePermissionTo(Enums\PermissionEnum::CREATE_ROLES);
         /* Case: Empty role_name should return validation error */
         $I->sendPOST('/api/auth/roles' , [
             'role_name' => ''
@@ -625,7 +683,7 @@ class AuthCest
 
         /* Case: Existing role_name should return validation error */
         $I->sendPOST('/api/auth/roles' , [
-            'role_name' => DefaultRoleType::MEMBER
+            'role_name' => Enums\DefaultRoleEnum::MEMBER
         ]);
         $I->seeValidationError();
 
@@ -644,6 +702,10 @@ class AuthCest
                 ],
             ]
         );
+        // Check data in DB
+        $I->seeInDatabase((new SpatiePermissionModels\Role)->getTable(), [
+            'name' => $newRoleName
+        ]);
     }
 
     /**
@@ -652,7 +714,7 @@ class AuthCest
     **/
     public function deleteRole(ApiTester $I) {
         // Prepare data
-        $newRole = factory(Role::class)->create();
+        $newRole = factory(SpatiePermissionModels\Role::class)->create();
         $memberUser = $I->generateMemberUser();
 
         /* Case: Calling the API while not logged in should return unauthorized error */
@@ -665,22 +727,26 @@ class AuthCest
             'password' => 'password'
         ]);
         $I->sendDELETE('/api/auth/roles/' . $newRole->id);
-        $I->seeUnauthorizedRequestError();
+        $I->seeForbiddenError();
 
         // When that user is set to have DELETE_ROLES permission, he could get access to this API //
-        $memberUser->roles[0]->givePermissionTo(PermissionType::DELETE_ROLES);
+        $memberUser->roles[0]->givePermissionTo(Enums\PermissionEnum::DELETE_ROLES);
         /* Case: If 0 is provided, it should return invalid role id error */
         $I->sendDELETE('/api/auth/roles/' . '0');
-        $I->seeInvalidRoleIDError();
+        $I->seeInvalidRoleError();
 
         /* Case: If non-existent ID is provided, it should return invalid role id error */
         $nonExistentRoleId = 999;
         $I->sendDELETE('/api/auth/roles/' . $nonExistentRoleId);
-        $I->seeInvalidRoleIDError();
+        $I->seeInvalidRoleError();
 
         /* Case: Successfully delete the role*/
         $I->sendDELETE('/api/auth/roles/' . $newRole->id);
         $I->seeResponseCodeIs(Response::HTTP_NO_CONTENT);
+        // Check data in DB
+        $I->dontSeeInDatabase((new SpatiePermissionModels\Role)->getTable(), [
+            'name' => $newRole->name
+        ]);
     }
 
     /**
@@ -692,7 +758,7 @@ class AuthCest
         $memberUser = $I->generateMemberUser();
 
         /* Case: Calling the API while not logged in should return unauthorized error */
-        $dumpMatrix = '{"'. DefaultRoleType::MEMBER . '":["' . PermissionType::VIEW_DASHBOARD . '","' . PermissionType::VIEW_ROLES_PERMISSIONS . '"], "' . DefaultRoleType::ADMINISTRATOR . '":["' . PermissionType::UPDATE_PERMISSIONS . '"]}';
+        $dumpMatrix = '{"'. Enums\DefaultRoleEnum::MEMBER . '":["' . Enums\PermissionEnum::VIEW_DASHBOARD . '","' . Enums\PermissionEnum::VIEW_ROLES_PERMISSIONS . '"], "' . Enums\DefaultRoleEnum::ADMINISTRATOR . '":["' . Enums\PermissionEnum::UPDATE_PERMISSIONS . '"]}';
         $I->sendPUT('/api/auth/update_roles_permissions_matrix', [
             'matrix' => $dumpMatrix
         ]);
@@ -706,10 +772,10 @@ class AuthCest
         $I->sendPUT('/api/auth/update_roles_permissions_matrix', [
             'matrix' => $dumpMatrix
         ]);
-        $I->seeUnauthorizedRequestError();
+        $I->seeForbiddenError();
 
         // When that user is set to have DELETE_ROLES permission, he could get access to this API //
-        $memberUser->roles[0]->givePermissionTo(PermissionType::UPDATE_PERMISSIONS);
+        $memberUser->roles[0]->givePermissionTo(Enums\PermissionEnum::UPDATE_PERMISSIONS);
         /* Case: Empty matrix should return validation error */
         $I->sendPUT('/api/auth/update_roles_permissions_matrix', [
             'matrix' => ''
@@ -734,21 +800,21 @@ class AuthCest
             [
                 'roles' => [
                                 [
-                                    'name' => DefaultRoleType::ADMINISTRATOR,
+                                    'name' => Enums\DefaultRoleEnum::ADMINISTRATOR,
                                     'permissions' => [
                                         [
-                                            'name' => PermissionType::UPDATE_PERMISSIONS
+                                            'name' => Enums\PermissionEnum::UPDATE_PERMISSIONS
                                         ],
                                     ]
                                 ],
                                 [
-                                    'name' => DefaultRoleType::MEMBER,
+                                    'name' => Enums\DefaultRoleEnum::MEMBER,
                                     'permissions' => [
                                         [
-                                            'name' => PermissionType::VIEW_DASHBOARD
+                                            'name' => Enums\PermissionEnum::VIEW_DASHBOARD
                                         ],
                                         [
-                                            'name' => PermissionType::VIEW_ROLES_PERMISSIONS
+                                            'name' => Enums\PermissionEnum::VIEW_ROLES_PERMISSIONS
                                         ],
                                     ]
                                 ],
@@ -759,6 +825,6 @@ class AuthCest
         $I->sendPUT('/api/auth/update_roles_permissions_matrix', [
             'matrix' => $dumpMatrix
         ]);
-        $I->seeUnauthorizedRequestError();
+        $I->seeForbiddenError();
     }
 }

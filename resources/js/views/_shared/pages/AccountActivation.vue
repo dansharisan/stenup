@@ -9,25 +9,19 @@
                             <b-card-header><h2 class="m-0">Activate account</h2></b-card-header>
                             <b-card-body>
                                 <p class="text-muted">
-                                    Activating your account
+                                    Activate your account
                                 </p>
-                                <div :class="'alert alert-' + this.notification.type" id="message" v-if="this.notification.message" role="alert">
-                                    {{ this.notification.message }}
+                                <div :class="'alert alert-' + notification.type" id="message" v-if="notification.message" v-html="notification.message" role="alert">
                                 </div>
-                                <b-input-group class="mb-3" v-if="this.form.email">
-                                    <b-input-group-prepend is-text class="item-header-text">
-                                        <span>Email</span>
-                                    </b-input-group-prepend>
-                                    <b-input type="text" class="form-control" :value="form.email" disabled/>
-                                </b-input-group>
                                 <b-row>
                                     <b-col cols="6" class="text-left">
                                         <b-button variant="link" class="px-0" @click="$router.push({ name: 'Login' })">
-                                            Go to Login
+                                            Log in
                                         </b-button>
-                                        <button type="button" class="btn px-0 btn-link" @click="goToHome()">
+                                        <br />
+                                        <b-button variant="link" class="px-0" @click="$router.push({ name: 'Home' })">
                                             Back to Home
-                                        </button>
+                                        </b-button>
                                     </b-col>
                                 </b-row>
                             </b-card-body>
@@ -43,7 +37,7 @@
 import AuthAPI from '../../../api/auth.js'
 
 export default {
-    name: 'ActivateAccount',
+    name: 'AccountActivation',
     data () {
         return {
             notification: {
@@ -56,16 +50,14 @@ export default {
             params:  {
                 token: ''
             },
-            form: {
-                email: null,
-            },
         }
     },
     created () {
         // Get token param from URL
         this.params.token = this.$route.params.token
         if (!this.params.token) {
-            message = 'Token not found'
+            this.notification.type = 'danger'
+            this.notification.message = 'Token not found'
             return false
         }
 
@@ -73,20 +65,15 @@ export default {
         this.activateAccount(this.params.token);
     },
     methods: {
-        goToHome () {
-            this.$router.push({ name: 'Home' })
-        },
-
         activateAccount (token) {
             var vm = this;
             this.activateAccountRequest.status = 1
             AuthAPI.activateAccount(token)
             .then(response => {
                 vm.notification.type = 'success'
-                vm.notification.message = "Your account has been activated successfully. Now you can login."
+                vm.notification.message = "Your account has been activated successfully. You can now login."
                 // Mark request status as loaded succesully
                 vm.activateAccountRequest.status = 2
-                vm.form.email = response.data.user.email
             })
             .catch(error => {
                 // Mark request status as failed to load

@@ -16,5 +16,4 @@ Route::group(['middleware' => 'web'], function () {
 });
 
 Route::get('/{vue_capture?}', 'AppController@index')
-    // ->middleware(['speed'])
     ->where('vue_capture', '[\/\w\.\,\-]*');

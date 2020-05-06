@@ -7,11 +7,11 @@
                 </button>
             </abbr>
         </template>
-        <b-dropdown-header tag="div" class="text-center">
+        <b-dropdown-header class="text-center">
             <strong>{{ user.email }}</strong>
         </b-dropdown-header>
         <b-dropdown-item @click="doLogout()">
-            <i class="fas fa-sign-out-alt" /> Logout
+            <i class="fas fa-sign-out-alt" /> Log out
         </b-dropdown-item>
     </b-nav-item-dropdown>
 </template>

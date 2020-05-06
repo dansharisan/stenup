@@ -1,7 +1,7 @@
 <?php
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
-use App\Models\PasswordReset;
+use App\Models as Models;
 use Faker\Generator as Faker;
 use Illuminate\Support\Str;
 
@@ -16,7 +16,7 @@ use Illuminate\Support\Str;
 |
 */
 
-$factory->define(PasswordReset::class, function (Faker $faker) {
+$factory->define(Models\PasswordReset::class, function (Faker $faker) {
     return [
         'email' => $faker->unique()->safeEmail,
         'token' => Str::random(10),

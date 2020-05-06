@@ -48,11 +48,11 @@ export default {
     PATCH /api/users/{id}/
     To edit an user
     */
-    editUser: function(id, verifiedAt, roleIdsSeq) {
+    editUser: function(id, email_verified_at, role_ids) {
         return axios.patch(APP_CONFIG.API_URL + '/users/' + id,
         {
-            email_verified_at: verifiedAt,
-            role_ids: roleIdsSeq
+            email_verified_at: email_verified_at,
+            role_ids: role_ids
         });
     },
 
@@ -60,14 +60,14 @@ export default {
     POST /api/users/
     To create a new user
     */
-    createUser: function(email, verifiedAt, password, password_confirmation, role_ids) {
+    createUser: function(email, email_verified_at, password, password_confirmation, role_ids) {
         return axios.post(APP_CONFIG.API_URL + '/users',
         {
             email: email,
             password: password,
             password_confirmation: password_confirmation,
             role_ids: role_ids,
-            email_verified_at: verifiedAt
+            email_verified_at: email_verified_at
         });
     },
 

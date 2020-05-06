@@ -28,20 +28,6 @@ class ApiTester extends \Codeception\Actor
         $this->seeResponseCodeIs(Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
-    public function seeInvalidOrNoRoleSelectedError()
-    {
-        $this->seeResponseIsJson();
-        $this->seeResponseContainsJson(['error' => ['code' => 'USER0003']]);
-        $this->seeResponseCodeIs(Response::HTTP_BAD_REQUEST);
-    }
-
-    public function seeInvalidUserIDStringSequenceError()
-    {
-        $this->seeResponseIsJson();
-        $this->seeResponseContainsJson(['error' => ['code' => 'USER0002']]);
-        $this->seeResponseCodeIs(Response::HTTP_BAD_REQUEST);
-    }
-
     public function seeInvalidUserError()
     {
         $this->seeResponseIsJson();
@@ -56,10 +42,17 @@ class ApiTester extends \Codeception\Actor
         $this->seeResponseCodeIs(Response::HTTP_BAD_REQUEST);
     }
 
-    public function seeInvalidRoleIDError()
+    public function seeInvalidRoleError()
     {
         $this->seeResponseIsJson();
         $this->seeResponseContainsJson(['error' => ['code' => 'AUTH0012']]);
+        $this->seeResponseCodeIs(Response::HTTP_BAD_REQUEST);
+    }
+
+    public function seeInvalidRolesError()
+    {
+        $this->seeResponseIsJson();
+        $this->seeResponseContainsJson(['error' => ['code' => 'AUTH0014']]);
         $this->seeResponseCodeIs(Response::HTTP_BAD_REQUEST);
     }
 
@@ -105,6 +98,13 @@ class ApiTester extends \Codeception\Actor
         $this->seeResponseCodeIs(Response::HTTP_UNAUTHORIZED);
     }
 
+    public function seeForbiddenError()
+    {
+        $this->seeResponseIsJson();
+        $this->seeResponseContainsJson(['error' => ['code' => 'AUTH0015']]);
+        $this->seeResponseCodeIs(Response::HTTP_FORBIDDEN);
+    }
+
     public function seeUnverifiedEmailError()
     {
         $this->seeResponseIsJson();
@@ -116,7 +116,7 @@ class ApiTester extends \Codeception\Actor
     {
         $this->seeResponseIsJson();
         $this->seeResponseContainsJson(['error' => ['code' => 'AUTH0001']]);
-        $this->seeResponseCodeIs(Response::HTTP_UNAUTHORIZED);
+        $this->seeResponseCodeIs(Response::HTTP_BAD_REQUEST);
     }
 
     public function seeValidationError()

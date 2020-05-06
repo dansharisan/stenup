@@ -2,7 +2,7 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 use Faker\Generator as Faker;
-use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models as SpatiePermissionModels;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,7 +15,7 @@ use Spatie\Permission\Models\Role;
 |
 */
 
-$factory->define(Role::class, function (Faker $faker) {
+$factory->define(SpatiePermissionModels\Role::class, function (Faker $faker) {
     return [
         'name' => $faker->name,
     ];

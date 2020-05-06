@@ -6,19 +6,16 @@
                     <loading :active="request.status == 1"></loading>
                     <b-card-group>
                         <b-card no-body class="mb-0">
-                            <b-card-header><h2 class="m-0">Login</h2></b-card-header>
+                            <b-card-header><h2 class="m-0">Log in</h2></b-card-header>
                             <b-card-body>
                                 <p class="text-muted">
-                                    Sign In to your account
+                                    Log in to your account
                                 </p>
-                                <div :class="'alert alert-' + this.notification.type" id="message" v-if="this.notification.message" role="alert">
-                                    {{ this.notification.message }}
-                                </div>
                                 <b-input-group class="mb-3">
                                     <b-input-group-prepend is-text class="item-header-text">
                                         <i class="fas fa-at"></i>
                                     </b-input-group-prepend>
-                                    <b-input v-model="form.email" v-on:input="$v.form.email.$touch()" :state="$v.form.email.$dirty ? !$v.form.email.$error : null" type="text" class="form-control" placeholder="Email" v-on:keyup.enter="submit"/>
+                                    <b-input v-model="form.email" type="text" :class="{'border-danger' : (validation && validation.email)}" placeholder="Email" v-on:keyup.enter="submit"/>
                                     <div class="invalid-feedback d-block" v-if="validation && validation.email">
                                         {{ validation.email[0] }}
                                     </div>
@@ -27,26 +24,35 @@
                                     <b-input-group-prepend is-text class="item-header-text">
                                         <i class="fas fa-key"></i>
                                     </b-input-group-prepend>
-                                    <b-input v-model="form.password" v-on:input="$v.form.password.$touch()" :state="$v.form.password.$dirty ? !$v.form.password.$error : null" type="password" class="form-control" placeholder="Password" v-on:keyup.enter="submit"/>
+                                    <b-input v-model="form.password" type="password" :class="{'border-danger' : (validation && validation.password)}" placeholder="Password" v-on:keyup.enter="submit"/>
+                                    <b-input-group-append is-text class="item-header-text cursor-pointer" @click="togglePasswordVisibility($event)">
+                                        <i class="fa fa-eye-slash"></i>
+                                    </b-input-group-append>
                                     <div class="invalid-feedback d-block" v-if="validation && validation.password">
                                         {{ validation.password[0] }}
                                     </div>
                                 </b-input-group>
                                 <b-row>
                                     <b-col cols="6" class="text-left">
-                                        <b-button variant="link" class="px-0" @click="$router.push({ name: 'Register' })">
+                                        <b-button variant="link" class="px-0" @click="$router.push({ name: 'Registration' })">
                                             Register
                                         </b-button>
-                                        <b-button variant="link" class="px-0" @click="$router.push({ name: 'ForgotPassword' })">
+                                        <br />
+                                        <b-button variant="link" class="px-0" @click="$router.push({ name: 'PasswordResetRequest' })">
                                             Forgot password
                                         </b-button>
-                                        <button type="button" class="btn px-0 btn-link" @click="goToHome()">
+                                        <br />
+                                        <b-button variant="link" class="px-0" @click="$router.push({ name: 'AccountActivationRequest' })">
+                                            Activate account
+                                        </b-button>
+                                        <br />
+                                        <b-button variant="link" class="px-0" @click="$router.push({ name: 'Home' })">
                                             Back to Home
-                                        </button>
+                                        </b-button>
                                     </b-col>
                                     <b-col cols="6" class="text-right">
-                                        <b-button variant="primary" class="px-4" @click="submit">
-                                            Login
+                                        <b-button variant="primary" @click="submit">
+                                            Log in
                                         </b-button>
                                     </b-col>
                                 </b-row>
@@ -60,19 +66,17 @@
 </template>
 
 <script>
-import { required, email } from 'vuelidate/lib/validators'
-
+import { DOMUtils } from '../../../mixins/dom-utils.js'
 export default {
     name: 'Login',
+    mixins:[
+        DOMUtils,
+    ],
     data () {
         return {
             form: {
                 email: '',
                 password: '',
-            },
-            notification: {
-                type: 'danger',
-                message: ''
             },
             validation: null,
             request: {
@@ -80,24 +84,10 @@ export default {
             },
         }
     },
-    validations () {
-        return {
-            form: {
-                email: { required, email },
-                password: { required },
-            },
-        }
-    },
     methods: {
-        goToHome() {
-            this.$router.push({ name: 'Home' })
-        },
         submit () {
-            // Validation
-            this.$v.$touch()
             this.login(this.form.email, this.form.password)
         },
-
         login (email, password) {
             var vm = this;
             // Mark request status as loading
@@ -110,19 +100,20 @@ export default {
             .then(res => {
                 // Mark request status as loaded succesully
                 vm.request.status = 2
+                // Show success message
+                vm.$snotify.success("Logged in successfully")
                 // Move to UserInfo page
                 vm.$router.push({ name: 'UserInfo' })
             })
             .catch(error => {
                 // Mark request status as failed to load
                 vm.request.status = 3
-                vm.notification.type = 'danger'
+                // Show error message
                 if (error.response) {
-                    // Show message error
-                    vm.notification.message = error.response.data.error ? error.response.data.error.message : error.response.data.message
                     vm.validation = error.response.data.validation
+                    vm.$snotify.error(error.response.data.error ? error.response.data.error.message : error.response.data.message)
                 } else {
-                    vm.notification.message = "Network error"
+                    vm.$snotify.error("Network error")
                 }
             })
         }

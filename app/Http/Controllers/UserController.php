@@ -3,19 +3,19 @@
 namespace App\Http\Controllers;
 
 use Validator;
-use App\Models\User;
-use App\Enums\Error;
-use App\Enums\UserStatus;
-use App\Enums\PermissionType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Role;
 use Symfony\Component\HttpFoundation\Response as Response;
-use App\Http\Traits\ResponseTrait;
+use App\Http\Traits as Traits;
+use Spatie\Permission\Models as SpatiePermissionModels;
+use App\Enums as Enums;
+use App\Models as Models;
+use App\Rules as Rules;
 
 class UserController extends Controller
 {
-    use ResponseTrait;
+    use Traits\ResponseTrait;
+    
     /**
     * @OA\Get(
     *         path="/api/users",
@@ -46,6 +46,14 @@ class UserController extends Controller
     *             description="Successful operation"
     *         ),
     *         @OA\Response(
+    *             response=401,
+    *             description="Unauthorized request"
+    *         ),
+    *         @OA\Response(
+    *             response=403,
+    *             description="No permission"
+    *         ),
+    *         @OA\Response(
     *             response=500,
     *             description="Server error"
     *         ),
@@ -53,14 +61,14 @@ class UserController extends Controller
     */
     public function index(Request $request)
     {
-        // Authorization check
+        // Permission check
         $user = $request->user();
-        if (!$user->hasPermissionTo(PermissionType::VIEW_USERS)) {
+        if (!$user->hasPermissionTo(Enums\PermissionEnum::VIEW_USERS)) {
 
-            return $this->returnUnauthorizedResponse();
+            return $this->forbiddenResponse();
         }
 
-        $users = User::orderBy('created_at', 'desc')->paginate($request->query('per_page'));
+        $users = Models\User::orderBy('created_at', 'desc')->paginate($request->query('per_page'));
 
         for ($i=0; $i<count($users); $i++) {
             $roleArr = [];
@@ -68,7 +76,7 @@ class UserController extends Controller
                 array_push($roleArr, $role);
             }
             $users[$i]['display_roles'] = implode(", ", $roleArr);
-            $users[$i]['status'] = UserStatus::getKey($users[$i]['status']);
+            $users[$i]['status'] = Enums\UserStatusEnum::getKey($users[$i]['status']);
         }
 
         return response()->json(['users' => $users], Response::HTTP_OK);
@@ -84,6 +92,18 @@ class UserController extends Controller
     *         @OA\Response(
     *             response=204,
     *             description="Successful operation with no content in return"
+    *         ),
+    *         @OA\Response(
+    *             response=400,
+    *             description="Invalid user"
+    *         ),
+    *         @OA\Response(
+    *             response=401,
+    *             description="Unauthorized request"
+    *         ),
+    *         @OA\Response(
+    *             response=403,
+    *             description="No permission"
     *         ),
     *         @OA\Response(
     *             response=500,
@@ -102,27 +122,27 @@ class UserController extends Controller
     */
     public function ban(Request $request, $id)
     {
-        // Authorization check
+        // Permission check
         $user = $request->user();
-        if (!$user->hasPermissionTo(PermissionType::UPDATE_USERS)) {
+        if (!$user->hasPermissionTo(Enums\PermissionEnum::UPDATE_USERS)) {
 
-            return $this->returnUnauthorizedResponse();
+            return $this->forbiddenResponse();
         }
 
         // Check for data validity
-        $user = User::find($id);
+        $user = Models\User::find($id);
         if (!$id || empty($user)) {
             return response()->json(
                 ['error' =>
                             [
-                                'code' => Error::USER0001,
-                                'message' => Error::getDescription(Error::USER0001)
+                                'code' => Enums\ErrorEnum::USER0001,
+                                'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::USER0001)
                             ]
                 ], Response::HTTP_BAD_REQUEST
             );
         }
         // Update the data
-        $user->status = UserStatus::Banned;
+        $user->status = Enums\UserStatusEnum::Banned;
         $user->save();
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
@@ -138,6 +158,18 @@ class UserController extends Controller
     *         @OA\Response(
     *             response=204,
     *             description="Successful operation with no content in return"
+    *         ),
+    *         @OA\Response(
+    *             response=400,
+    *             description="Invalid user"
+    *         ),
+    *         @OA\Response(
+    *             response=401,
+    *             description="Unauthorized request"
+    *         ),
+    *         @OA\Response(
+    *             response=403,
+    *             description="No permission"
     *         ),
     *         @OA\Response(
     *             response=500,
@@ -156,27 +188,27 @@ class UserController extends Controller
     */
     public function unban(Request $request, $id)
     {
-        // Authorization check
+        // Permission check
         $user = $request->user();
-        if (!$user->hasPermissionTo(PermissionType::UPDATE_USERS)) {
+        if (!$user->hasPermissionTo(Enums\PermissionEnum::UPDATE_USERS)) {
 
-            return $this->returnUnauthorizedResponse();
+            return $this->forbiddenResponse();
         }
 
         // Check for data validity
-        $user = User::find($id);
+        $user = Models\User::find($id);
         if (!$id || empty($user)) {
             return response()->json(
                 ['error' =>
                             [
-                                'code' => Error::USER0001,
-                                'message' => Error::getDescription(Error::USER0001)
+                                'code' => Enums\ErrorEnum::USER0001,
+                                'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::USER0001)
                             ]
                 ], Response::HTTP_BAD_REQUEST
             );
         }
         // Update the data
-        $user->status = UserStatus::Active;
+        $user->status = Enums\UserStatusEnum::Active;
         $user->save();
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
@@ -192,6 +224,18 @@ class UserController extends Controller
     *         @OA\Response(
     *             response=204,
     *             description="Successful operation with no content in return"
+    *         ),
+    *         @OA\Response(
+    *             response=400,
+    *             description="Invalid user"
+    *         ),
+    *         @OA\Response(
+    *             response=401,
+    *             description="Unauthorized request"
+    *         ),
+    *         @OA\Response(
+    *             response=403,
+    *             description="No permission"
     *         ),
     *         @OA\Response(
     *             response=500,
@@ -210,21 +254,21 @@ class UserController extends Controller
     */
     public function delete(Request $request, $id)
     {
-        // Authorization check
+        // Permission check
         $user = $request->user();
-        if (!$user->hasPermissionTo(PermissionType::DELETE_USERS)) {
+        if (!$user->hasPermissionTo(Enums\PermissionEnum::DELETE_USERS)) {
 
-            return $this->returnUnauthorizedResponse();
+            return $this->forbiddenResponse();
         }
 
         // Check for data validity
-        $user = User::find($id);
+        $user = Models\User::find($id);
         if (!$id || empty($user)) {
             return response()->json(
                 ['error' =>
                             [
-                                'code' => Error::USER0001,
-                                'message' => Error::getDescription(Error::USER0001)
+                                'code' => Enums\ErrorEnum::USER0001,
+                                'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::USER0001)
                             ]
                 ], Response::HTTP_BAD_REQUEST
             );
@@ -245,6 +289,14 @@ class UserController extends Controller
     *         @OA\Response(
     *             response=204,
     *             description="Successful operation with no content in return"
+    *         ),
+    *         @OA\Response(
+    *             response=401,
+    *             description="Unauthorized request"
+    *         ),
+    *         @OA\Response(
+    *             response=403,
+    *             description="No permission"
     *         ),
     *         @OA\Response(
     *             response=422,
@@ -275,29 +327,36 @@ class UserController extends Controller
     */
     public function batchDelete(Request $request)
     {
-        // Authorization check
+        // Permission check
         $user = $request->user();
-        if (!$user->hasPermissionTo(PermissionType::DELETE_USERS)) {
+        if (!$user->hasPermissionTo(Enums\PermissionEnum::DELETE_USERS)) {
 
-            return $this->returnUnauthorizedResponse();
+            return $this->forbiddenResponse();
         }
 
         // Check for data validity
         $ids = $request->input('ids');
         $idArr = explode(',', $ids);
-        if (empty($ids) || !is_array($idArr) || count($idArr) == 0 || $idArr != array_filter($idArr, 'is_numeric')) {
+
+        // Validate input data
+        $validator = Validator::make(['ids' => $idArr], [
+            'ids' => ['required', new Rules\IntArray]
+        ]);
+        if ($validator->fails()) {
             return response()->json(
-                ['error' =>
-                            [
-                                'code' => Error::USER0002,
-                                'message' => Error::getDescription(Error::USER0002)
-                            ]
-                ], Response::HTTP_BAD_REQUEST
-            );
+            [
+                'error' =>
+                        [
+                            'code' => Enums\ErrorEnum::GENR0002,
+                            'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::GENR0002)
+                        ],
+                'validation' => $validator->errors()
+            ],
+            Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         // Delete selected users
-        User::whereIn('id', $idArr)->delete();
+        Models\User::whereIn('id', $idArr)->delete();
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }
@@ -312,6 +371,22 @@ class UserController extends Controller
     *         @OA\Response(
     *             response=200,
     *             description="Successful operation"
+    *         ),
+    *         @OA\Response(
+    *             response=400,
+    *             description="Bad request"
+    *         ),
+    *         @OA\Response(
+    *             response=401,
+    *             description="Unauthorized request"
+    *         ),
+    *         @OA\Response(
+    *             response=403,
+    *             description="No permission"
+    *         ),
+    *         @OA\Response(
+    *             response=422,
+    *             description="Invalid input"
     *         ),
     *         @OA\Response(
     *             response=500,
@@ -353,37 +428,42 @@ class UserController extends Controller
     */
     public function update(Request $request, $id)
     {
-        // Authorization check
+        // Permission check
         $user = $request->user();
-        if (!$user->hasPermissionTo(PermissionType::UPDATE_USERS)) {
+        if (!$user->hasPermissionTo(Enums\PermissionEnum::UPDATE_USERS)) {
 
-            return $this->returnUnauthorizedResponse();
+            return $this->forbiddenResponse();
         }
 
         $roleIds = $request->input('role_ids');
         $roleIdArr = explode(',', $roleIds);
-        // Check for data validity
-        if (empty($roleIds) || !is_array($roleIdArr) || count($roleIdArr) == 0 || $roleIdArr != array_filter($roleIdArr, 'is_numeric')) {
+        // Validate input data
+        $validator = Validator::make(['role_ids' => $roleIdArr], [
+            'role_ids' => ['required', new Rules\IntArray]
+        ]);
+        if ($validator->fails()) {
             return response()->json(
-                ['error' =>
-                            [
-                                'code' => Error::USER0003,
-                                'message' => Error::getDescription(Error::USER0003)
-                            ]
-                ], Response::HTTP_BAD_REQUEST
-            );
+            [
+                'error' =>
+                        [
+                            'code' => Enums\ErrorEnum::GENR0002,
+                            'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::GENR0002)
+                        ],
+                'validation' => $validator->errors()
+            ],
+            Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         try {
             DB::beginTransaction();
 
-            $user = User::find($id);
+            $user = Models\User::find($id);
             if ($user == null) {
                 return response()->json(
                     ['error' =>
                                 [
-                                    'code' => Error::USER0001,
-                                    'message' => Error::getDescription(Error::USER0001)
+                                    'code' => Enums\ErrorEnum::USER0001,
+                                    'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::USER0001)
                                 ]
                     ], Response::HTTP_BAD_REQUEST
                 );
@@ -402,7 +482,20 @@ class UserController extends Controller
             $roleIdArr = preg_split('/,/', $roleIds, null, PREG_SPLIT_NO_EMPTY);
             if ($roleIdArr && is_array($roleIdArr) && !empty($roleIdArr[0]) && count($roleIdArr) > 0) {
                 foreach ($roleIdArr as $roleId) {
-                    $role = Role::find($roleId);
+                    $role = SpatiePermissionModels\Role::find($roleId);
+                    // Immediately roll back if any role is invalid
+                    if (!$role) {
+                        DB::rollBack();
+
+                        return response()->json(
+                            ['error' =>
+                                        [
+                                            'code' => Enums\ErrorEnum::AUTH0014,
+                                            'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::AUTH0014)
+                                        ]
+                            ], Response::HTTP_BAD_REQUEST
+                        );
+                    }
                     $user->assignRole($role->name);
                 }
             }
@@ -414,8 +507,8 @@ class UserController extends Controller
             return response()->json(
                 ['error' =>
                             [
-                                'code' => Error::GENR0001,
-                                'message' => $e->getMessage()
+                                'code' => Enums\ErrorEnum::GENR0001,
+                                'message' => $e->getMessage(),
                             ]
                 ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
@@ -434,6 +527,18 @@ class UserController extends Controller
     *         @OA\Response(
     *             response=200,
     *             description="Successful operation"
+    *         ),
+    *         @OA\Response(
+    *             response=400,
+    *             description="Bad request"
+    *         ),
+    *         @OA\Response(
+    *             response=401,
+    *             description="Unauthorized request"
+    *         ),
+    *         @OA\Response(
+    *             response=403,
+    *             description="No permission"
     *         ),
     *         @OA\Response(
     *             response=422,
@@ -481,51 +586,40 @@ class UserController extends Controller
     */
     public function store(Request $request)
     {
-        // Authorization check
+        // Permission check
         $user = $request->user();
-        if (!$user->hasPermissionTo(PermissionType::CREATE_USERS)) {
+        if (!$user->hasPermissionTo(Enums\PermissionEnum::CREATE_USERS)) {
 
-            return $this->returnUnauthorizedResponse();
+            return $this->forbiddenResponse();
         }
-
+        
+        $input = $request->all();
         $roleIds = $request->input('role_ids');
         $roleIdArr = explode(',', $roleIds);
-
+        $input['role_ids'] = $roleIdArr;
         // Validate input data
-        $validator = Validator::make($request->all(), [
+        $validator = Validator::make($input, [
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string',
-            'role_ids' => 'required',
+            'role_ids' => ['required', new Rules\IntArray]
         ]);
         if ($validator->fails()) {
             return response()->json(
             [
                 'error' =>
                         [
-                            'code' => Error::GENR0002,
-                            'message' => Error::getDescription(Error::GENR0002)
+                            'code' => Enums\ErrorEnum::GENR0002,
+                            'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::GENR0002)
                         ],
                 'validation' => $validator->errors()
             ],
             Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        // Check for role Id array validity
-        if (!is_array($roleIdArr) || count($roleIdArr) == 0 || $roleIdArr != array_filter($roleIdArr, 'is_numeric')) {
-            return response()->json(
-                ['error' =>
-                            [
-                                'code' => Error::USER0003,
-                                'message' => Error::getDescription(Error::USER0003)
-                            ]
-                ], Response::HTTP_BAD_REQUEST
-            );
-        }
-
         // Create user
         try {
             DB::beginTransaction();
-            $user = new User([
+            $user = new Models\User([
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
             ]);
@@ -541,7 +635,20 @@ class UserController extends Controller
             $roleIdArr = preg_split('/,/', $roleIds, null, PREG_SPLIT_NO_EMPTY);
             if ($roleIdArr && is_array($roleIdArr) && !empty($roleIdArr[0]) && count($roleIdArr) > 0) {
                 foreach ($roleIdArr as $roleId) {
-                    $role = Role::find($roleId);
+                    $role = SpatiePermissionModels\Role::find($roleId);
+                     // Immediately roll back if any role is invalid
+                     if (!$role) {
+                        DB::rollBack();
+
+                        return response()->json(
+                            ['error' =>
+                                        [
+                                            'code' => Enums\ErrorEnum::AUTH0014,
+                                            'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::AUTH0014)
+                                        ]
+                            ], Response::HTTP_BAD_REQUEST
+                        );
+                    }
                     $user->assignRole($role->name);
                 }
             }
@@ -552,7 +659,7 @@ class UserController extends Controller
             return response()->json(
                 ['error' =>
                             [
-                                'code' => Error::GENR0001,
+                                'code' => Enums\ErrorEnum::GENR0001,
                                 'message' => $e->getMessage()
                             ]
                 ], Response::HTTP_INTERNAL_SERVER_ERROR
@@ -574,6 +681,14 @@ class UserController extends Controller
     *             description="Successful operation"
     *         ),
     *         @OA\Response(
+    *             response=401,
+    *             description="Unauthorized request"
+    *         ),
+    *         @OA\Response(
+    *             response=403,
+    *             description="No permission"
+    *         ),
+    *         @OA\Response(
     *             response=500,
     *             description="Server error"
     *         ),
@@ -581,18 +696,18 @@ class UserController extends Controller
     */
     public function registeredUserStats(Request $request)
     {
-        // Authorization check
+        // Permission check
         $user = $request->user();
-        if (!$user->hasPermissionTo(PermissionType::VIEW_DASHBOARD)) {
+        if (!$user->hasPermissionTo(Enums\PermissionEnum::VIEW_DASHBOARD)) {
 
-            return $this->returnUnauthorizedResponse();
+            return $this->forbiddenResponse();
         }
 
         $registeredUserStats = [];
         $last7Days = [];
         $last7DayStats = [];
 
-        $registeredUserStats['total'] = User::count();
+        $registeredUserStats['total'] = Models\User::count();
 
         for ($i=0; $i<7; $i++)
         {
@@ -600,7 +715,7 @@ class UserController extends Controller
         }
 
         foreach ($last7Days as $eachDay) {
-            $totalUsersOfDay = User::whereBetween('created_at', [$eachDay . " 00:00:00", $eachDay . " 23:59:59"])->count();
+            $totalUsersOfDay = Models\User::whereBetween('created_at', [$eachDay . " 00:00:00", $eachDay . " 23:59:59"])->count();
             $last7DayStats[$eachDay] = $totalUsersOfDay;
         }
         $registeredUserStats['last_7_day_stats'] = array_reverse($last7DayStats);

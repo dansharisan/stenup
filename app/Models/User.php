@@ -13,6 +13,8 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
 {
     use Notifiable, HasRoles, SoftDeletes;
 
+    protected $table = 'users';
+    
     protected $dates = ['deleted_at'];
 
     /**

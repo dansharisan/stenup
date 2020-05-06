@@ -3,8 +3,7 @@
 namespace App\Exceptions;
 
 use Exception;
-use App\Enums\Error;
-use Illuminate\Auth\AuthenticationException;
+use App\Enums\ErrorEnum;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Exceptions\TokenBlacklistedException;
@@ -59,8 +58,8 @@ class Handler extends ExceptionHandler
                 return response()->json(
                     ['error' =>
                                 [
-                                    'code' => Error::AUTH0008,
-                                    'message' => Error::getDescription(Error::AUTH0008)
+                                    'code' => ErrorEnum::AUTH0008,
+                                    'message' => ErrorEnum::getDescription(ErrorEnum::AUTH0008)
                                 ]
                     ], $exception->getStatusCode()
                 );
@@ -68,8 +67,8 @@ class Handler extends ExceptionHandler
                 return response()->json(
                     ['error' =>
                                 [
-                                    'code' => Error::AUTH0007,
-                                    'message' => Error::getDescription(Error::AUTH0007)
+                                    'code' => ErrorEnum::AUTH0007,
+                                    'message' => ErrorEnum::getDescription(ErrorEnum::AUTH0007)
                                 ]
                     ], $exception->getStatusCode()
                 );
@@ -77,8 +76,8 @@ class Handler extends ExceptionHandler
                 return response()->json(
                     ['error' =>
                                 [
-                                    'code' => Error::AUTH0009,
-                                    'message' => Error::getDescription(Error::AUTH0009)
+                                    'code' => ErrorEnum::AUTH0009,
+                                    'message' => ErrorEnum::getDescription(ErrorEnum::AUTH0009)
                                 ]
                     ], $exception->getStatusCode()
                 );
@@ -87,8 +86,8 @@ class Handler extends ExceptionHandler
                 return response()->json(
                     ['error' =>
                                 [
-                                    'code' => Error::AUTH0010,
-                                    'message' => Error::getDescription(Error::AUTH0010)
+                                    'code' => ErrorEnum::AUTH0010,
+                                    'message' => ErrorEnum::getDescription(ErrorEnum::AUTH0010)
                                 ]
                     ], Response::HTTP_UNAUTHORIZED
                 );

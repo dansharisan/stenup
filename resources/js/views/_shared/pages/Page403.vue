@@ -13,9 +13,9 @@
                         <p class="text-muted">
                             You're not authorized to access this page.
                         </p>
-                        <button type="button" class="btn px-0 btn-link" @click="goToHome()">
+                        <b-button variant="link" class="px-0" @click="$router.push({ name: 'Home' })">
                             Back to Home
-                        </button>
+                        </b-button>
                     </div>
                     <!-- <b-input-group>
                     <b-input-group-prepend>
@@ -45,10 +45,5 @@
 <script>
 export default {
     name: 'Page403',
-    methods: {
-        goToHome() {
-            this.$router.push({ name: 'Home' })
-        },
-    }
 }
 </script>

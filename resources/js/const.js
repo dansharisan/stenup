@@ -19,11 +19,13 @@ export const COMPONENT_NAME = {
     PAGE_403: "Error 403",
     PAGE_500: "Error 500",
     LOGIN: "Login",
-    REGISTER: "Register",
-    FORGOT_PASSWORD: "ForgotPassword",
-    RESET_PASSWORD: "ResetPassword",
-    ACTIVATE_ACCOUNT: "ActivateAccount",
-    USER_INFO: "UserInfo"
+    REGISTRATION: "Registration",
+    PASSWORD_RESET_REQUEST: "PasswordResetRequest",
+    PASSWORD_RESET: "PasswordReset",
+    ACCOUNT_ACTIVATION_REQUEST: "AccountActivationRequest",
+    ACCOUNT_ACTIVATION: "AccountActivation",
+    USER_INFO: "UserInfo",
+    PASSWORD_CHANGE: "PasswordChange"
 }
 
 export const PERMISSION_NAME = {
@@ -37,4 +39,6 @@ export const PERMISSION_NAME = {
     UPDATE_ROLES: 'update-roles',
     DELETE_ROLES: 'delete-roles',
     UPDATE_PERMISSIONS: 'update-permissions',
+    ACCESS_TELESCOPE: 'access-telescope',
+    ACCESS_API: 'access-api'
 }

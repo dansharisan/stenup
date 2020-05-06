@@ -9,16 +9,15 @@
                             <b-card-header><h2 class="m-0">Forgot password</h2></b-card-header>
                             <b-card-body>
                                 <p class="text-muted">
-                                    Request to reset password
+                                    Request to reset your password
                                 </p>
-                                <div :class="'alert alert-' + this.notification.type" id="message" v-if="this.notification.message" role="alert">
-                                    {{ this.notification.message }}
-                                </div>
-                                <b-input-group class="mb-3">
+                                <b-alert :variant="notification.type" :show="notification.message != null" v-html="notification.message">
+                                </b-alert>
+                                <b-input-group class="mb-3" v-if="request.status != 2">
                                     <b-input-group-prepend is-text class="item-header-text">
                                         <i class="fas fa-at"></i>
                                     </b-input-group-prepend>
-                                    <b-input v-model="form.email" v-on:input="$v.form.email.$touch()" :state="$v.form.email.$dirty ? !$v.form.email.$error : null" type="text" class="form-control" placeholder="Email" v-on:keyup.enter="submit"/>
+                                    <b-input v-model="form.email" type="text" :class="{'border-danger' : (validation && validation.email)}" placeholder="Email" v-on:keyup.enter="submit"/>
                                     <div class="invalid-feedback d-block" v-if="validation && validation.email">
                                         {{ validation.email[0] }}
                                     </div>
@@ -26,14 +25,15 @@
                                 <b-row>
                                     <b-col cols="6" class="text-left">
                                         <b-button variant="link" class="px-0" @click="$router.push({ name: 'Login' })">
-                                            Go to Login
+                                            Log in
                                         </b-button>
-                                        <button type="button" class="btn px-0 btn-link" @click="goToHome()">
+                                        <br />
+                                        <b-button variant="link" class="px-0" @click="$router.push({ name: 'Home' })">
                                             Back to Home
-                                        </button>
+                                        </b-button>
                                     </b-col>
-                                    <b-col cols="6" class="text-right">
-                                        <b-button variant="success" class="px-4" @click="submit">
+                                    <b-col cols="6" class="text-right" v-if="request.status != 2">
+                                        <b-button variant="success" @click="submit">
                                             Request
                                         </b-button>
                                     </b-col>
@@ -48,11 +48,10 @@
 </template>
 
 <script>
-import { required, email } from 'vuelidate/lib/validators'
 import AuthAPI from '../../../api/auth.js'
 
 export default {
-    name: 'ForgotPassword',
+    name: 'PasswordResetRequest',
     data () {
         return {
             form: {
@@ -60,7 +59,7 @@ export default {
             },
             notification: {
                 type: 'danger',
-                message: ''
+                message: null
             },
             validation: null,
             request: {
@@ -68,23 +67,10 @@ export default {
             },
         }
     },
-    validations () {
-        return {
-            form: {
-                email: { required, email }
-            },
-        }
-    },
     methods: {
-        goToHome () {
-            this.$router.push({ name: 'Home' })
-        },
         submit () {
-            // Validation
-            this.$v.$touch()
             this.requestPasswordReset(this.form.email)
         },
-
         requestPasswordReset (email) {
             var vm = this;
             // Mark request status as loading
@@ -92,21 +78,22 @@ export default {
             // Get the access token
             AuthAPI.createPasswordResetToken(email)
             .then(response => {
-                vm.notification.type = 'success'
-                vm.notification.message = "An email has been sent to your email address. Please check for further instructions about resetting password."
+                vm.notification.type = 'info'
+                vm.notification.message = "An email will be sent to <strong>" + vm.form.email + "</strong> if it was previously used to register on our website. Please check that email for further instructions about resetting password."
                 // Mark request status as loaded succesully
                 vm.request.status = 2
+                // Show success message
+                vm.$snotify.success("Requested password reset successfully")
             })
             .catch(error => {
                 // Mark request status as failed to load
                 vm.request.status = 3
-                vm.notification.type = 'danger'
+                // Show error message
                 if (error.response) {
-                    // Show message error
-                    vm.notification.message = error.response.data.error ? error.response.data.error.message : error.response.data.message
                     vm.validation = error.response.data.validation
+                    vm.$snotify.error(error.response.data.error ? error.response.data.error.message : error.response.data.message)
                 } else {
-                    vm.notification.message = "Network error"
+                    vm.$snotify.error("Network error")
                 }
             })
         }

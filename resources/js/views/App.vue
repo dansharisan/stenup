@@ -1,5 +1,6 @@
 <template>
     <div>
+        <vue-snotify></vue-snotify>
         <router-view />
         <div id="page-loading" class="middle-center" v-if="logoutLoadStatus == 1">
             <div>

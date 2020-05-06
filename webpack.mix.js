@@ -1,5 +1,5 @@
 const mix = require('laravel-mix');
-
+const webpack = require('webpack');
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
@@ -12,8 +12,9 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
-    .sass('resources/sass/app.scss', 'public/css')
-    .sourceMaps();
+    .sass('resources/sass/app.scss', 'public/css');
+
+let chunkFilename = mix.inProduction() ? '[name].[chunkhash].js' : '[name].js';
 
 mix.webpackConfig({
     devServer: { disableHostCheck: true },
@@ -22,7 +23,14 @@ mix.webpackConfig({
             '@'         : path.resolve(__dirname, 'resources/js/'),
             'static'    : path.resolve(__dirname, 'resources/static/')
         },
-    }
+    },
+    output: { 
+        chunkFilename: 'js/chunks/' + chunkFilename,
+        publicPath: '/',
+    },
+    plugins: [
+        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
+    ],
 })
 
 if (mix.inProduction())

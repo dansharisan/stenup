@@ -1,5 +1,22 @@
 {
-    "/js/app.js": "/js/app.js?id=6e56954df3e7915542cc",
-    "/css/app.css": "/css/app.css?id=cc0f8f219d3da460033b",
-    "/js/app.js.map": "/js/app.js.map?id=706c4a60f97494038c0d"
+    "/js/app.js": "/js/app.js?id=cd9bc5f4a55663793191",
+    "/css/app.css": "/css/app.css?id=ff4cbeb677b1d931d538",
+    "/js/chunks/accountactivation.ca1ce32e3b5afbe9e2e0.js": "/js/chunks/accountactivation.ca1ce32e3b5afbe9e2e0.js?id=3fdd711b95c161b93062",
+    "/js/chunks/accountactivationrequest.b3f21d3baa4494ed65df.js": "/js/chunks/accountactivationrequest.b3f21d3baa4494ed65df.js?id=5f1fe19b991402dc30f2",
+    "/js/chunks/admin_container.a2bb430723717c5d8b31.js": "/js/chunks/admin_container.a2bb430723717c5d8b31.js?id=5307648175ff05c0701d",
+    "/js/chunks/admin_dashboard.d268021fc5ca3e9e5969.js": "/js/chunks/admin_dashboard.d268021fc5ca3e9e5969.js?id=b29addc96a28d1518097",
+    "/js/chunks/admin_rolespermissions.e2788a7e32249a9c2509.js": "/js/chunks/admin_rolespermissions.e2788a7e32249a9c2509.js?id=0f57761db606fa9f692e",
+    "/js/chunks/admin_users.7cba8ff136d496508d3c.js": "/js/chunks/admin_users.7cba8ff136d496508d3c.js?id=0674e4d4f330dfeaf745",
+    "/js/chunks/login.c6b71068dc1fdfef11bc.js": "/js/chunks/login.c6b71068dc1fdfef11bc.js?id=f1e590cdb1b894a3d9c2",
+    "/js/chunks/page403.82a60633bac89f51ce1d.js": "/js/chunks/page403.82a60633bac89f51ce1d.js?id=933615758b1231ef6bdd",
+    "/js/chunks/page404.feac4c891c70a180a46a.js": "/js/chunks/page404.feac4c891c70a180a46a.js?id=46e807a77f14e943ec87",
+    "/js/chunks/page500.2af3c103c4cca01cfabd.js": "/js/chunks/page500.2af3c103c4cca01cfabd.js?id=811c528bdb867fb3fcc4",
+    "/js/chunks/passwordchange.2a0c4c449c34c10e5b7f.js": "/js/chunks/passwordchange.2a0c4c449c34c10e5b7f.js?id=03cc13700425c97de6b7",
+    "/js/chunks/passwordreset.6b9dbaad559d6f9aa11f.js": "/js/chunks/passwordreset.6b9dbaad559d6f9aa11f.js?id=12c636870d61bb4f68d4",
+    "/js/chunks/passwordresetrequest.dee4154393c27bb160b1.js": "/js/chunks/passwordresetrequest.dee4154393c27bb160b1.js?id=3728c4ddc0e1b021814e",
+    "/js/chunks/registration.53be8b0c5bab4e1fbdde.js": "/js/chunks/registration.53be8b0c5bab4e1fbdde.js?id=d1bdf6340a701643649e",
+    "/js/chunks/user_container.d388223f01d317907148.js": "/js/chunks/user_container.d388223f01d317907148.js?id=0b415cbfc53d54e7e386",
+    "/js/chunks/user_index.70d44442a7b888102615.js": "/js/chunks/user_index.70d44442a7b888102615.js?id=32f23ade5a547d2c82f5",
+    "/js/chunks/userinfo.a4a7d0c0ce66cf2e9b92.js": "/js/chunks/userinfo.a4a7d0c0ce66cf2e9b92.js?id=355b6ba8a62a1edfc7e2",
+    "/js/chunks/vendors~admin_dashboard.6c7044de36f3888ac2bc.js": "/js/chunks/vendors~admin_dashboard.6c7044de36f3888ac2bc.js?id=2ed9e9a69242e4dd495c"
 }

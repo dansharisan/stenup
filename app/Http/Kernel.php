@@ -41,6 +41,7 @@ class Kernel extends HttpKernel
             // TODO: Prevent [Too Many Attempts] issue. Turn on it when on production
             // 'throttle:60,1',
             'bindings',
+            'accepted.clients'
         ],
     ];
 
@@ -63,6 +64,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'jwt.auth' => \App\Http\Middleware\JWTAuthenticate::class,
+        'accepted.clients' => \App\Http\Middleware\BlockThirdPartyReferers::class,
     ];
 
     /**

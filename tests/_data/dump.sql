@@ -2,7 +2,7 @@
 -- Host:                         127.0.0.1
 -- Server version:               5.7.29 - MySQL Community Server (GPL)
 -- Server OS:                    Linux
--- HeidiSQL Version:             10.3.0.5771
+-- HeidiSQL Version:             11.0.0.5937
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -63,17 +63,11 @@ CREATE TABLE IF NOT EXISTS `model_has_roles` (
   CONSTRAINT `model_has_roles_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table stenup_test.model_has_roles: ~7 rows (approximately)
+-- Dumping data for table stenup_test.model_has_roles: ~1 rows (approximately)
 DELETE FROM `model_has_roles`;
 /*!40000 ALTER TABLE `model_has_roles` DISABLE KEYS */;
 INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`) VALUES
-	(1, 'App\\Models\\User', 1),
-	(1, 'App\\Models\\User', 2),
-	(2, 'App\\Models\\User', 3),
-	(3, 'App\\Models\\User', 4),
-	(3, 'App\\Models\\User', 5),
-	(3, 'App\\Models\\User', 6),
-	(3, 'App\\Models\\User', 7);
+	(1, 'App\\Models\\User', 1);
 /*!40000 ALTER TABLE `model_has_roles` ENABLE KEYS */;
 
 -- Dumping structure for table stenup_test.password_resets
@@ -100,22 +94,24 @@ CREATE TABLE IF NOT EXISTS `permissions` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table stenup_test.permissions: ~10 rows (approximately)
+-- Dumping data for table stenup_test.permissions: ~12 rows (approximately)
 DELETE FROM `permissions`;
 /*!40000 ALTER TABLE `permissions` DISABLE KEYS */;
 INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES
-	(1, 'view-dashboard', 'web', '2020-03-01 17:47:40', '2020-03-01 17:47:40'),
-	(2, 'view-users', 'web', '2020-03-01 17:47:40', '2020-03-01 17:47:40'),
-	(3, 'create-users', 'web', '2020-03-01 17:47:40', '2020-03-01 17:47:40'),
-	(4, 'update-users', 'web', '2020-03-01 17:47:40', '2020-03-01 17:47:40'),
-	(5, 'delete-users', 'web', '2020-03-01 17:47:40', '2020-03-01 17:47:40'),
-	(6, 'view-roles-permissions', 'web', '2020-03-01 17:47:40', '2020-03-01 17:47:40'),
-	(7, 'create-roles', 'web', '2020-03-01 17:47:40', '2020-03-01 17:47:40'),
-	(8, 'update-roles', 'web', '2020-03-01 17:47:40', '2020-03-01 17:47:40'),
-	(9, 'delete-roles', 'web', '2020-03-01 17:47:40', '2020-03-01 17:47:40'),
-	(10, 'update-permissions', 'web', '2020-03-01 17:47:40', '2020-03-01 17:47:40');
+	(1, 'view-dashboard', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06'),
+	(2, 'view-users', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06'),
+	(3, 'create-users', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06'),
+	(4, 'update-users', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06'),
+	(5, 'delete-users', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06'),
+	(6, 'view-roles-permissions', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06'),
+	(7, 'create-roles', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06'),
+	(8, 'update-roles', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06'),
+	(9, 'delete-roles', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06'),
+	(10, 'update-permissions', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06'),
+	(11, 'access-telescope', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06'),
+	(12, 'access-api', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06');
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 
 -- Dumping structure for table stenup_test.roles
@@ -127,15 +123,15 @@ CREATE TABLE IF NOT EXISTS `roles` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table stenup_test.roles: ~3 rows (approximately)
 DELETE FROM `roles`;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
 INSERT INTO `roles` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES
-	(1, 'administrator', 'web', '2020-03-01 17:47:40', '2020-03-01 17:47:40'),
-	(2, 'moderator', 'web', '2020-03-01 17:47:40', '2020-03-01 17:47:40'),
-	(3, 'member', 'web', '2020-03-01 17:47:40', '2020-03-01 17:47:40');
+	(1, 'administrator', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06'),
+	(2, 'moderator', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06'),
+	(3, 'member', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06');
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 
 -- Dumping structure for table stenup_test.role_has_permissions
@@ -149,7 +145,7 @@ CREATE TABLE IF NOT EXISTS `role_has_permissions` (
   CONSTRAINT `role_has_permissions_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table stenup_test.role_has_permissions: ~12 rows (approximately)
+-- Dumping data for table stenup_test.role_has_permissions: ~14 rows (approximately)
 DELETE FROM `role_has_permissions`;
 /*!40000 ALTER TABLE `role_has_permissions` DISABLE KEYS */;
 INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
@@ -163,6 +159,8 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 	(8, 1),
 	(9, 1),
 	(10, 1),
+	(11, 1),
+	(12, 1),
 	(1, 2),
 	(2, 2);
 /*!40000 ALTER TABLE `role_has_permissions` ENABLE KEYS */;
@@ -183,7 +181,7 @@ CREATE TABLE IF NOT EXISTS `telescope_entries` (
   KEY `telescope_entries_batch_id_index` (`batch_id`),
   KEY `telescope_entries_type_should_display_on_index_index` (`type`,`should_display_on_index`),
   KEY `telescope_entries_family_hash_index` (`family_hash`)
-) ENGINE=InnoDB AUTO_INCREMENT=605 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table stenup_test.telescope_entries: ~0 rows (approximately)
 DELETE FROM `telescope_entries`;
@@ -231,19 +229,13 @@ CREATE TABLE IF NOT EXISTS `users` (
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_email_unique` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table stenup_test.users: ~7 rows (approximately)
+-- Dumping data for table stenup_test.users: ~1 rows (approximately)
 DELETE FROM `users`;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` (`id`, `email`, `email_verified_at`, `password`, `status`, `activation_token`, `remember_token`, `created_at`, `updated_at`, `deleted_at`) VALUES
-	(1, 'dansharisan@gmail.com', '2019-01-01 17:47:40', '$2y$10$kONctkXHfXNakypS40w6S.k/WIitrpFDng3ObG8O9fmiH8yEC1uWu', 1, NULL, 'euhfEUlxeb', '2019-01-01 17:47:40', '2019-01-01 17:47:40', NULL),
-	(2, 'administrator@test.com', '2020-02-02 17:50:20', '$2y$10$EmgLlPenWPcGkTg876M/x.WifvJi3VlyBw8eCYDH1PkcsFEq2RNEK', 1, NULL, NULL, '2020-02-02 17:50:20', '2020-02-02 17:50:20', NULL),
-	(3, 'moderator@test.com', '2020-02-03 17:51:29', '$2y$10$ywrcw.TXaNeuZC.3J19yNOlrMShg3kZ.p1KPVkMo8H/S0nJBCwlKu', 1, NULL, NULL, '2020-02-03 17:51:29', '2020-02-03 17:51:29', NULL),
-	(4, 'member@test.com', '2020-02-12 17:51:30', '$2y$10$sgIfgsSxHTVLrQ8HRPnz4O1R/klnxZJ5QtrTFNWlWgwuHT/JtHJ3q', 1, NULL, NULL, '2020-02-12 17:51:30', '2020-02-12 17:51:30', NULL),
-	(5, 'unverified_member@test.com', NULL, '$2y$10$G1f380xLy5k8u0eQha.pBuu5nBwjTX4cLsEXa93nwIHwCuMcq/WIW', 1, 'UHnGP0MCsbmq9NrWTg6Y3nhTaX4greBxoykd8lf85WIU2AXEiRbKNSy8XL70', NULL, '2020-03-07 17:52:24', '2020-03-07 17:52:24', NULL),
-	(6, 'inactive_member@test.com', '2020-03-01 17:55:36', '$2y$10$eliY1oi7sH/y7bKA4sr5B.Onz/Zj6pefGHVl5moTf2uRw/075vPk.', 0, NULL, NULL, '2020-03-01 17:55:36', '2020-03-01 17:55:36', NULL),
-	(7, 'banned_member@test.com', '2019-03-03 17:55:45', '$2y$10$3HuYgpUe.zQlzSygujmMTe7guxnct5RVnvCDo3FXxZ2Wn/CPtLcYy', 2, NULL, NULL, '2019-03-03 17:55:45', '2019-03-03 17:55:45', NULL);
+	(1, 'dansharisan@gmail.com', '2020-05-04 23:06:07', '$2y$10$kONctkXHfXNakypS40w6S.k/WIitrpFDng3ObG8O9fmiH8yEC1uWu', 1, NULL, '41zy7JWNDp', '2020-05-04 23:06:07', '2020-05-04 23:06:07', NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

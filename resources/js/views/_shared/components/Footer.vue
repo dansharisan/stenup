@@ -3,7 +3,7 @@
         <span>
             <a href="https://github.com/dansharisan/StenUp">
                 StenUp
-            </a> &copy; 2019 Sten Le
+            </a> &copy; 2019-2020 Sten Le
         </span>
         <span class="ml-auto">
             Powered by <a href="http://coreui.io">

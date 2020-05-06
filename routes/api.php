@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
 Route::group([
     // Prefixed with /auth
     'prefix' => 'auth',
@@ -9,6 +7,7 @@ Route::group([
     Route::post('login', 'AuthController@login');
     Route::post('register', 'AuthController@register');
     Route::get('register/activate/{token}', 'AuthController@activate');
+    Route::post('register/resend_activation_email', 'AuthController@resendActivationEmail');
 
     // Requires Authorization
     Route::group([

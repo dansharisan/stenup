@@ -1,6 +1,5 @@
 <template>
     <header class="app-header navbar">
-        <vue-snotify></vue-snotify>
         <button class="navbar-toggler mobile-sidebar-toggler d-lg-none" type="button" @click="mobileSidebarToggle">
             <span class="navbar-toggler-icon" />
         </button>
@@ -12,8 +11,11 @@
             <b-nav-item class="px-3" @click="$router.push({ name: 'Home' })">
                 Home
             </b-nav-item>
-            <b-nav-item class="px-3" @click="goTo('/api')">
+            <b-nav-item class="px-3" @click="goTo('/api')" v-if="hasPermission(user, PERMISSION_NAME.ACCESS_API)">
                 API
+            </b-nav-item>
+            <b-nav-item class="px-3" @click="goTo('/telescope')" v-if="hasPermission(user, PERMISSION_NAME.ACCESS_TELESCOPE)">
+                Telescope
             </b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
@@ -23,7 +25,7 @@
 </template>
 <script>
 import HeaderDropdown from './HeaderDropdown.vue'
-
+import { PERMISSION_NAME } from '../../../../const.js'
 export default {
     name      : 'CHeader',
     components: { HeaderDropdown },
@@ -31,6 +33,16 @@ export default {
         fixed: {
             type   : Boolean,
             default: true,
+        },
+    },
+    data: function() {
+        return {
+            PERMISSION_NAME: PERMISSION_NAME
+        }
+    },
+    computed: {
+        user() {
+            return this.$store.get('auth/user');
         },
     },
     mounted () {
