@@ -1,83 +1,126 @@
 <template>
     <div>
-        <b-modal id="crud-user-modal" ref="crud-user-modal" modal-class="text-left" centered>
+        <b-modal id="user-modal" ref="user-modal" modal-class="text-left" centered>
             <template v-slot:modal-header="{ close }">
-                <h5 class="modal-title" v-if="crudUserRequest.action == 'create'">Create new user</h5>
+                <h5 class="modal-title" v-if="crudUserRequest.action == 'create'">Create user</h5>
                 <h5 class="modal-title" v-else-if="crudUserRequest.action == 'update'">Update user</h5>
+                <h5 class="modal-title" v-else-if="crudUserRequest.action == 'read'">Read user</h5>
                 <button type="button" aria-label="Close" class="close" @click="close()">×</button>
             </template>
             
-            <loading :active="crudUserRequest.loadStatus == 1 || rolesAndPermissionsLoadStatus == 1"></loading>
-            <p v-if="rolesAndPermissionsLoadStatus == 3" class="text-center mb-0">Data load error</p>
-            <template v-else-if="rolesAndPermissionsLoadStatus == 2">
-                <b-form-group>
-                    <label for="email">Email</label>
-                    <b-form-input type="text" placeholder="email@example.com" :class="{'border-danger' : (crudUserRequest.data.validation && crudUserRequest.data.validation.email)}" v-model="crudUserRequest.form.email" v-on:keyup.enter="createUser" />
-                    <div class="row">
-                        <div class="col-12 invalid-feedback text-left d-block" v-if="crudUserRequest.data.validation && crudUserRequest.data.validation.email">
-                            {{ crudUserRequest.data.validation.email[0] }}
-                        </div>
-                    </div>
-                </b-form-group>
+            <loading :active="crudUserRequest.loadStatus == 1 || (rolesAndPermissionsLoadStatus == 1 && crudUserRequest.action != 'read')"></loading>
+            <template v-if="crudUserRequest.action == 'read'">
+                <dl class="row mb-0">
+                    <dt class="col-4 text-right">ID</dt>
+                    <dd class="col-8">{{ crudUserRequest.form.id }}</dd>
 
-                <b-form-group>
-                    <label for="password">Password</label>
-                    <b-input-group>
-                        <b-input v-model="crudUserRequest.form.password" type="password" :class="{'border-danger' : (crudUserRequest.data.validation && crudUserRequest.data.validation.password)}" placeholder="my_p@ssw0rD" v-on:keyup.enter="createUser"/>
-                        <b-input-group-append is-text class="item-header-text cursor-pointer" @click="togglePasswordVisibility($event)">
-                            <i class="fa fa-eye-slash"></i>
-                        </b-input-group-append>
-                    </b-input-group>
-                    <div class="row">
-                        <div class="col-12 invalid-feedback text-left d-block" v-if="crudUserRequest.data.validation && crudUserRequest.data.validation.password">
-                            {{ crudUserRequest.data.validation.password[0] }}
-                        </div>
-                    </div>
-                </b-form-group>
+                    <dt class="col-4 text-right">Email</dt>
+                    <dd class="col-8">{{ crudUserRequest.form.email }}</dd>
 
-                <b-form-group>
-                    <label for="email_verified_at">Verified at</label>
-                    <b-datepicker 
-                        v-model="crudUserRequest.form.email_verified_at" 
-                        placeholder="06/15/2020" 
-                        today-button
-                        reset-button
-                        close-button
-                        :date-format-options="{ year: 'numeric', month: '2-digit', day: '2-digit' }"
-                        locale="en"
-                    />
-                    <div class="row">
-                        <div class="col-12 invalid-feedback text-left d-block" v-if="crudUserRequest.data.validation && crudUserRequest.data.validation.email_verified_at">
-                            {{ crudUserRequest.data.validation.email_verified_at[0] }}
-                        </div>
-                    </div>
-                </b-form-group>
+                    <dt class="col-4 text-right">Role(s)</dt>
+                    <dd class="col-8">{{ crudUserRequest.form.display_roles }}</dd>
 
-                <b-form-group label="Roles">
-                    <b-form-checkbox
-                        v-for="role in rolesAndPermissions.roles"
-                        v-model="crudUserRequest.form.role_ids"
-                        :key="role.id"
-                        :value="role.id"
-                        name="roles"
-                    >
-                        {{ role.name }}
-                    </b-form-checkbox>
-                    <div class="row">
-                        <div class="col-12 invalid-feedback text-left d-block" v-if="crudUserRequest.data.validation && crudUserRequest.data.validation.role_ids">
-                            {{ crudUserRequest.data.validation.role_ids[0] }}
+                    <dt class="col-4 text-right">Verified at</dt>
+                    <dd class="col-8">{{ crudUserRequest.form.email_verified_at }}</dd>
+
+                    <dt class="col-4 text-right">Status</dt>
+                    <dd class="col-8">
+                        <b-badge :variant="getBadge(crudUserRequest.form.status)">
+                            {{ crudUserRequest.form.status }}
+                        </b-badge>
+                    </dd>
+
+                    <dt class="col-4 text-right">Registered at</dt>
+                    <dd class="col-8">{{ crudUserRequest.form.created_at }}</dd>
+
+                    <dt class="col-4 text-right">Updated at</dt>
+                    <dd class="col-8">{{ crudUserRequest.form.updated_at }}</dd>
+                </dl>
+            </template>
+            <template v-else-if="crudUserRequest.action == 'create' || crudUserRequest.action == 'update'">
+                <p v-if="rolesAndPermissionsLoadStatus == 3" class="text-center mb-0">Data load error</p>
+                <template v-else-if="rolesAndPermissionsLoadStatus == 2">
+                    <b-form-group>
+                        <label for="email">Email</label>
+                        <b-form-input type="text" placeholder="email@example.com" :class="{'border-danger' : (crudUserRequest.data.validation && crudUserRequest.data.validation.email)}" v-model="crudUserRequest.form.email" v-on:keyup.enter="createUser" />
+                        <div class="row">
+                            <div class="col-12 invalid-feedback text-left d-block" v-if="crudUserRequest.data.validation && crudUserRequest.data.validation.email">
+                                {{ crudUserRequest.data.validation.email[0] }}
+                            </div>
                         </div>
-                    </div>
-                </b-form-group>
+                    </b-form-group>
+
+                    <b-form-group>
+                        <label for="password">Password</label>
+                        <b-input-group>
+                            <b-input v-model="crudUserRequest.form.password" type="password" :class="{'border-danger' : (crudUserRequest.data.validation && crudUserRequest.data.validation.password)}" placeholder="my_p@ssw0rD" v-on:keyup.enter="createUser"/>
+                            <b-input-group-append is-text class="item-header-text cursor-pointer" @click="togglePasswordVisibility($event)">
+                                <i class="fa fa-eye-slash"></i>
+                            </b-input-group-append>
+                        </b-input-group>
+                        <div class="row">
+                            <div class="col-12 invalid-feedback text-left d-block" v-if="crudUserRequest.data.validation && crudUserRequest.data.validation.password">
+                                {{ crudUserRequest.data.validation.password[0] }}
+                            </div>
+                        </div>
+                    </b-form-group>
+
+                    <b-form-group>
+                        <label for="email_verified_at">Verified at</label>
+                        <b-datepicker 
+                            v-model="crudUserRequest.form.email_verified_at" 
+                            placeholder="06/15/2020" 
+                            today-button
+                            reset-button
+                            close-button
+                            :date-format-options="{ year: 'numeric', month: '2-digit', day: '2-digit' }"
+                            locale="en"
+                        />
+                        <div class="row">
+                            <div class="col-12 invalid-feedback text-left d-block" v-if="crudUserRequest.data.validation && crudUserRequest.data.validation.email_verified_at">
+                                {{ crudUserRequest.data.validation.email_verified_at[0] }}
+                            </div>
+                        </div>
+                    </b-form-group>
+
+                    <b-form-group label="Roles">
+                        <b-form-checkbox
+                            v-for="role in rolesAndPermissions.roles"
+                            v-model="crudUserRequest.form.role_ids"
+                            :key="role.id"
+                            :value="role.id"
+                            name="roles"
+                        >
+                            {{ role.name }}
+                        </b-form-checkbox>
+                        <div class="row">
+                            <div class="col-12 invalid-feedback text-left d-block" v-if="crudUserRequest.data.validation && crudUserRequest.data.validation.role_ids">
+                                {{ crudUserRequest.data.validation.role_ids[0] }}
+                            </div>
+                        </div>
+                    </b-form-group>
+                </template>
             </template>
 
             <template v-slot:modal-footer>
-                <b-button v-if="crudUserRequest.action == 'create'" size="md" class="btn btn-action" variant="success" @click="createUser()">
-                    <span class="text-white">Create</span>
-                </b-button>
-                <b-button v-else-if="crudUserRequest.action == 'update'" size="md" class="btn btn-action" variant="success" @click="updateUser()">
-                    <span class="text-white">Update</span>
-                </b-button>
+                <template v-if="crudUserRequest.action == 'create'">
+                    <b-button size="md" class="btn btn-action" variant="success" @click="createUser()">
+                        <span class="text-white">Create</span>
+                    </b-button>
+                </template>
+                <template v-else-if="crudUserRequest.action == 'update'">
+                    <b-button size="md" class="btn btn-action" variant="success" @click="updateUser()">
+                        <span class="text-white">Update</span>
+                    </b-button>
+                </template>
+                <template v-else-if="crudUserRequest.action == 'read'">
+                    <b-button size="md" class="btn btn-action" variant="danger" @click="deleteUser(crudUserRequest.form.id)">
+                        <span class="text-white">Delete</span>
+                    </b-button>
+                    <b-button size="md" class="btn btn-action" variant="primary" @click="editUser(crudUserRequest.form.id)">
+                        <span class="text-white">Edit</span>
+                    </b-button>
+                </template>
             </template>
         </b-modal>
 
@@ -100,7 +143,7 @@
                         </b-input-group>
                     </div>
                     <div class="col-8 text-right mb-3">
-                        <b-button v-if="hasPermission(user, PERMISSION_NAME.CREATE_USERS)" size="md" class="btn btn-action" variant="primary" @click="openCRUDModal('create')">
+                        <b-button v-if="hasPermission(user, PERMISSION_NAME.CREATE_USERS)" size="md" class="btn btn-action" variant="primary" @click="prepareUserModal('create')">
                             <span class="text-white">Create User</span>
                         </b-button>
                     </div>
@@ -120,6 +163,7 @@
                 show-empty
                 empty-text="There are no records to show"
                 :busy="listUsersRequest.loadStatus == 1"
+                @row-clicked="showDetails"
                 >
                     <div slot="table-busy" class="align-middle text-center text-info my-2">
                         <loading :active="true" :is-full-page="false"></loading>
@@ -225,11 +269,20 @@ export default {
         },
     },
     methods: {
-        openCRUDModal(action) {
+        deleteUser(userId) {
+            alert('TODO')
+        },
+        editUser(userId) {
+            alert('TODO')
+        },
+        prepareUserModal(action, item = null) {
             var vm = this
             switch(action) {
                 case 'create':
                     vm.initCRUDUserModal()
+                    break
+                case 'read':
+                    vm.crudUserRequest.form = item
                     break
                 case 'update':
                     vm.initCRUDUserModal()
@@ -238,7 +291,7 @@ export default {
             // Set action
             vm.crudUserRequest.action = action
             // Open the modal
-            vm.$refs['crud-user-modal'].show()
+            vm.$refs['user-modal'].show()
         },
         initCRUDUserModal() {
             this.crudUserRequest.loadStatus = 0
@@ -251,6 +304,9 @@ export default {
                 role_ids: []
             }
         },
+        showDetails(item, index, event) {
+            this.prepareUserModal('read', item)
+        },
         createUser() {
             var vm = this
             vm.crudUserRequest.loadStatus = 1
@@ -262,7 +318,7 @@ export default {
                 vm.crudUserRequest.data = response.data
                 vm.crudUserRequest.loadStatus = 2
                 // Close the modal
-                vm.$refs['crud-user-modal'].hide()
+                vm.$refs['user-modal'].hide()
                 // Fire notification
                 vm.$snotify.success("Create user successfully")
             })
