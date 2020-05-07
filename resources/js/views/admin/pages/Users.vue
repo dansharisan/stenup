@@ -128,8 +128,8 @@
             <p v-if="listUsersRequest.loadStatus == 3" class="text-center mb-0">Data load error</p>
             <div v-else id="master-table">
                 <div class="row justify-content-between">
-                    <div class="col-4 mb-3">
-                        <b-input-group class="input-group-sm">
+                    <div class="col-4 mb-3 text-left">
+                        <b-input-group class="d-block">
                           <b-form-select
                             @input="onChangePerPage"
                             v-model="listUsersRequest.data.per_page"
@@ -138,7 +138,7 @@
                             :options="[{ text: '15', value: 15}, { text: '30', value: 30}, { text: '50', value: 50}]"
                             size="md"
                             value="Please select"
-                            class="col-12"
+                            class="w-auto"
                           />
                         </b-input-group>
                     </div>
