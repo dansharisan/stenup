@@ -1,10 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import store from './store/index.js';
-import AuthPlugin from './plugins/auth.js'
 import { COMPONENT_NAME, PERMISSION_NAME } from './const.js';
 Vue.use(Router)
-Vue.use(AuthPlugin)
 
 function requireAccessPermission(to, from, next) {
     // Check if current has the permission to access the component

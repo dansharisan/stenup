@@ -114,10 +114,10 @@
                     </b-button>
                 </template>
                 <template v-else-if="crudUserRequest.action == 'read'">
-                    <b-button variant="link" @click="editUser(crudUserRequest.form.id)">
+                    <b-button v-if="hasPermission(user, PERMISSION_NAME.UPDATE_USERS)" variant="link" @click="editUser(crudUserRequest.form.id)">
                         Edit
                     </b-button>
-                    <b-button size="md" class="btn btn-action" variant="danger" @click="deleteUser(crudUserRequest.form.id)">
+                    <b-button v-if="hasPermission(user, PERMISSION_NAME.DELETE_USERS)" size="md" class="btn btn-action" variant="danger" @click="deleteUser(crudUserRequest.form.id)">
                         <span class="text-white">Delete</span>
                     </b-button>
                 </template>
@@ -270,7 +270,45 @@ export default {
     },
     methods: {
         deleteUser(userId) {
-            alert('TODO')
+            var vm = this
+            vm.$swal({
+                title: 'You sure to delete this user?',
+                text: "This action can't be undone. All the data associated with this user will also be deleted.",
+                icon: 'warning',
+                showCancelButton: true,
+                reverseButtons: true,
+                confirmButtonColor: '#f86c6b',
+                cancelButtonColor: '#a4b7c1',
+                confirmButtonText: 'Delete'
+            }).then((result) => {
+                if (result.value) {
+                    vm.crudUserRequest.loadStatus = 1
+                    UserAPI.deleteUser(userId)
+                    .then((response) => {
+                        // Reload list of users
+                        vm.getUsers(1, vm.listUsersRequest.data.per_page)
+                        // Close the modal
+                        vm.$refs['user-modal'].hide()
+                        vm.crudUserRequest.loadStatus = 2
+                        // Fire notification
+                        vm.$snotify.success("Deleted user successfully")
+                    })
+                    .catch(function(error) {
+                        // Handle unauthorized error
+                        if (error.response && (error.response.status == 401 || error.response.status == 403)) {
+                            vm.handleInvalidAuthState(error.response.status)
+                        } else {
+                            vm.crudUserRequest.loadStatus = 3
+                            if (error && error.response) {
+                                vm.crudUserRequest.data = error.response.data
+                                vm.$snotify.error(error.response.data.error ? error.response.data.error.message : error.response.data.message)
+                            } else {
+                                vm.$snotify.error("Network error")
+                            }
+                        }
+                    })
+                }
+            })
         },
         editUser(userId) {
             alert('TODO')
@@ -279,13 +317,13 @@ export default {
             var vm = this
             switch(action) {
                 case 'create':
-                    vm.initCRUDUserModal()
+                    vm.initUserModal()
                     break
                 case 'read':
                     vm.crudUserRequest.form = item
                     break
                 case 'update':
-                    vm.initCRUDUserModal()
+                    vm.initUserModal()
                     break
             }
             // Set action
@@ -293,7 +331,7 @@ export default {
             // Open the modal
             vm.$refs['user-modal'].show()
         },
-        initCRUDUserModal() {
+        initUserModal() {
             this.crudUserRequest.loadStatus = 0
             this.crudUserRequest.action = ''
             this.crudUserRequest.data = {}
@@ -314,7 +352,6 @@ export default {
             .then((response) => {
                 // Reload list of users on the first page
                 vm.getUsers(1, vm.listUsersRequest.data.per_page)
-
                 vm.crudUserRequest.data = response.data
                 vm.crudUserRequest.loadStatus = 2
                 // Close the modal
@@ -377,11 +414,13 @@ export default {
     },
     created() {
         // Initialize CRUD user modal
-        this.initCRUDUserModal()
+        this.initUserModal()
         // Load list of users
         this.getUsers(1, this.listUsersRequest.data.per_page)
         // Preload permissions (will be used when creating/updating an user)
-        if (this.rolesAndPermissionsLoadStatus != 2 && this.rolesAndPermissionsLoadStatus != 1) {
+        if ((this.hasPermission(this.user, this.PERMISSION_NAME.CREATE_USERS) || this.hasPermission(this.user, this.PERMISSION_NAME.UPDATE_USERS))
+            && this.rolesAndPermissionsLoadStatus != 2 
+            && this.rolesAndPermissionsLoadStatus != 1) {
             this.$store.dispatch('auth/getRolesAndPermissions')
         }
     },

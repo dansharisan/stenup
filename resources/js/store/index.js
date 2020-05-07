@@ -6,10 +6,7 @@ import state from './state'
 import mutations from './mutations'
 import modules from './modules'
 
-import AuthPlugin from '../plugins/auth.js'
-
 Vue.use(Vuex)
-Vue.use(AuthPlugin)
 
 export default new Vuex.Store({
     state,

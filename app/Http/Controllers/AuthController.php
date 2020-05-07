@@ -770,7 +770,7 @@ class AuthController extends Controller
     public function getRolesAndPermissions(Request $request) {
         // Permission check
         $user = $request->user();
-        if (!$user->hasPermissionTo(Enums\PermissionEnum::VIEW_ROLES_PERMISSIONS)) {
+        if (!$user->hasPermissionTo(Enums\PermissionEnum::VIEW_ROLES_PERMISSIONS) && !$user->hasPermissionTo(Enums\PermissionEnum::CREATE_USERS)) {
 
             return $this->forbiddenResponse();
         }

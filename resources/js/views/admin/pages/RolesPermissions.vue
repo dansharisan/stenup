@@ -212,7 +212,7 @@ export default {
         deleteRole(roleId) {
             var vm = this
 
-            this.$swal({
+            vm.$swal({
                 title: 'You sure to delete this role?',
                 text: "This action can't be undone. You might need to set roles for members who were associated with this role.",
                 icon: 'warning',

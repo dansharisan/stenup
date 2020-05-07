@@ -18,7 +18,7 @@ const AuthPlugin = {
             if (statusCode == 401) {
                 window.location.href = '/login';
             } else {
-                window.location.reload()
+                window.location.href = '/'
             }
         }
     }
