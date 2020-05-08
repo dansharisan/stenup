@@ -11,7 +11,7 @@
                             Restricted area.
                         </h4>
                         <p class="text-muted">
-                            You're not authorized to access this page.
+                            You don't have permission to access this page.
                         </p>
                         <b-button variant="link" class="px-0" @click="$router.push({ name: 'Home' })">
                             Back to Home
