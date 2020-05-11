@@ -397,7 +397,7 @@
                     "Auth"
                 ],
                 "summary": "Get all roles and permissions",
-                "description": "Authentication required: **Yes** - Permission required: **view-roles-permissions** or **create-users**",
+                "description": "Authentication required: **Yes** - Permission required: **view-roles-permissions** or **create-users** or **update-users**",
                 "operationId": "App\\Http\\Controllers\\AuthController::getRolesAndPermissions",
                 "responses": {
                     "200": {
@@ -671,83 +671,43 @@
                 }
             }
         },
-        "/api/users/{id}/ban": {
-            "patch": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "Ban a user",
-                "description": "Authentication required: **Yes** - Permission required: **update-users**",
-                "operationId": "ban-user",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "User ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "Successful operation with no content in return"
-                    },
-                    "400": {
-                        "description": "Invalid user"
-                    },
-                    "401": {
-                        "description": "Unauthorized request"
-                    },
-                    "403": {
-                        "description": "No permission"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
-        "/api/users/{id}/unban": {
-            "patch": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "Unban a user",
-                "description": "Authentication required: **Yes** - Permission required: **update-users**",
-                "operationId": "unban-user",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "User ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "Successful operation with no content in return"
-                    },
-                    "400": {
-                        "description": "Invalid user"
-                    },
-                    "401": {
-                        "description": "Unauthorized request"
-                    },
-                    "403": {
-                        "description": "No permission"
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                }
-            }
-        },
         "/api/users/{id}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get the user information",
+                "description": "Authentication required: **Yes** - Permission required: **view-users**",
+                "operationId": "view-user",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Invalid user"
+                    },
+                    "401": {
+                        "description": "Unauthorized request"
+                    },
+                    "403": {
+                        "description": "No permission"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            },
             "delete": {
                 "tags": [
                     "User"
@@ -841,6 +801,82 @@
                     },
                     "422": {
                         "description": "Invalid input"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/users/{id}/ban": {
+            "patch": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Ban a user",
+                "description": "Authentication required: **Yes** - Permission required: **update-users**",
+                "operationId": "ban-user",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful operation with no content in return"
+                    },
+                    "400": {
+                        "description": "Invalid user"
+                    },
+                    "401": {
+                        "description": "Unauthorized request"
+                    },
+                    "403": {
+                        "description": "No permission"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/users/{id}/unban": {
+            "patch": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Unban a user",
+                "description": "Authentication required: **Yes** - Permission required: **update-users**",
+                "operationId": "unban-user",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful operation with no content in return"
+                    },
+                    "400": {
+                        "description": "Invalid user"
+                    },
+                    "401": {
+                        "description": "Unauthorized request"
+                    },
+                    "403": {
+                        "description": "No permission"
                     },
                     "500": {
                         "description": "Server error"

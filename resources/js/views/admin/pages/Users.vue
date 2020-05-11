@@ -301,15 +301,15 @@ export default {
                 }
             })
         },
-        prepareUserModal(action, item = null) {
+        prepareUserModal(action, itemId = null) {
             var vm = this
             switch(action) {
                 case 'create':
                     vm.initUserModal()
                     break
                 case 'read':
-                    debugger
-                    vm.crudUserRequest.form = item
+                    vm.initUserModal()
+                    vm.readUser(itemId)
                     break
                 case 'update':
                     vm.crudUserRequest.form.email_verified_at = vm.crudUserRequest.form.email_verified_at.substring(0,10);
@@ -334,7 +334,30 @@ export default {
             }
         },
         showDetails(item, index, event) {
-            this.prepareUserModal('read', item)
+            this.prepareUserModal('read', item.id)
+        },
+        readUser(userId) {
+            var vm = this
+            vm.crudUserRequest.loadStatus = 1
+            UserAPI.readUser(userId)
+            .then((response) => {
+                vm.crudUserRequest.form = response.data.user
+                vm.crudUserRequest.loadStatus = 2
+            })
+            .catch(function(error) {
+                 // Handle unauthorized error
+                if (error.response && (error.response.status == 401 || error.response.status == 403)) {
+                    vm.handleInvalidAuthState(error.response.status)
+                } else {
+                    vm.crudUserRequest.loadStatus = 3
+                    if (error && error.response) {
+                        vm.crudUserRequest.data = error.response.data
+                        vm.$snotify.error(error.response.data.error ? error.response.data.error.message : error.response.data.message)
+                    } else {
+                        vm.$snotify.error("Network error")
+                    }
+                }
+            })
         },
         createUser() {
             var vm = this
@@ -348,7 +371,7 @@ export default {
                 // Close the modal
                 vm.$refs['user-modal'].hide()
                 // Fire notification
-                vm.$snotify.success("Create user successfully")
+                vm.$snotify.success("Created user successfully")
             })
             .catch(function(error) {
                  // Handle unauthorized error
@@ -366,7 +389,33 @@ export default {
             })
         },
         updateUser() {
-            alert('TO DO')
+            var vm = this
+            vm.crudUserRequest.loadStatus = 1
+            UserAPI.updateUser(vm.crudUserRequest.form.id, vm.crudUserRequest.form.email, vm.crudUserRequest.form.email_verified_at, vm.crudUserRequest.form.role_ids.join(','))
+            .then((response) => {
+                // Reload list of users on the first page
+                vm.getUsers(1, vm.listUsersRequest.data.per_page)
+                vm.crudUserRequest.data = response.data
+                vm.crudUserRequest.loadStatus = 2
+                // Close the modal
+                vm.$refs['user-modal'].hide()
+                // Fire notification
+                vm.$snotify.success("Updated user successfully")
+            })
+            .catch(function(error) {
+                 // Handle unauthorized error
+                if (error.response && (error.response.status == 401 || error.response.status == 403)) {
+                    vm.handleInvalidAuthState(error.response.status)
+                } else {
+                    vm.crudUserRequest.loadStatus = 3
+                    if (error && error.response) {
+                        vm.crudUserRequest.data = error.response.data
+                        vm.$snotify.error(error.response.data.error ? error.response.data.error.message : error.response.data.message)
+                    } else {
+                        vm.$snotify.error("Network error")
+                    }
+                }
+            })
         },
         getBadge(status) {
             return status === 'Active' ? 'success'

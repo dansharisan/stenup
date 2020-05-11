@@ -83,6 +83,75 @@ class UserController extends Controller
     }
 
     /**
+    * @OA\Get(
+    *         path="/api/users/{id}",
+    *         tags={"User"},
+    *         summary="Get the user information",
+    *         description="Authentication required: **Yes** - Permission required: **view-users**",
+    *         operationId="view-user",
+    *         @OA\Parameter(
+    *             name="id",
+    *             in="path",
+    *             description="User ID",
+    *             required=true,
+    *             @OA\Schema(
+    *                 type="integer",
+    *             )
+    *         ),
+    *         @OA\Response(
+    *             response=200,
+    *             description="Successful operation"
+    *         ),
+    *         @OA\Response(
+    *             response=400,
+    *             description="Invalid user"
+    *         ),
+    *         @OA\Response(
+    *             response=401,
+    *             description="Unauthorized request"
+    *         ),
+    *         @OA\Response(
+    *             response=403,
+    *             description="No permission"
+    *         ),
+    *         @OA\Response(
+    *             response=500,
+    *             description="Server error"
+    *         ),
+    * )
+    */
+    public function show(Request $request, $id)
+    {
+        // Permission check
+        $user = $request->user();
+        if (!$user->hasPermissionTo(Enums\PermissionEnum::VIEW_USERS)) {
+
+            return $this->forbiddenResponse();
+        }
+
+        $user = Models\User::find($id);
+        if (!$id || empty($user)) {
+            return response()->json(
+                ['error' =>
+                            [
+                                'code' => Enums\ErrorEnum::USER0001,
+                                'message' => Enums\ErrorEnum::getDescription(Enums\ErrorEnum::USER0001)
+                            ]
+                ], Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        $roleArr = [];
+        foreach ($user->getRoleNames() as $role) {
+            array_push($roleArr, $role);
+        }
+        $user['display_roles'] = implode(", ", $roleArr);
+        $user['status'] = Enums\UserStatusEnum::getKey($user['status']);
+
+        return response()->json(['user' => $user], Response::HTTP_OK);
+    }
+
+    /**
     * @OA\Patch(
     *         path="/api/users/{id}/ban",
     *         tags={"User"},
@@ -475,9 +544,8 @@ class UserController extends Controller
                 $user->email_verified_at = date("Y-m-d H:i:s", strtotime($verifiedAt));
             }
             $user->save();
-
             // Remove old roles
-            DB::table('model_has_roles')->where('model_id', $id)->where('model_type', User::class)->delete();
+            DB::table('model_has_roles')->where('model_id', $id)->where('model_type', Models\User::class)->delete();
             // Add new roles
             $roleIdArr = preg_split('/,/', $roleIds, null, PREG_SPLIT_NO_EMPTY);
             if ($roleIdArr && is_array($roleIdArr) && !empty($roleIdArr[0]) && count($roleIdArr) > 0) {

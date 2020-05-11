@@ -10,8 +10,16 @@ export default {
     },
 
     /*
+    GET /api/users/{id}
+    Get a specific user information
+    */
+    readUser: function(userId) {
+        return axios.get(APP_CONFIG.API_URL + '/users/' + userId);
+    },
+
+    /*
     PATCH /api/users/{id}/ban
-    To ban an user
+    To ban a user
     */
     banUser: function(userId) {
         return axios.patch(APP_CONFIG.API_URL + '/users/' + userId +'/ban');
@@ -19,7 +27,7 @@ export default {
 
     /*
     PATCH /api/users/{id}/unban
-    To unban an user
+    To unban a user
     */
     unbanUser: function(userId) {
         return axios.patch(APP_CONFIG.API_URL + '/users/' + userId + '/unban');
@@ -27,7 +35,7 @@ export default {
 
     /*
     DELETE /api/users/{id}
-    To delete an user
+    To delete n user
     */
     deleteUser: function(userId) {
         return axios.delete(APP_CONFIG.API_URL + '/users/' + userId);
@@ -46,11 +54,12 @@ export default {
 
     /*
     PATCH /api/users/{id}/
-    To edit an user
+    To update a user
     */
-    editUser: function(id, email_verified_at, role_ids) {
+    updateUser: function(id, email, email_verified_at, role_ids) {
         return axios.patch(APP_CONFIG.API_URL + '/users/' + id,
         {
+            email: email,
             email_verified_at: email_verified_at,
             role_ids: role_ids
         });
