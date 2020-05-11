@@ -20,8 +20,8 @@ class UserController extends Controller
     * @OA\Get(
     *         path="/api/users",
     *         tags={"User"},
-    *         summary="Get users",
-    *         description="Get list of users",
+    *         summary="Get user list",
+    *         description="Authentication required: **Yes** - Permission required: **view-users**",
     *         operationId="user-list",
     *         @OA\Parameter(
     *             name="page",
@@ -86,8 +86,8 @@ class UserController extends Controller
     * @OA\Patch(
     *         path="/api/users/{id}/ban",
     *         tags={"User"},
-    *         summary="Ban an user",
-    *         description="Ban an user",
+    *         summary="Ban a user",
+    *         description="Authentication required: **Yes** - Permission required: **update-users**",
     *         operationId="ban-user",
     *         @OA\Response(
     *             response=204,
@@ -152,8 +152,8 @@ class UserController extends Controller
     * @OA\Patch(
     *         path="/api/users/{id}/unban",
     *         tags={"User"},
-    *         summary="Unban an user",
-    *         description="Unban an user",
+    *         summary="Unban a user",
+    *         description="Authentication required: **Yes** - Permission required: **update-users**",
     *         operationId="unban-user",
     *         @OA\Response(
     *             response=204,
@@ -218,8 +218,8 @@ class UserController extends Controller
     * @OA\Delete(
     *         path="/api/users/{id}",
     *         tags={"User"},
-    *         summary="Delete an user",
-    *         description="Delete an user",
+    *         summary="Delete a user",
+    *         description="Authentication required: **Yes** - Permission required: **delete-users**",
     *         operationId="delete-user",
     *         @OA\Response(
     *             response=204,
@@ -284,7 +284,7 @@ class UserController extends Controller
     *         path="/api/users/collection:batchDelete",
     *         tags={"User"},
     *         summary="Delete selected users",
-    *         description="Delete selected users",
+    *         description="Authentication required: **Yes** - Permission required: **delete-users**",
     *         operationId="delete-user-batch",
     *         @OA\Response(
     *             response=204,
@@ -365,8 +365,8 @@ class UserController extends Controller
     * @OA\Patch(
     *         path="/api/users/{id}",
     *         tags={"User"},
-    *         summary="Edit an user",
-    *         description="Edit an user",
+    *         summary="Edit a user",
+    *         description="Authentication required: **Yes** - Permission required: **update-users**",
     *         operationId="edit-user",
     *         @OA\Response(
     *             response=200,
@@ -521,8 +521,8 @@ class UserController extends Controller
     * @OA\Post(
     *         path="/api/users",
     *         tags={"User"},
-    *         summary="Create an user",
-    *         description="Create an user",
+    *         summary="Create a user",
+    *         description="Authentication required: **Yes** - Permission required: **create-users**",
     *         operationId="create-user",
     *         @OA\Response(
     *             response=200,
@@ -674,7 +674,7 @@ class UserController extends Controller
     *         path="/api/users/registered_user_stats",
     *         tags={"User"},
     *         summary="Get registered user stats",
-    *         description="Get registered user stats",
+    *         description="Authentication required: **Yes** - Permission required: **view-dashboard**",
     *         operationId="registered-user-stats",
     *         @OA\Response(
     *             response=200,

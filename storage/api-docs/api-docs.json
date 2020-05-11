@@ -16,8 +16,8 @@
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Register",
-                "description": "Register a new user and send notification mail",
+                "summary": "Register a new user and send notification mail",
+                "description": "Authentication required: **No** - Permission required: **None**",
                 "operationId": "register",
                 "requestBody": {
                     "required": true,
@@ -64,7 +64,7 @@
                     "Auth"
                 ],
                 "summary": "Resend activation email",
-                "description": "Resend activation email",
+                "description": "Authentication required: **No** - Permission required: **None**",
                 "operationId": "resend-activation-email",
                 "requestBody": {
                     "required": true,
@@ -100,8 +100,8 @@
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Login",
-                "description": "Login an user",
+                "summary": "Log in",
+                "description": "Authentication required: **No** - Permission required: **None**",
                 "operationId": "login",
                 "requestBody": {
                     "required": true,
@@ -145,8 +145,8 @@
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Logout",
-                "description": "Logout an user",
+                "summary": "Log out",
+                "description": "Authentication required: **Yes** - Permission required: **None**",
                 "operationId": "logout",
                 "responses": {
                     "204": {
@@ -166,8 +166,8 @@
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Get user",
-                "description": "Retrieve information from current user",
+                "summary": "Retrieve information from current logged in user",
+                "description": "Authentication required: **Yes** - Permission required: **None**",
                 "operationId": "getUser",
                 "responses": {
                     "200": {
@@ -187,8 +187,8 @@
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Activate user",
-                "description": "Activate an registered user",
+                "summary": "Activate a registered user",
+                "description": "Authentication required: **No** - Permission required: **None**",
                 "operationId": "activateUser",
                 "parameters": [
                     {
@@ -219,8 +219,8 @@
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Request resetting password",
-                "description": "Generate password reset token and send that token to user through mail",
+                "summary": "Request resetting password: Generate password reset token and send that token to user through mail",
+                "description": "Authentication required: **No** - Permission required: **None**",
                 "operationId": "createPasswordResetToken",
                 "requestBody": {
                     "required": true,
@@ -256,8 +256,8 @@
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Verify reset password token",
-                "description": "Verify the reset password token and make sure it is existing and still valid",
+                "summary": "Verify the reset password token and make sure it is existing and still valid",
+                "description": "Authentication required: **No** - Permission required: **None**",
                 "operationId": "findPasswordResetToken",
                 "parameters": [
                     {
@@ -288,8 +288,8 @@
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Reset password",
-                "description": "Set new password for the user",
+                "summary": "Set new password",
+                "description": "Authentication required: **No** - Permission required: **None**",
                 "operationId": "resetPassword",
                 "requestBody": {
                     "required": true,
@@ -342,8 +342,8 @@
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Change password",
-                "description": "Change an user's password (requires current password) and send notification mail",
+                "summary": "Change a user's password (requires current password) and send notification mail",
+                "description": "Authentication required: **Yes** - Permission required: **None**",
                 "operationId": "changePassword",
                 "requestBody": {
                     "required": true,
@@ -379,6 +379,9 @@
                     "400": {
                         "description": "Wrong combination of email and password or email not verified"
                     },
+                    "401": {
+                        "description": "Unauthorized request"
+                    },
                     "422": {
                         "description": "Validation error"
                     },
@@ -394,7 +397,7 @@
                     "Auth"
                 ],
                 "summary": "Get all roles and permissions",
-                "description": "Get all roles and permissions",
+                "description": "Authentication required: **Yes** - Permission required: **view-roles-permissions** or **create-users**",
                 "operationId": "App\\Http\\Controllers\\AuthController::getRolesAndPermissions",
                 "responses": {
                     "200": {
@@ -418,7 +421,7 @@
                     "Auth"
                 ],
                 "summary": "Get all roles with associated permissions",
-                "description": "Get all roles with associated permissions",
+                "description": "Authentication required: **Yes** - Permission required: **view-roles-permissions**",
                 "operationId": "App\\Http\\Controllers\\AuthController::getRolesWithPermissions",
                 "responses": {
                     "200": {
@@ -442,7 +445,7 @@
                     "Auth"
                 ],
                 "summary": "Create role",
-                "description": "Create a new role",
+                "description": "Authentication required: **Yes** - Permission required: **create-roles**",
                 "operationId": "create-role",
                 "requestBody": {
                     "required": true,
@@ -485,7 +488,7 @@
                     "Auth"
                 ],
                 "summary": "Delete a role",
-                "description": "Delete a role",
+                "description": "Authentication required: **Yes** - Permission required: **delete-roles**",
                 "operationId": "delete-role",
                 "parameters": [
                     {
@@ -523,7 +526,7 @@
                     "Auth"
                 ],
                 "summary": "Update roles permissions matrix",
-                "description": "Update roles permissions matrix",
+                "description": "Authentication required: **Yes** - Permission required: **update-permissions**",
                 "operationId": "update-roles-permissions-matrix",
                 "requestBody": {
                     "required": true,
@@ -568,8 +571,8 @@
                 "tags": [
                     "User"
                 ],
-                "summary": "Get users",
-                "description": "Get list of users",
+                "summary": "Get user list",
+                "description": "Authentication required: **Yes** - Permission required: **view-users**",
                 "operationId": "user-list",
                 "parameters": [
                     {
@@ -610,8 +613,8 @@
                 "tags": [
                     "User"
                 ],
-                "summary": "Create an user",
-                "description": "Create an user",
+                "summary": "Create a user",
+                "description": "Authentication required: **Yes** - Permission required: **create-users**",
                 "operationId": "create-user",
                 "requestBody": {
                     "required": true,
@@ -673,8 +676,8 @@
                 "tags": [
                     "User"
                 ],
-                "summary": "Ban an user",
-                "description": "Ban an user",
+                "summary": "Ban a user",
+                "description": "Authentication required: **Yes** - Permission required: **update-users**",
                 "operationId": "ban-user",
                 "parameters": [
                     {
@@ -711,8 +714,8 @@
                 "tags": [
                     "User"
                 ],
-                "summary": "Unban an user",
-                "description": "Unban an user",
+                "summary": "Unban a user",
+                "description": "Authentication required: **Yes** - Permission required: **update-users**",
                 "operationId": "unban-user",
                 "parameters": [
                     {
@@ -749,8 +752,8 @@
                 "tags": [
                     "User"
                 ],
-                "summary": "Delete an user",
-                "description": "Delete an user",
+                "summary": "Delete a user",
+                "description": "Authentication required: **Yes** - Permission required: **delete-users**",
                 "operationId": "delete-user",
                 "parameters": [
                     {
@@ -785,8 +788,8 @@
                 "tags": [
                     "User"
                 ],
-                "summary": "Edit an user",
-                "description": "Edit an user",
+                "summary": "Edit a user",
+                "description": "Authentication required: **Yes** - Permission required: **update-users**",
                 "operationId": "edit-user",
                 "parameters": [
                     {
@@ -851,7 +854,7 @@
                     "User"
                 ],
                 "summary": "Delete selected users",
-                "description": "Delete selected users",
+                "description": "Authentication required: **Yes** - Permission required: **delete-users**",
                 "operationId": "delete-user-batch",
                 "requestBody": {
                     "required": true,
@@ -897,7 +900,7 @@
                     "User"
                 ],
                 "summary": "Get registered user stats",
-                "description": "Get registered user stats",
+                "description": "Authentication required: **Yes** - Permission required: **view-dashboard**",
                 "operationId": "registered-user-stats",
                 "responses": {
                     "200": {

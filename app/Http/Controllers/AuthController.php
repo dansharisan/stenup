@@ -23,8 +23,8 @@ class AuthController extends Controller
     * @OA\Post(
     *         path="/api/auth/register",
     *         tags={"Auth"},
-    *         summary="Register",
-    *         description="Register a new user and send notification mail",
+    *         summary="Register a new user and send notification mail",
+    *         description="Authentication required: **No** - Permission required: **None**",
     *         operationId="register",
     *         @OA\Response(
     *             response=200,
@@ -109,7 +109,7 @@ class AuthController extends Controller
     *         path="/api/auth/register/resend_activation_email",
     *         tags={"Auth"},
     *         summary="Resend activation email",
-    *         description="Resend activation email",
+    *         description="Authentication required: **No** - Permission required: **None**",
     *         operationId="resend-activation-email",
     *         @OA\Response(
     *             response=204,
@@ -180,8 +180,8 @@ class AuthController extends Controller
     * @OA\Post(
     *         path="/api/auth/login",
     *         tags={"Auth"},
-    *         summary="Login",
-    *         description="Login an user",
+    *         summary="Log in",
+    *         description="Authentication required: **No** - Permission required: **None**",
     *         operationId="login",
     *         @OA\Response(
     *             response=200,
@@ -281,8 +281,8 @@ class AuthController extends Controller
     * @OA\Get(
     *         path="/api/auth/logout",
     *         tags={"Auth"},
-    *         summary="Logout",
-    *         description="Logout an user",
+    *         summary="Log out",
+    *         description="Authentication required: **Yes** - Permission required: **None**",
     *         operationId="logout",
     *         @OA\Response(
     *             response=204,
@@ -309,8 +309,8 @@ class AuthController extends Controller
     * @OA\Get(
     *         path="/api/auth/getUser",
     *         tags={"Auth"},
-    *         summary="Get user",
-    *         description="Retrieve information from current user",
+    *         summary="Retrieve information from current logged in user",
+    *         description="Authentication required: **Yes** - Permission required: **None**",
     *         operationId="getUser",
     *         @OA\Response(
     *             response=200,
@@ -341,8 +341,8 @@ class AuthController extends Controller
     * @OA\Get(
     *         path="/api/auth/register/activate/{token}",
     *         tags={"Auth"},
-    *         summary="Activate user",
-    *         description="Activate an registered user",
+    *         summary="Activate a registered user",
+    *         description="Authentication required: **No** - Permission required: **None**",
     *         operationId="activateUser",
     *         @OA\Parameter(
     *             name="token",
@@ -393,8 +393,8 @@ class AuthController extends Controller
     * @OA\Post(
     *         path="/api/auth/password/token/create",
     *         tags={"Auth"},
-    *         summary="Request resetting password",
-    *         description="Generate password reset token and send that token to user through mail",
+    *         summary="Request resetting password: Generate password reset token and send that token to user through mail",
+    *         description="Authentication required: **No** - Permission required: **None**",
     *         operationId="createPasswordResetToken",
     *         @OA\Response(
     *             response=204,
@@ -467,8 +467,8 @@ class AuthController extends Controller
     * @OA\Get(
     *         path="/api/auth/password/token/find/{token}",
     *         tags={"Auth"},
-    *         summary="Verify reset password token",
-    *         description="Verify the reset password token and make sure it is existing and still valid",
+    *         summary="Verify the reset password token and make sure it is existing and still valid",
+    *         description="Authentication required: **No** - Permission required: **None**",
     *         operationId="findPasswordResetToken",
     *         @OA\Parameter(
     *             name="token",
@@ -527,8 +527,8 @@ class AuthController extends Controller
     * @OA\Patch(
     *         path="/api/auth/password/reset",
     *         tags={"Auth"},
-    *         summary="Reset password",
-    *         description="Set new password for the user",
+    *         summary="Set new password",
+    *         description="Authentication required: **No** - Permission required: **None**",
     *         operationId="resetPassword",
     *         @OA\Response(
     *             response=200,
@@ -643,8 +643,8 @@ class AuthController extends Controller
     * @OA\Patch(
     *         path="/api/auth/password/change",
     *         tags={"Auth"},
-    *         summary="Change password",
-    *         description="Change an user's password (requires current password) and send notification mail",
+    *         summary="Change a user's password (requires current password) and send notification mail",
+    *         description="Authentication required: **Yes** - Permission required: **None**",
     *         operationId="changePassword",
     *         @OA\Response(
     *             response=204,
@@ -653,6 +653,10 @@ class AuthController extends Controller
     *         @OA\Response(
     *             response=400,
     *             description="Wrong combination of email and password or email not verified"
+    *         ),
+    *         @OA\Response(
+    *             response=401,
+    *             description="Unauthorized request"
     *         ),
     *         @OA\Response(
     *             response=422,
@@ -748,7 +752,7 @@ class AuthController extends Controller
     *         path="/api/auth/roles_permissions",
     *         tags={"Auth"},
     *         summary="Get all roles and permissions",
-    *         description="Get all roles and permissions",
+    *         description="Authentication required: **Yes** - Permission required: **view-roles-permissions** or **create-users**",
     *         @OA\Response(
     *             response=200,
     *             description="Successful operation"
@@ -786,7 +790,7 @@ class AuthController extends Controller
     *         path="/api/auth/roles_w_permissions",
     *         tags={"Auth"},
     *         summary="Get all roles with associated permissions",
-    *         description="Get all roles with associated permissions",
+    *         description="Authentication required: **Yes** - Permission required: **view-roles-permissions**",
     *         @OA\Response(
     *             response=200,
     *             description="Successful operation"
@@ -823,7 +827,7 @@ class AuthController extends Controller
     *         path="/api/auth/roles",
     *         tags={"Auth"},
     *         summary="Create role",
-    *         description="Create a new role",
+    *         description="Authentication required: **Yes** - Permission required: **create-roles**",
     *         operationId="create-role",
     *         @OA\Response(
     *             response=200,
@@ -900,7 +904,7 @@ class AuthController extends Controller
     *         path="/api/auth/roles/{id}",
     *         tags={"Auth"},
     *         summary="Delete a role",
-    *         description="Delete a role",
+    *         description="Authentication required: **Yes** - Permission required: **delete-roles**",
     *         operationId="delete-role",
     *         @OA\Response(
     *             response=204,
@@ -965,7 +969,7 @@ class AuthController extends Controller
     *         path="/api/auth/update_roles_permissions_matrix",
     *         tags={"Auth"},
     *         summary="Update roles permissions matrix",
-    *         description="Update roles permissions matrix",
+    *         description="Authentication required: **Yes** - Permission required: **update-permissions**",
     *         operationId="update-roles-permissions-matrix",
     *         @OA\Response(
     *             response=200,
