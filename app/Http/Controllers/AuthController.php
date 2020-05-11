@@ -752,7 +752,7 @@ class AuthController extends Controller
     *         path="/api/auth/roles_permissions",
     *         tags={"Auth"},
     *         summary="Get all roles and permissions",
-    *         description="Authentication required: **Yes** - Permission required: **view-roles-permissions** or **create-users**",
+    *         description="Authentication required: **Yes** - Permission required: **view-roles-permissions** or **create-users** or **update-users**",
     *         @OA\Response(
     *             response=200,
     *             description="Successful operation"
@@ -774,7 +774,7 @@ class AuthController extends Controller
     public function getRolesAndPermissions(Request $request) {
         // Permission check
         $user = $request->user();
-        if (!$user->hasPermissionTo(Enums\PermissionEnum::VIEW_ROLES_PERMISSIONS) && !$user->hasPermissionTo(Enums\PermissionEnum::CREATE_USERS)) {
+        if (!$user->hasPermissionTo(Enums\PermissionEnum::VIEW_ROLES_PERMISSIONS) && !$user->hasPermissionTo(Enums\PermissionEnum::CREATE_USERS) && !$user->hasPermissionTo(Enums\PermissionEnum::UPDATE_USERS)) {
 
             return $this->forbiddenResponse();
         }

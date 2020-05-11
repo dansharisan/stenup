@@ -50,7 +50,7 @@
                         </div>
                     </b-form-group>
 
-                    <b-form-group>
+                    <b-form-group v-if="crudUserRequest.action == 'create'">
                         <label for="password">Password</label>
                         <b-input-group>
                             <b-input v-model="crudUserRequest.form.password" type="password" :class="{'border-danger' : (crudUserRequest.data.validation && crudUserRequest.data.validation.password)}" placeholder="my_p@ssw0rD" v-on:keyup.enter="createUser"/>
@@ -114,7 +114,7 @@
                     </b-button>
                 </template>
                 <template v-else-if="crudUserRequest.action == 'read'">
-                    <b-button v-if="hasPermission(user, PERMISSION_NAME.UPDATE_USERS)" variant="link" @click="editUser(crudUserRequest.form.id)">
+                    <b-button v-if="hasPermission(user, PERMISSION_NAME.UPDATE_USERS)" variant="link" @click="prepareUserModal('update')">
                         Edit
                     </b-button>
                     <b-button v-if="hasPermission(user, PERMISSION_NAME.DELETE_USERS)" size="md" class="btn btn-action" variant="danger" @click="deleteUser(crudUserRequest.form.id)">
@@ -190,15 +190,6 @@
                     <template v-slot:cell(created_at)="cell" v-if="listUsersRequest.data.data && listUsersRequest.data.data.length > 0">
                         {{ cell.item.created_at.slice(0, -8) }}
                     </template>
-
-                    <!-- <template slot="actions" slot-scope="row">
-                        <b-button size="md" class="btn-action mt-1 mb-1" variant="warning" @click="prepareEditingItem(row.item)">
-                            <i class="fa fa-pencil text-white" aria-hidden="true"></i> <span class="text-white">Edit</span>
-                        </b-button>
-                        <b-button size="md" class="btn-action mt-1 mb-1" variant="danger" @click="deleteItem(row.item)">
-                            <i class="fa fa-trash text-white" aria-hidden="true"></i> <span class="text-white">Delete</span>
-                        </b-button>
-                    </template> -->
                 </b-table>
                 <nav v-if="listUsersRequest.loadStatus == 2">
                     <b-pagination
@@ -310,9 +301,6 @@ export default {
                 }
             })
         },
-        editUser(userId) {
-            alert('TODO')
-        },
         prepareUserModal(action, item = null) {
             var vm = this
             switch(action) {
@@ -320,10 +308,13 @@ export default {
                     vm.initUserModal()
                     break
                 case 'read':
+                    debugger
                     vm.crudUserRequest.form = item
                     break
                 case 'update':
-                    vm.initUserModal()
+                    vm.crudUserRequest.form.email_verified_at = vm.crudUserRequest.form.email_verified_at.substring(0,10);
+                    vm.crudUserRequest.form.role_ids = vm.crudUserRequest.form.roles.map(role => role.id);
+                    // Do nothing, just show form
                     break
             }
             // Set action
