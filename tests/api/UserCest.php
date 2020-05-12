@@ -515,8 +515,15 @@ class UserCest
         $I->sendGET('/api/users/' . $memberUser->id);
         $I->seeForbiddenError();
 
-        /* Case: When that user is set to have READ_USERS permission, he could get access to this API */
+        // When that user is set to have READ_USERS permission, he could get access to this API
         $memberUser->roles[0]->givePermissionTo(Enums\PermissionEnum::READ_USERS);
+
+        /* Case: non-existent user ID should return invalid user error */
+        $nonExistentUserId = 99999999;
+        $I->sendGET('/api/users/' . $nonExistentUserId);
+        $I->seeInvalidUserError();
+
+        /* Case: Successfully read user details */
         $I->sendGET('/api/users/' . $memberUser->id);
         $I->seeResponseIsJson();
         $I->seeResponseCodeIs(Response::HTTP_OK);
