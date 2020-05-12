@@ -42,7 +42,9 @@
                 <template v-else-if="rolesAndPermissionsLoadStatus == 2">
                     <b-form-group>
                         <label for="email">Email</label>
-                        <b-form-input type="text" placeholder="email@example.com" :class="{'border-danger' : (crudUserRequest.data.validation && crudUserRequest.data.validation.email)}" v-model="crudUserRequest.form.email" v-on:keyup.enter="createUser" />
+                        <b-form-input type="text" placeholder="email@example.com" 
+                        :class="{'border-danger' : (crudUserRequest.data.validation && crudUserRequest.data.validation.email)}" 
+                        v-model="crudUserRequest.form.email" v-on:keyup.enter="createUser" />
                         <div class="row">
                             <div class="col-12 invalid-feedback text-left d-block" v-if="crudUserRequest.data.validation && crudUserRequest.data.validation.email">
                                 {{ crudUserRequest.data.validation.email[0] }}
@@ -84,15 +86,12 @@
                     </b-form-group>
 
                     <b-form-group label="Roles">
-                        <b-form-checkbox
-                            v-for="role in rolesAndPermissions.roles"
+                        <b-form-checkbox-group
+                            stacked
                             v-model="crudUserRequest.form.role_ids"
-                            :key="role.id"
-                            :value="role.id"
+                            :options="roleCheckboxOptions"
                             name="roles"
-                        >
-                            {{ role.name }}
-                        </b-form-checkbox>
+                        ></b-form-checkbox-group>
                         <div class="row">
                             <div class="col-12 invalid-feedback text-left d-block" v-if="crudUserRequest.data.validation && crudUserRequest.data.validation.role_ids">
                                 {{ crudUserRequest.data.validation.role_ids[0] }}
@@ -245,7 +244,8 @@ export default {
                     email_verified_at: null,
                     role_ids: []
                 }
-            }
+            },
+            roleCheckboxOptions: []
         }
     },
     computed: {
@@ -301,7 +301,7 @@ export default {
                 }
             })
         },
-        prepareUserModal(action, itemId = null) {
+        prepareUserModal(action, item = null) {
             var vm = this
             switch(action) {
                 case 'create':
@@ -309,7 +309,8 @@ export default {
                     break
                 case 'read':
                     vm.initUserModal()
-                    vm.readUser(itemId)
+                    // Clone the item so that we can bind it to the form without changing the original object
+                    vm.crudUserRequest.form = $.extend(true, [], item)
                     break
                 case 'update':
                     vm.crudUserRequest.form.email_verified_at = vm.crudUserRequest.form.email_verified_at.substring(0,10);
@@ -334,30 +335,7 @@ export default {
             }
         },
         showDetails(item, index, event) {
-            this.prepareUserModal('read', item.id)
-        },
-        readUser(userId) {
-            var vm = this
-            vm.crudUserRequest.loadStatus = 1
-            UserAPI.readUser(userId)
-            .then((response) => {
-                vm.crudUserRequest.form = response.data.user
-                vm.crudUserRequest.loadStatus = 2
-            })
-            .catch(function(error) {
-                 // Handle unauthorized error
-                if (error.response && (error.response.status == 401 || error.response.status == 403)) {
-                    vm.handleInvalidAuthState(error.response.status)
-                } else {
-                    vm.crudUserRequest.loadStatus = 3
-                    if (error && error.response) {
-                        vm.crudUserRequest.data = error.response.data
-                        vm.$snotify.error(error.response.data.error ? error.response.data.error.message : error.response.data.message)
-                    } else {
-                        vm.$snotify.error("Network error")
-                    }
-                }
-            })
+            this.prepareUserModal('read', item)
         },
         createUser() {
             var vm = this
@@ -451,6 +429,14 @@ export default {
         'listUsersRequest.data.per_page': function (newVal, oldVal) {
             this.getUsers(1, newVal)
         },
+        rolesAndPermissionsLoadStatus: function(newVal, oldVal) {
+            var vm = this
+            if (newVal == 2) {
+                for (const role of this.rolesAndPermissions.roles) {
+                    vm.roleCheckboxOptions.push({value: role.id, text: role.name})
+                }
+            }
+        }
     },
     created() {
         // Initialize CRUD user modal
