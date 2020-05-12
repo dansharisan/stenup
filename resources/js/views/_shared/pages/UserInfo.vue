@@ -35,14 +35,14 @@
                                     />
                                 </b-input-group>
                                 <b-button
-                                v-if="hasPermission(user, PERMISSION_NAME.VIEW_DASHBOARD)"
+                                v-if="hasPermission(user, PERMISSION_NAME.READ_GENERAL_STATS)"
                                 variant="link"
                                 class="px-0"
                                 @click="$router.push({ name: 'Dashboard' })"
                                 >
                                     Admin panel
                                 </b-button>
-                                <br v-if="hasPermission(user, PERMISSION_NAME.VIEW_DASHBOARD)"/>
+                                <br v-if="hasPermission(user, PERMISSION_NAME.READ_GENERAL_STATS)"/>
                                 <b-button variant="link" class="px-0" @click="$router.push({ name: 'PasswordChange' })">
                                     Change password
                                 </b-button>

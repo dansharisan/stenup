@@ -3,8 +3,8 @@
         <b-modal id="user-modal" ref="user-modal" modal-class="text-left" centered>
             <template v-slot:modal-header="{ close }">
                 <h5 class="modal-title" v-if="crudUserRequest.action == 'create'">Create user</h5>
-                <h5 class="modal-title" v-else-if="crudUserRequest.action == 'update'">Update user</h5>
-                <h5 class="modal-title" v-else-if="crudUserRequest.action == 'read'">Read user</h5>
+                <h5 class="modal-title" v-else-if="crudUserRequest.action == 'update'">Edit user</h5>
+                <h5 class="modal-title" v-else-if="crudUserRequest.action == 'read'">View user</h5>
                 <button type="button" aria-label="Close" class="close" @click="close()">×</button>
             </template>
             
@@ -313,7 +313,7 @@ export default {
                     vm.crudUserRequest.form = $.extend(true, [], item)
                     break
                 case 'update':
-                    vm.crudUserRequest.form.email_verified_at = vm.crudUserRequest.form.email_verified_at.substring(0,10);
+                    vm.crudUserRequest.form.email_verified_at = vm.crudUserRequest.form.email_verified_at ? vm.crudUserRequest.form.email_verified_at.substring(0,10) : null;
                     vm.crudUserRequest.form.role_ids = vm.crudUserRequest.form.roles.map(role => role.id);
                     // Do nothing, just show form
                     break
@@ -421,6 +421,14 @@ export default {
                 }
             })
         },
+        buildRoleCheckboxOptions() {
+            var vm = this
+            if (vm.roleCheckboxOptions.length == 0) {
+                for (const role of vm.rolesAndPermissions.roles) {
+                    vm.roleCheckboxOptions.push({value: role.id, text: role.name})
+                }
+            }
+        }
     },
     watch: {
         'listUsersRequest.data.current_page': function (newVal, oldVal) {
@@ -430,11 +438,8 @@ export default {
             this.getUsers(1, newVal)
         },
         rolesAndPermissionsLoadStatus: function(newVal, oldVal) {
-            var vm = this
             if (newVal == 2) {
-                for (const role of this.rolesAndPermissions.roles) {
-                    vm.roleCheckboxOptions.push({value: role.id, text: role.name})
-                }
+                this.buildRoleCheckboxOptions()
             }
         }
     },
@@ -448,6 +453,10 @@ export default {
             && this.rolesAndPermissionsLoadStatus != 2 
             && this.rolesAndPermissionsLoadStatus != 1) {
             this.$store.dispatch('auth/getRolesAndPermissions')
+        }
+        // Build role checkbox options if roles have been loaded
+        if (this.rolesAndPermissionsLoadStatus == 2) {
+            this.buildRoleCheckboxOptions()
         }
     },
 }

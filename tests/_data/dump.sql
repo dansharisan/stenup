@@ -100,18 +100,18 @@ CREATE TABLE IF NOT EXISTS `permissions` (
 DELETE FROM `permissions`;
 /*!40000 ALTER TABLE `permissions` DISABLE KEYS */;
 INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES
-	(1, 'view-dashboard', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06'),
-	(2, 'view-users', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06'),
-	(3, 'create-users', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06'),
-	(4, 'update-users', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06'),
-	(5, 'delete-users', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06'),
-	(6, 'view-roles-permissions', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06'),
-	(7, 'create-roles', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06'),
-	(8, 'update-roles', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06'),
-	(9, 'delete-roles', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06'),
-	(10, 'update-permissions', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06'),
-	(11, 'access-telescope', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06'),
-	(12, 'access-api', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06');
+	(1, 'read-general-stats', 'web', '2020-05-10 01:22:35', '2020-05-10 01:22:35'),
+	(2, 'read-users', 'web', '2020-05-10 01:22:35', '2020-05-10 01:22:35'),
+	(3, 'create-users', 'web', '2020-05-10 01:22:35', '2020-05-10 01:22:35'),
+	(4, 'update-users', 'web', '2020-05-10 01:22:35', '2020-05-10 01:22:35'),
+	(5, 'delete-users', 'web', '2020-05-10 01:22:35', '2020-05-10 01:22:35'),
+	(6, 'read-roles-permissions', 'web', '2020-05-10 01:22:35', '2020-05-10 01:22:35'),
+	(7, 'create-roles', 'web', '2020-05-10 01:22:35', '2020-05-10 01:22:35'),
+	(8, 'update-roles', 'web', '2020-05-10 01:22:35', '2020-05-10 01:22:35'),
+	(9, 'delete-roles', 'web', '2020-05-10 01:22:35', '2020-05-10 01:22:35'),
+	(10, 'update-permissions', 'web', '2020-05-10 01:22:35', '2020-05-10 01:22:35'),
+	(11, 'access-telescope', 'web', '2020-05-10 01:22:35', '2020-05-10 01:22:35'),
+	(12, 'access-api', 'web', '2020-05-10 01:22:35', '2020-05-10 01:22:35');
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 
 -- Dumping structure for table stenup_test.roles
@@ -129,9 +129,9 @@ CREATE TABLE IF NOT EXISTS `roles` (
 DELETE FROM `roles`;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
 INSERT INTO `roles` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES
-	(1, 'administrator', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06'),
-	(2, 'moderator', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06'),
-	(3, 'member', 'web', '2020-05-04 23:06:06', '2020-05-04 23:06:06');
+	(1, 'administrator', 'web', '2020-05-10 01:22:35', '2020-05-10 01:22:35'),
+	(2, 'moderator', 'web', '2020-05-10 01:22:35', '2020-05-10 01:22:35'),
+	(3, 'member', 'web', '2020-05-10 01:22:35', '2020-05-10 01:22:35');
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 
 -- Dumping structure for table stenup_test.role_has_permissions
@@ -235,7 +235,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 DELETE FROM `users`;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` (`id`, `email`, `email_verified_at`, `password`, `status`, `activation_token`, `remember_token`, `created_at`, `updated_at`, `deleted_at`) VALUES
-	(1, 'dansharisan@gmail.com', '2020-05-04 23:06:07', '$2y$10$kONctkXHfXNakypS40w6S.k/WIitrpFDng3ObG8O9fmiH8yEC1uWu', 1, NULL, '41zy7JWNDp', '2020-05-04 23:06:07', '2020-05-04 23:06:07', NULL);
+	(1, 'dansharisan@gmail.com', '2020-05-10 01:22:36', '$2y$10$kONctkXHfXNakypS40w6S.k/WIitrpFDng3ObG8O9fmiH8yEC1uWu', 1, NULL, 'sbuwhPkJfv', '2020-05-10 01:22:36', '2020-05-10 01:22:36', NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

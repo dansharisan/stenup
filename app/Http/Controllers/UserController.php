@@ -21,7 +21,7 @@ class UserController extends Controller
     *         path="/api/users",
     *         tags={"User"},
     *         summary="Get user list",
-    *         description="Authentication required: **Yes** - Permission required: **view-users**",
+    *         description="Authentication required: **Yes** - Permission required: **read-users**",
     *         operationId="user-list",
     *         @OA\Parameter(
     *             name="page",
@@ -63,7 +63,7 @@ class UserController extends Controller
     {
         // Permission check
         $user = $request->user();
-        if (!$user->hasPermissionTo(Enums\PermissionEnum::VIEW_USERS)) {
+        if (!$user->hasPermissionTo(Enums\PermissionEnum::READ_USERS)) {
 
             return $this->forbiddenResponse();
         }
@@ -87,7 +87,7 @@ class UserController extends Controller
     *         path="/api/users/{id}",
     *         tags={"User"},
     *         summary="Get the user information",
-    *         description="Authentication required: **Yes** - Permission required: **view-users**",
+    *         description="Authentication required: **Yes** - Permission required: **read-users**",
     *         operationId="view-user",
     *         @OA\Parameter(
     *             name="id",
@@ -124,7 +124,7 @@ class UserController extends Controller
     {
         // Permission check
         $user = $request->user();
-        if (!$user->hasPermissionTo(Enums\PermissionEnum::VIEW_USERS)) {
+        if (!$user->hasPermissionTo(Enums\PermissionEnum::READ_USERS)) {
 
             return $this->forbiddenResponse();
         }
@@ -742,7 +742,7 @@ class UserController extends Controller
     *         path="/api/users/registered_user_stats",
     *         tags={"User"},
     *         summary="Get registered user stats",
-    *         description="Authentication required: **Yes** - Permission required: **view-dashboard**",
+    *         description="Authentication required: **Yes** - Permission required: **read-general-stats**",
     *         operationId="registered-user-stats",
     *         @OA\Response(
     *             response=200,
@@ -766,7 +766,7 @@ class UserController extends Controller
     {
         // Permission check
         $user = $request->user();
-        if (!$user->hasPermissionTo(Enums\PermissionEnum::VIEW_DASHBOARD)) {
+        if (!$user->hasPermissionTo(Enums\PermissionEnum::READ_GENERAL_STATS)) {
 
             return $this->forbiddenResponse();
         }

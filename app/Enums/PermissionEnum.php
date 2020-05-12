@@ -6,12 +6,12 @@ use BenSampo\Enum\Enum;
 
 final class PermissionEnum extends Enum
 {
-    const VIEW_USERS = 'view-users';
+    const READ_USERS = 'read-users';
     const CREATE_USERS = 'create-users';
     const UPDATE_USERS = 'update-users';
     const DELETE_USERS = 'delete-users';
-    const VIEW_DASHBOARD = 'view-dashboard';
-    const VIEW_ROLES_PERMISSIONS = 'view-roles-permissions';
+    const READ_GENERAL_STATS = 'read-general-stats';
+    const READ_ROLES_PERMISSIONS = 'read-roles-permissions';
     const CREATE_ROLES = 'create-roles';
     const UPDATE_ROLES = 'update-roles';
     const DELETE_ROLES = 'delete-roles';

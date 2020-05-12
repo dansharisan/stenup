@@ -17,13 +17,13 @@ function requireAccessPermission(to, from, next) {
     function checkRouteAccessLogic() {
         switch (to.name) {
             case COMPONENT_NAME.DASHBOARD:
-                checkAccessPermission(PERMISSION_NAME.VIEW_DASHBOARD)
+                checkAccessPermission(PERMISSION_NAME.READ_GENERAL_STATS)
                 break;
             case COMPONENT_NAME.USERS:
-                checkAccessPermission(PERMISSION_NAME.VIEW_USERS)
+                checkAccessPermission(PERMISSION_NAME.READ_USERS)
                 break;
             case COMPONENT_NAME.ROLES_PERMISSIONS:
-                checkAccessPermission(PERMISSION_NAME.VIEW_ROLES_PERMISSIONS)
+                checkAccessPermission(PERMISSION_NAME.READ_ROLES_PERMISSIONS)
                 break;
             default:
                 next('/')

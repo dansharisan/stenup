@@ -29,12 +29,12 @@ export const COMPONENT_NAME = {
 }
 
 export const PERMISSION_NAME = {
-    VIEW_USERS: 'view-users',
+    READ_USERS: 'read-users',
     CREATE_USERS: 'create-users',
     UPDATE_USERS: 'update-users',
     DELETE_USERS: 'delete-users',
-    VIEW_DASHBOARD: 'view-dashboard',
-    VIEW_ROLES_PERMISSIONS: 'view-roles-permissions',
+    READ_GENERAL_STATS: 'read-general-stats',
+    READ_ROLES_PERMISSIONS: 'read-roles-permissions',
     CREATE_ROLES: 'create-roles',
     UPDATE_ROLES: 'update-roles',
     DELETE_ROLES: 'delete-roles',

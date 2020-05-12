@@ -18,14 +18,14 @@ class RolesAndPermissionsSeeder extends Seeder
 
         /* Permissions */
         // Dashboard
-        SpatiePermissionModels\Permission::create(['name' => Enums\PermissionEnum::VIEW_DASHBOARD]);
+        SpatiePermissionModels\Permission::create(['name' => Enums\PermissionEnum::READ_GENERAL_STATS]);
         // Users
-        SpatiePermissionModels\Permission::create(['name' => Enums\PermissionEnum::VIEW_USERS]);
+        SpatiePermissionModels\Permission::create(['name' => Enums\PermissionEnum::READ_USERS]);
         SpatiePermissionModels\Permission::create(['name' => Enums\PermissionEnum::CREATE_USERS]);
         SpatiePermissionModels\Permission::create(['name' => Enums\PermissionEnum::UPDATE_USERS]);
         SpatiePermissionModels\Permission::create(['name' => Enums\PermissionEnum::DELETE_USERS]);
         // Roles & Permissions
-        SpatiePermissionModels\Permission::create(['name' => Enums\PermissionEnum::VIEW_ROLES_PERMISSIONS]);
+        SpatiePermissionModels\Permission::create(['name' => Enums\PermissionEnum::READ_ROLES_PERMISSIONS]);
         SpatiePermissionModels\Permission::create(['name' => Enums\PermissionEnum::CREATE_ROLES]);
         SpatiePermissionModels\Permission::create(['name' => Enums\PermissionEnum::UPDATE_ROLES]);
         SpatiePermissionModels\Permission::create(['name' => Enums\PermissionEnum::DELETE_ROLES]);
@@ -48,8 +48,8 @@ class RolesAndPermissionsSeeder extends Seeder
         ]);
          // Moderators have some limited permissions
          $modRole->givePermissionTo([
-            Enums\PermissionEnum::VIEW_USERS,
-            Enums\PermissionEnum::VIEW_DASHBOARD,
+            Enums\PermissionEnum::READ_USERS,
+            Enums\PermissionEnum::READ_GENERAL_STATS,
         ]);
         // Attach permissions to Member here if necessary
     }

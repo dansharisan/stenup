@@ -397,7 +397,7 @@
                     "Auth"
                 ],
                 "summary": "Get all roles and permissions",
-                "description": "Authentication required: **Yes** - Permission required: **view-roles-permissions** or **create-users** or **update-users**",
+                "description": "Authentication required: **Yes** - Permission required: **read-roles-permissions** or **create-users** or **update-users**",
                 "operationId": "App\\Http\\Controllers\\AuthController::getRolesAndPermissions",
                 "responses": {
                     "200": {
@@ -421,7 +421,7 @@
                     "Auth"
                 ],
                 "summary": "Get all roles with associated permissions",
-                "description": "Authentication required: **Yes** - Permission required: **view-roles-permissions**",
+                "description": "Authentication required: **Yes** - Permission required: **read-roles-permissions**",
                 "operationId": "App\\Http\\Controllers\\AuthController::getRolesWithPermissions",
                 "responses": {
                     "200": {
@@ -572,7 +572,7 @@
                     "User"
                 ],
                 "summary": "Get user list",
-                "description": "Authentication required: **Yes** - Permission required: **view-users**",
+                "description": "Authentication required: **Yes** - Permission required: **read-users**",
                 "operationId": "user-list",
                 "parameters": [
                     {
@@ -677,7 +677,7 @@
                     "User"
                 ],
                 "summary": "Get the user information",
-                "description": "Authentication required: **Yes** - Permission required: **view-users**",
+                "description": "Authentication required: **Yes** - Permission required: **read-users**",
                 "operationId": "view-user",
                 "parameters": [
                     {
@@ -936,7 +936,7 @@
                     "User"
                 ],
                 "summary": "Get registered user stats",
-                "description": "Authentication required: **Yes** - Permission required: **view-dashboard**",
+                "description": "Authentication required: **Yes** - Permission required: **read-general-stats**",
                 "operationId": "registered-user-stats",
                 "responses": {
                     "200": {

@@ -563,7 +563,7 @@ class AuthCest
         $I->sendGET('/api/auth/roles_permissions');
         $I->seeUnauthorizedRequestError();
 
-        /* Case: By default, member user, which normally don't have VIEW_ROLES_PERMISSIONS permission, shouldn't be able to access this API */
+        /* Case: By default, member user, which normally don't have READ_ROLES_PERMISSIONS permission, shouldn't be able to access this API */
         $I->sendPOST('/api/auth/login', [
             'email' => $memberUser->email,
             'password' => 'password'
@@ -571,8 +571,8 @@ class AuthCest
         $I->sendGET('/api/auth/roles_permissions');
         $I->seeForbiddenError();
 
-        /* Case: When that user is set to have VIEW_ROLES_PERMISSIONS permission, he could get access to this API */
-        $memberUser->roles[0]->givePermissionTo(Enums\PermissionEnum::VIEW_ROLES_PERMISSIONS);
+        /* Case: When that user is set to have READ_ROLES_PERMISSIONS permission, he could get access to this API */
+        $memberUser->roles[0]->givePermissionTo(Enums\PermissionEnum::READ_ROLES_PERMISSIONS);
         $I->sendGET('/api/auth/roles_permissions');
         $I->seeResponseIsJson();
         $I->seeResponseCodeIs(Response::HTTP_OK);
@@ -589,10 +589,10 @@ class AuthCest
                             ],
                 'permissions' => [
                                     [
-                                        'name' => Enums\PermissionEnum::VIEW_ROLES_PERMISSIONS
+                                        'name' => Enums\PermissionEnum::READ_ROLES_PERMISSIONS
                                     ],
                                     [
-                                        'name' => Enums\PermissionEnum::VIEW_USERS
+                                        'name' => Enums\PermissionEnum::READ_USERS
                                     ],
                             ]
             ]
@@ -611,7 +611,7 @@ class AuthCest
         $I->sendGET('/api/auth/roles_w_permissions');
         $I->seeUnauthorizedRequestError();
 
-        /* Case: By default, member user, which normally don't have VIEW_ROLES_PERMISSIONS permission, shouldn't be able to access this API */
+        /* Case: By default, member user, which normally don't have READ_ROLES_PERMISSIONS permission, shouldn't be able to access this API */
         $I->sendPOST('/api/auth/login', [
             'email' => $memberUser->email,
             'password' => 'password'
@@ -619,8 +619,8 @@ class AuthCest
         $I->sendGET('/api/auth/roles_w_permissions');
         $I->seeForbiddenError();
 
-        /* Case: When that user is set to have VIEW_ROLES_PERMISSIONS permission, he could get access to this API */
-        $memberUser->roles[0]->givePermissionTo(Enums\PermissionEnum::VIEW_ROLES_PERMISSIONS);
+        /* Case: When that user is set to have READ_ROLES_PERMISSIONS permission, he could get access to this API */
+        $memberUser->roles[0]->givePermissionTo(Enums\PermissionEnum::READ_ROLES_PERMISSIONS);
         $I->sendGET('/api/auth/roles_w_permissions');
         $I->seeResponseIsJson();
         $I->seeResponseCodeIs(Response::HTTP_OK);
@@ -632,7 +632,7 @@ class AuthCest
                                     'name' => Enums\DefaultRoleEnum::ADMINISTRATOR,
                                     'permissions' => [
                                         [
-                                            'name' => Enums\PermissionEnum::VIEW_DASHBOARD
+                                            'name' => Enums\PermissionEnum::READ_GENERAL_STATS
                                         ],
                                     ]
                                 ],
@@ -640,7 +640,7 @@ class AuthCest
                                     'name' => Enums\DefaultRoleEnum::MEMBER,
                                     'permissions' => [
                                         [
-                                            'name' => Enums\PermissionEnum::VIEW_ROLES_PERMISSIONS
+                                            'name' => Enums\PermissionEnum::READ_ROLES_PERMISSIONS
                                         ],
                                     ]
                                 ],
@@ -758,7 +758,7 @@ class AuthCest
         $memberUser = $I->generateMemberUser();
 
         /* Case: Calling the API while not logged in should return unauthorized error */
-        $dumpMatrix = '{"'. Enums\DefaultRoleEnum::MEMBER . '":["' . Enums\PermissionEnum::VIEW_DASHBOARD . '","' . Enums\PermissionEnum::VIEW_ROLES_PERMISSIONS . '"], "' . Enums\DefaultRoleEnum::ADMINISTRATOR . '":["' . Enums\PermissionEnum::UPDATE_PERMISSIONS . '"]}';
+        $dumpMatrix = '{"'. Enums\DefaultRoleEnum::MEMBER . '":["' . Enums\PermissionEnum::READ_GENERAL_STATS . '","' . Enums\PermissionEnum::READ_ROLES_PERMISSIONS . '"], "' . Enums\DefaultRoleEnum::ADMINISTRATOR . '":["' . Enums\PermissionEnum::UPDATE_PERMISSIONS . '"]}';
         $I->sendPUT('/api/auth/update_roles_permissions_matrix', [
             'matrix' => $dumpMatrix
         ]);
@@ -811,10 +811,10 @@ class AuthCest
                                     'name' => Enums\DefaultRoleEnum::MEMBER,
                                     'permissions' => [
                                         [
-                                            'name' => Enums\PermissionEnum::VIEW_DASHBOARD
+                                            'name' => Enums\PermissionEnum::READ_GENERAL_STATS
                                         ],
                                         [
-                                            'name' => Enums\PermissionEnum::VIEW_ROLES_PERMISSIONS
+                                            'name' => Enums\PermissionEnum::READ_ROLES_PERMISSIONS
                                         ],
                                     ]
                                 ],

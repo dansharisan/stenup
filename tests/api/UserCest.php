@@ -23,7 +23,7 @@ class UserCest
         $I->sendGET('/api/users');
         $I->seeUnauthorizedRequestError();
 
-        /* Case: By default, member user, which normally don't have VIEW_USERS permission, shouldn't be able to access this API */
+        /* Case: By default, member user, which normally don't have READ_USERS permission, shouldn't be able to access this API */
         $I->sendPOST('/api/auth/login', [
             'email' => $memberUser1->email,
             'password' => 'password'
@@ -31,8 +31,8 @@ class UserCest
         $I->sendGET('/api/users');
         $I->seeForbiddenError();
 
-        /* Case: When that user is set to have VIEW_ROLES_PERMISSIONS permission, he could get access to this API */
-        $memberUser1->roles[0]->givePermissionTo(Enums\PermissionEnum::VIEW_USERS);
+        /* Case: When that user is set to have READ_ROLES_PERMISSIONS permission, he could get access to this API */
+        $memberUser1->roles[0]->givePermissionTo(Enums\PermissionEnum::READ_USERS);
         $I->sendGET('/api/users');
         $I->seeResponseIsJson();
         $I->seeResponseCodeIs(Response::HTTP_OK);
@@ -471,7 +471,7 @@ class UserCest
         $I->sendGET('/api/users/registered_user_stats');
         $I->seeUnauthorizedRequestError();
 
-        /* Case: By default, member user, which normally don't have VIEW_DASHBOARD permission, shouldn't be able to access this API */
+        /* Case: By default, member user, which normally don't have READ_GENERAL_STATS permission, shouldn't be able to access this API */
         $I->sendPOST('/api/auth/login', [
             'email' => $memberUser->email,
             'password' => 'password'
@@ -479,8 +479,8 @@ class UserCest
         $I->sendGET('/api/users/registered_user_stats');
         $I->seeForbiddenError();
 
-        /* Case: When that user is set to have VIEW_DASHBOARD permission, he could get access to this API */
-        $memberUser->roles[0]->givePermissionTo(Enums\PermissionEnum::VIEW_DASHBOARD);
+        /* Case: When that user is set to have READ_GENERAL_STATS permission, he could get access to this API */
+        $memberUser->roles[0]->givePermissionTo(Enums\PermissionEnum::READ_GENERAL_STATS);
         $I->sendGET('/api/users/registered_user_stats');
         $I->seeResponseIsJson();
         $I->seeResponseCodeIs(Response::HTTP_OK);
@@ -489,6 +489,42 @@ class UserCest
                 'user_stats' => [
                     // 'total' => ,
                     'last_7_day_stats' => []
+                ],
+            ]
+        );
+    }
+
+    /**
+    * Endpoint: GET /api/users/{id}
+    * Depends on: login
+    **/
+    public function show(ApiTester $I)
+    {
+        // Prepare data
+        $memberUser = $I->generateMemberUser();
+
+        /* Case: Calling the API while not logged in should return unauthorized error */
+        $I->sendGET('/api/users/' . $memberUser->id);
+        $I->seeUnauthorizedRequestError();
+
+        /* Case: By default, member user, which normally don't have READ_USERS permission, shouldn't be able to access this API */
+        $I->sendPOST('/api/auth/login', [
+            'email' => $memberUser->email,
+            'password' => 'password'
+        ]);
+        $I->sendGET('/api/users/' . $memberUser->id);
+        $I->seeForbiddenError();
+
+        /* Case: When that user is set to have READ_USERS permission, he could get access to this API */
+        $memberUser->roles[0]->givePermissionTo(Enums\PermissionEnum::READ_USERS);
+        $I->sendGET('/api/users/' . $memberUser->id);
+        $I->seeResponseIsJson();
+        $I->seeResponseCodeIs(Response::HTTP_OK);
+        $I->seeResponseContainsJson(
+            [
+                'user' => [
+                    'id' => $memberUser->id,
+                    'email' => $memberUser->email
                 ],
             ]
         );

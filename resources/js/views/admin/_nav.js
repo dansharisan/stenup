@@ -6,13 +6,13 @@ export default {
             name : 'Dashboard',
             url  : '/admin/dashboard',
             icon : 'icon-speedometer',
-            permission: PERMISSION_NAME.VIEW_DASHBOARD
+            permission: PERMISSION_NAME.READ_GENERAL_STATS
         },
         {
             name   : 'Users',
             url  : '/admin/users',
             icon : 'icon-user',
-            permission: PERMISSION_NAME.VIEW_USERS
+            permission: PERMISSION_NAME.READ_USERS
         },
         {
             name   : 'Settings',
@@ -21,7 +21,7 @@ export default {
                 {
                     name   : 'Roles & Permissions',
                     url  : '/admin/roles-permissions',
-                    permission: PERMISSION_NAME.VIEW_ROLES_PERMISSIONS
+                    permission: PERMISSION_NAME.READ_ROLES_PERMISSIONS
                 },
             ]
         },
